@@ -87,9 +87,10 @@ class AuthProfileMaterializationServiceTest {
 		AuthProfile profile = mock(AuthProfile.class);
 		when(authProfileRepository.buildByUserIds(List.of(1L))).thenReturn(List.of(profile));
 		doThrow(new IllegalStateException("redis down")).when(authProfileRedisCache).cacheProfiles(List.of(profile));
+		List<Long> userIds = List.of(1L);
 
 		assertThrows(IllegalStateException.class,
-				() -> authProfileMaterializationService.refreshInBatches(List.of(1L)));
+				() -> authProfileMaterializationService.refreshInBatches(userIds));
 	}
 
 }
