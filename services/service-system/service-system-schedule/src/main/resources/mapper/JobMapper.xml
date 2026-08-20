@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.schedule.mapper.JobMapper">
+
+    <select id="selectListByPage" resultType="com.auth.service.system.schedule.model.po.SysJobPageRowPO">
+        SELECT
+        id,
+        job_name,
+        job_group,
+        job_class,
+        task_type,
+        handler_code,
+        invoke_target,
+        cron_expression,
+        time_zone,
+        misfire_policy,
+        concurrent,
+        job_params,
+        payload_json,
+        start_time,
+        end_time,
+        status,
+        remark,
+        created_at,
+        updated_at,
+        created_by,
+        updated_by FROM job
+        <where>
+            <if test="query.jobName != null and query.jobName != ''">
+                AND job_name LIKE CONCAT('%',
+                #{query.jobName},
+                '%'
+                )
+            </if>
+            <if test="query.jobGroup != null and query.jobGroup != ''">
+                AND job_group LIKE CONCAT('%',
+                #{query.jobGroup},
+                '%'
+                )
+            </if>
+            <if test="query.status != null">
+                AND status =
+                #{query.status}
+            </if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 根据主键查询详情 -->
+    <select id="selectDetailById"
+            resultType="com.auth.service.system.schedule.model.po.SysJobDetailRowPO">
+        SELECT j.id,
+               j.job_name,
+               j.job_group,
+               g.group_name AS job_group_name,
+               j.job_class,
+               j.task_type,
+               j.handler_code,
+               j.invoke_target,
+               j.cron_expression,
+               j.time_zone,
+               j.misfire_policy,
+               j.concurrent,
+               j.job_params,
+               j.payload_json,
+               j.start_time,
+               j.end_time,
+               j.status,
+               j.remark,
+               j.created_at,
+               j.updated_at,
+               j.created_by,
+               j.updated_by
+        FROM job j
+                 LEFT JOIN job_group g ON g.group_code = j.job_group
+        WHERE j.id = #{id}
+    </select>
+</mapper>

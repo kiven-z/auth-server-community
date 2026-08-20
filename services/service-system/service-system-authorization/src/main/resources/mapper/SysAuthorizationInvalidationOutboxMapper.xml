@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.authorization.mapper.SysAuthorizationInvalidationOutboxMapper">
+
+    <!-- 插入待投递 Outbox 记录 -->
+    <insert id="insertPending">
+        INSERT INTO sys_authorization_invalidation_outbox (id,
+                                                           event_id,
+                                                           change_kind,
+                                                           payload,
+                                                           status,
+                                                           retry_count,
+                                                           max_retry,
+                                                           next_retry_at,
+                                                           source_module,
+                                                           source_biz_id,
+                                                           created_at,
+                                                           updated_at,
+                                                           version)
+        VALUES (#{id},
+                #{eventId},
+                #{changeKind},
+                #{payload},
+                #{status},
+                #{retryCount},
+                #{maxRetry},
+                #{nextRetryAt},
+                #{sourceModule},
+                #{sourceBizId},
+                #{createdAt},
+                #{updatedAt},
+                #{version})
+    </insert>
+
+    <!-- 按主键查询 Outbox -->
+    <select id="selectById"
+            resultType="com.auth.service.system.authorization.model.entity.SysAuthorizationInvalidationOutboxEntity">
+        SELECT id,
+               event_id,
+               change_kind,
+               payload,
+               status,
+               retry_count,
+               max_retry,
+               next_retry_at,
+               last_error,
+               locked_by,
+               locked_at,
+               processed_at,
+               source_module,
+               source_biz_id,
+               created_at,
+               updated_at,
+               version
+        FROM sys_authorization_invalidation_outbox
+        WHERE id = #{id}
+    </select>
+
+    <!-- 查询可抢占的待重试记录 -->
+    <select id="selectClaimable"
+            resultType="com.auth.service.system.authorization.model.entity.SysAuthorizationInvalidationOutboxEntity">
+        SELECT id,
+        event_id,
+        change_kind,
+        payload,
+        status,
+        retry_count,
+        max_retry,
+        next_retry_at,
+        last_error,
+        locked_by,
+        locked_at,
+        processed_at,
+        source_module,
+        source_biz_id,
+        created_at,
+        updated_at,
+        version
+        FROM sys_authorization_invalidation_outbox
+        WHERE status IN
+        <foreach collection="statuses" item="status" open="(" separator="," close=")">
+            #{status}
+        </foreach>
+        AND (next_retry_at IS NULL OR next_retry_at &lt;= #{now})
+        ORDER BY created_at ASC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 抢占 Outbox 记录 -->
+    <update id="claimForProcessing">
+        UPDATE sys_authorization_invalidation_outbox
+        SET status     = 'PROCESSING',
+            locked_by  = #{lockedBy},
+            locked_at  = #{lockedAt},
+            updated_at = #{lockedAt},
+            version    = version + 1
+        WHERE id = #{id}
+          AND version = #{expectedVersion}
+          AND status IN ('PENDING', 'FAILED')
+    </update>
+
+    <!-- 标记投递成功 -->
+    <update id="markSuccess">
+        UPDATE sys_authorization_invalidation_outbox
+        SET status       = 'SUCCESS',
+            processed_at = #{processedAt},
+            updated_at   = #{processedAt},
+            last_error   = NULL,
+            version      = version + 1
+        WHERE id = #{id}
+    </update>
+
+    <!-- 标记投递失败 -->
+    <update id="markFailure">
+        UPDATE sys_authorization_invalidation_outbox
+        SET status        = #{status},
+            retry_count   = #{retryCount},
+            next_retry_at = #{nextRetryAt},
+            last_error    = #{lastError},
+            locked_by     = NULL,
+            locked_at     = NULL,
+            updated_at    = NOW(3),
+            version       = version + 1
+        WHERE id = #{id}
+    </update>
+
+    <!-- 同步投递失败：保持 PENDING，记录 last_error -->
+    <update id="recordSyncFailure">
+        UPDATE sys_authorization_invalidation_outbox
+        SET last_error = #{lastError},
+            updated_at = NOW(3),
+            version    = version + 1
+        WHERE id = #{id}
+          AND status = 'PENDING'
+    </update>
+
+    <!-- 人工重试：重置为待投递并清空抢占/错误 -->
+    <update id="resetForManualRetry">
+        UPDATE sys_authorization_invalidation_outbox
+        SET status        = 'PENDING',
+            retry_count   = 0,
+            next_retry_at = NULL,
+            last_error    = NULL,
+            locked_by     = NULL,
+            locked_at     = NULL,
+            updated_at    = NOW(3),
+            version       = version + 1
+        WHERE id = #{id}
+          AND version = #{expectedVersion}
+          AND status IN ('DEAD', 'FAILED', 'PROCESSING')
+    </update>
+
+    <!-- 批量删除 SUCCESS 且已过保留期的 Outbox -->
+    <delete id="deleteSuccessBefore">
+        DELETE
+        FROM sys_authorization_invalidation_outbox
+        WHERE status = 'SUCCESS'
+          AND processed_at IS NOT NULL
+          AND processed_at &lt; #{cutoffTime}
+        LIMIT #{batchSize}
+    </delete>
+
+</mapper>

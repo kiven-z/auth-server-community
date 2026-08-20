@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.schedule.mapper.LogJobMapper">
+
+    <!-- 分页查询日志 -->
+    <select id="selectListByPage"
+            resultType="com.auth.service.system.schedule.model.po.LogJobPageRowPO">
+        SELECT id,
+        job_id,
+        job_name,
+        job_group,
+        invoke_target,
+        trigger_type,
+        job_message,
+        status,
+        elapsed_time,
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
+        FROM log_job
+        <where>
+            <if test="query.jobId != null">
+                AND job_id =
+                #{query.jobId}
+            </if>
+            <if test="query.jobName != null and query.jobName != ''">
+                AND job_name LIKE CONCAT('%',
+                #{query.jobName},
+                '%'
+                )
+            </if>
+            <if test="query.jobGroup != null and query.jobGroup != ''">
+                AND job_group LIKE CONCAT('%',
+                #{query.jobGroup},
+                '%'
+                )
+            </if>
+            <if test="query.triggerType != null and query.triggerType != ''">
+                AND trigger_type =
+                #{query.triggerType}
+            </if>
+            <if test="query.invokeTarget != null and query.invokeTarget != ''">
+                AND invoke_target LIKE CONCAT('%',
+                #{query.invokeTarget},
+                '%'
+                )
+            </if>
+            <if test="query.status != null">
+                AND status =
+                #{query.status}
+            </if>
+            <if test="query.elapsedTime != null">
+                AND elapsed_time =
+                #{query.elapsedTime}
+            </if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+    <!-- 按任务取最近若干条 -->
+    <select id="selectRecentByJobNameAndGroup"
+            resultType="com.auth.service.system.schedule.model.entity.LogJobEntity">
+        SELECT id,
+        job_id,
+        job_name,
+        job_group,
+        invoke_target,
+        trigger_type,
+        job_message,
+        status,
+        exception_info,
+        elapsed_time,
+        created_at
+        FROM log_job
+        <where>
+            <if test="jobName != null and jobName != ''">
+                AND job_name =
+                #{jobName}
+            </if>
+            <if test="jobGroup != null and jobGroup != ''">
+                AND job_group =
+                #{jobGroup}
+            </if>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 批量查询各任务最近一条执行日志 -->
+    <select id="selectLatestByJobIds"
+            resultType="com.auth.service.system.schedule.model.entity.LogJobEntity">
+        SELECT id,
+        job_id,
+        job_name,
+        job_group,
+        invoke_target,
+        trigger_type,
+        job_message,
+        status,
+        exception_info,
+        elapsed_time,
+        created_at
+        FROM (
+        SELECT l.id,
+        l.job_id,
+        l.job_name,
+        l.job_group,
+        l.invoke_target,
+        l.trigger_type,
+        l.job_message,
+        l.status,
+        l.exception_info,
+        l.elapsed_time,
+        l.created_at,
+        ROW_NUMBER() OVER (PARTITION BY l.job_id ORDER BY l.created_at DESC) AS row_num
+        FROM log_job l
+        WHERE l.job_id IN
+        <foreach collection="jobIds" item="jobId" open="(" separator="," close=")">
+            #{jobId}
+        </foreach>
+        ) latest
+        WHERE latest.row_num = 1
+    </select>
+</mapper>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.auth</groupId>
+        <artifactId>modules</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>module-security-web-starter</artifactId>
+    <packaging>jar</packaging>
+    <name>module-security-web-starter</name>
+    <description>安全 Web 集成的 BOM 依赖聚合（当前含 autoconfigure，后续加入数据权限等模块）</description>
+
+    <!-- 聚合安全相关模块；后续在此追加 data-permission 等依赖 -->
+    <dependencies>
+        <dependency>
+            <groupId>com.auth</groupId>
+            <artifactId>module-security-autoconfigure</artifactId>
+            <version>${revision}</version>
+        </dependency>
+    </dependencies>
+</project>

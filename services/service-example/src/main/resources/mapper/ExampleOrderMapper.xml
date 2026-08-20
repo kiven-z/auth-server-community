@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.example.mapper.ExampleOrderMapper">
+
+    <!-- 按登录画像分页查询演示单 -->
+    <select id="selectScopedPage" resultType="com.auth.service.example.model.entity.ExampleOrderEntity">
+        SELECT d.id, d.title, d.dept_id, d.created_by, d.updated_by,
+        d.created_at, d.updated_at, d.version, d.remark
+        FROM example_order d
+        <where>
+             <if test="query != null and query.id != null">
+                AND d.id = #{query.id}
+            </if>
+            <if test="query != null and query.title != null and query.title != ''">
+                AND d.title LIKE CONCAT('%', #{query.title}, '%')
+            </if>
+            <if test="query != null and query.deptId != null">
+                AND d.dept_id = #{query.deptId}
+            </if>
+        </where>
+        ORDER BY d.id
+    </select>
+
+</mapper>

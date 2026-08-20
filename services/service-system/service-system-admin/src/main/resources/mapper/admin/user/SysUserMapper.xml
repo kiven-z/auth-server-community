@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.user.SysUserMapper">
+
+    <!-- 用户分页查询 -->
+    <select id="selectListByPage"
+            resultType="com.auth.service.system.admin.model.po.user.SysUserPageRowPO">
+        SELECT
+        u.id,
+        u.username,
+        u.nickname,
+        u.avatar,
+        u.phone,
+        u.email,
+        u.employee_no,
+        u.status,
+        u.created_at,
+        u.updated_at,
+        u.created_by,
+        u.updated_by
+        FROM
+        sys_user u
+        <where>
+            <if test="query.username != null and query.username != ''">
+                AND u.username LIKE CONCAT('%', #{query.username}, '%')
+            </if>
+            <if test="query.nickname != null and query.nickname != ''">
+                AND u.nickname LIKE CONCAT('%', #{query.nickname}, '%')
+            </if>
+            <if test="query.phone != null and query.phone != ''">
+                AND u.phone LIKE CONCAT('%', #{query.phone}, '%')
+            </if>
+            <if test="query.email != null and query.email != ''">
+                AND u.email LIKE CONCAT('%', #{query.email}, '%')
+            </if>
+            <if test="query.employeeNo != null and query.employeeNo != ''">
+                AND u.employee_no LIKE CONCAT('%', #{query.employeeNo}, '%')
+            </if>
+            <if test="query.status != null">
+                AND u.status = #{query.status}
+            </if>
+            <if test="query.deptId != null">
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                user_dept ud
+                INNER JOIN dept_closure dc ON ud.dept_id = dc.descendant_id
+                WHERE
+                ud.user_id = u.id
+                AND dc.ancestor_id = #{query.deptId}
+                )
+            </if>
+        </where>
+        ORDER BY
+        ${orderBySql}
+    </select>
+
+    <!-- 按业务键批量查询用户（username / email / phone / employee_no 任一命中） -->
+    <select id="selectRowsByBusinessKeys"
+            resultType="com.auth.service.system.admin.model.po.user.UserBusinessKeyRowPO">
+        SELECT
+        u.id,
+        u.username,
+        u.email,
+        u.phone,
+        u.employee_no
+        FROM
+        sys_user u
+        <where>
+            <if test="excludeUserId != null">
+                AND u.id != #{excludeUserId}
+            </if>
+            AND (
+            <trim prefixOverrides="OR">
+                <if test="usernames != null and usernames.size() > 0">
+                    OR u.username IN
+                    <foreach collection="usernames" item="username" open="(" separator="," close=")">
+                        #{username}
+                    </foreach>
+                </if>
+                <if test="emails != null and emails.size() > 0">
+                    OR u.email IN
+                    <foreach collection="emails" item="email" open="(" separator="," close=")">
+                        #{email}
+                    </foreach>
+                </if>
+                <if test="phones != null and phones.size() > 0">
+                    OR u.phone IN
+                    <foreach collection="phones" item="phone" open="(" separator="," close=")">
+                        #{phone}
+                    </foreach>
+                </if>
+                <if test="employeeNos != null and employeeNos.size() > 0">
+                    OR u.employee_no IN
+                    <foreach collection="employeeNos" item="employeeNo" open="(" separator="," close=")">
+                        #{employeeNo}
+                    </foreach>
+                </if>
+            </trim>
+            )
+        </where>
+    </select>
+
+    <!-- 用户档案：部门列表（有效任职） -->
+    <select id="selectDeptProfileByUserId"
+            resultType="com.auth.service.system.admin.model.po.user.UserDeptProfilePO">
+        SELECT d.id,
+               d.dept_name,
+               d.dept_code,
+               d.status,
+               ud.is_primary
+        FROM v_user_dept_effective ud
+                 INNER JOIN sys_dept d ON ud.dept_id = d.id
+        WHERE ud.user_id = #{userId}
+        ORDER BY ud.is_primary DESC,
+                 ud.created_at DESC
+    </select>
+
+    <!-- 用户档案：岗位列表（有效任职） -->
+    <select id="selectPostProfileByUserId"
+            resultType="com.auth.service.system.admin.model.po.user.UserPostProfilePO">
+        SELECT sp.id,
+               sp.post_code,
+               sp.post_name,
+               sp.status,
+               up.is_primary
+        FROM v_user_post_effective up
+                 INNER JOIN sys_post sp ON up.post_id = sp.id
+        WHERE up.user_id = #{userId}
+        ORDER BY up.is_primary DESC,
+                 up.created_at DESC
+    </select>
+
+    <!-- 管理端用户远程搜索：未删除且状态正常，关键词模糊匹配多字段 -->
+    <select id="searchByKeyword"
+            resultType="com.auth.service.system.admin.model.po.user.UserSearchItemPO">
+        SELECT id,
+               username,
+               nickname
+        FROM sys_user
+        WHERE status = 1
+          AND (
+            username LIKE CONCAT(#{keyword}, '%')
+                OR nickname LIKE CONCAT(#{keyword}, '%')
+                OR email LIKE CONCAT(#{keyword}, '%')
+                OR phone LIKE CONCAT(#{keyword}, '%')
+                OR employee_no LIKE CONCAT(#{keyword}, '%')
+            )
+        ORDER BY id DESC
+        LIMIT #{limit}
+    </select>
+
+</mapper>

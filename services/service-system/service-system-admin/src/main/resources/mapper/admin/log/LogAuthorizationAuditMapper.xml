@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.log.LogAuthorizationAuditMapper">
+
+    <!-- 分页查询权限决策审计 -->
+    <select id="selectListByPage"
+            resultType="com.auth.service.system.admin.model.po.logauthorizationaudit.LogAuthorizationAuditPageRowPO">
+        SELECT
+        laa.id,
+        laa.event_type,
+        laa.decision_reason,
+        laa.class_name,
+        laa.method_name,
+        laa.created_at,
+        laa.updated_at,
+        laa.created_by,
+        laa.updated_by
+        FROM
+        log_authorization_audit laa
+        <where>
+            <if test="query.eventType != null and query.eventType != ''">
+                AND laa.event_type = #{query.eventType}
+            </if>
+            <if test="query.decisionReason != null and query.decisionReason != ''">
+                AND laa.decision_reason = #{query.decisionReason}
+            </if>
+            <if test="query.className != null and query.className != ''">
+                AND laa.class_name LIKE CONCAT('%', #{query.className}, '%')
+            </if>
+            <if test="query.createdById != null">
+                AND laa.created_by = #{query.createdById}
+            </if>
+        </where>
+        ORDER BY
+        laa.created_at DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,12 @@
+server:
+  port: 8080
+
+spring:
+  cloud:
+    nacos:
+      server-addr: 192.168.3.4:8848
+
+logging:
+  level:
+    root: info
+    com.auth: debug

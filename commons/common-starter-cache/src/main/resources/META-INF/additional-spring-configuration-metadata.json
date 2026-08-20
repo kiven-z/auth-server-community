@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "auth.common.redis.jackson.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable Jackson custom configuration.",
+      "defaultValue": true,
+      "sourceType": "com.auth.common.redis.config.JacksonConfig"
+    },
+    {
+      "name": "auth.common.redis.config.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable Redis configuration.",
+      "defaultValue": true,
+      "sourceType": "com.auth.common.redis.config.RedisConfig"
+    }
+  ]
+}

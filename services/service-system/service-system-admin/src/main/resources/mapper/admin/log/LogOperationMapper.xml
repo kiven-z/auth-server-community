@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.log.LogOperationMapper">
+
+    <!-- 分页查询操作日志 -->
+    <select id="selectListByPage"
+            resultType="com.auth.service.system.admin.model.po.logoperation.LogOperationPageRowPO">
+        SELECT
+        lo.id,
+        lo.user_id,
+        lo.username,
+        lo.module,
+        lo.operation_type,
+        lo.target_type,
+        lo.target_id,
+        lo.request_method,
+        lo.response_status,
+        lo.execution_time_ms,
+        lo.ip_address,
+        lo.created_at,
+        lo.updated_at,
+        lo.created_by,
+        lo.updated_by
+        FROM
+        log_operation lo
+        <where>
+            <if test="query.userId != null">
+                AND lo.user_id =
+                #{query.userId}
+            </if>
+            <if test="query.operationType != null and query.operationType != ''">
+                AND lo.operation_type =
+                #{query.operationType}
+            </if>
+            <if test="query.module != null and query.module != ''">
+                AND lo.module =
+                #{query.module}
+            </if>
+            <if test="query.targetType != null and query.targetType != ''">
+                AND lo.target_type =
+                #{query.targetType}
+            </if>
+            <if test="query.targetId != null">
+                AND lo.target_id =
+                #{query.targetId}
+            </if>
+            <if test="query.requestMethod != null and query.requestMethod != ''">
+                AND lo.request_method =
+                #{query.requestMethod}
+            </if>
+        </where>
+        ORDER BY
+        lo.created_at DESC
+    </select>
+
+</mapper>

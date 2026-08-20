@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.permission.SysPermissionMapper">
+
+    <!-- 分页查询权限：仅查业务表；创建人/更新人用户名由 {@link com.auth.service.system.common.service.AuditUserDisplayService} 批量补全 -->
+    <select id="selectListByPage" resultType="com.auth.service.system.admin.model.entity.SysPermissionEntity">
+        SELECT
+        p.id,
+        p.permission_code,
+        p.permission_name,
+        p.order_num,
+        p.status,
+        p.created_at,
+        p.updated_at,
+        p.created_by,
+        p.updated_by
+        FROM
+        sys_permission p
+        <where>
+            <if test="query.permissionCode != null and query.permissionCode != ''">
+                AND p.permission_code LIKE CONCAT('%',
+                #{query.permissionCode},
+                '%'
+                )
+            </if>
+            <if test="query.permissionName != null and query.permissionName != ''">
+                AND p.permission_name LIKE CONCAT('%',
+                #{query.permissionName},
+                '%'
+                )
+            </if>
+            <if test="query.status != null">
+                AND p.status =
+                #{query.status}
+            </if>
+        </where>
+        ORDER BY
+        ${orderBySql}
+    </select>
+
+    <!-- 按权限编码批量查询权限关联投影 -->
+    <select id="selectReferenceByPermissionCodes"
+            resultType="com.auth.service.system.admin.model.po.reference.PermissionReferencePO">
+        SELECT
+        p.id,
+        p.permission_code,
+        COALESCE(p.permission_name, p.permission_code) AS permission_name,
+        p.status
+        FROM
+        sys_permission p
+        WHERE
+        p.permission_code IN
+        <foreach collection="permissionCodes" item="permissionCode" open="(" separator="," close=")">
+            #{permissionCode}
+        </foreach>
+        ORDER BY
+        p.permission_code
+    </select>
+
+    <!-- 批量查询存在且已启用的权限 ID -->
+    <select id="selectActivePermissionIds" resultType="long">
+        SELECT
+        p.id
+        FROM
+        sys_permission p
+        WHERE
+        p.id IN
+        <foreach collection="permissionIds" item="permissionId" open="(" separator="," close=")">
+            #{permissionId}
+        </foreach>
+        AND p.status = 1
+    </select>
+
+</mapper>

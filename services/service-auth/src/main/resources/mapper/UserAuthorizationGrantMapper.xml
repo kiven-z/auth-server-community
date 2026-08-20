@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.auth.mapper.UserAuthorizationGrantMapper">
+
+    <!-- 批量查询用户角色码（仅 USER 直授） -->
+    <select id="selectRoleRowsByUserIds"
+            resultType="com.auth.service.auth.model.po.authorization.UserGrantCodeRowPO">
+        SELECT DISTINCT
+            gt.subject_id AS userId,
+            r.role_code AS code
+        FROM
+            grant_table gt
+            JOIN sys_role r ON r.id = gt.role_id
+        WHERE
+            gt.subject_type = 'USER'
+            AND gt.subject_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+        AND r.status = 1
+    </select>
+
+    <!-- 批量查询用户权限码（仅 USER 直授） -->
+    <select id="selectPermissionRowsByUserIds"
+            resultType="com.auth.service.auth.model.po.authorization.UserGrantCodeRowPO">
+        WITH all_role_ids AS (
+        SELECT DISTINCT
+        gt.subject_id AS user_id,
+        r.id AS role_id
+        FROM
+        grant_table gt
+        JOIN sys_role r ON r.id = gt.role_id
+        WHERE
+        gt.subject_type = 'USER'
+        AND gt.subject_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+        AND r.status = 1
+        )
+        SELECT DISTINCT
+        ar.user_id AS userId,
+        p.permission_code AS code
+        FROM
+        sys_role_permission rp
+        JOIN all_role_ids ar ON rp.role_id = ar.role_id
+        JOIN sys_permission p ON p.id = rp.permission_id
+        WHERE
+        p.status = 1
+    </select>
+
+</mapper>

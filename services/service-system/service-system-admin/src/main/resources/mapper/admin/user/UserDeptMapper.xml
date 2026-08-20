@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.user.UserDeptMapper">
+
+    <!-- 用户部门关联分页（基表全量，含已停用/传播禁用部门） -->
+    <select id="selectListByPage" resultType="com.auth.service.system.admin.model.po.user.UserDeptPageRowPO">
+        SELECT
+        ud.id,
+        ud.user_id,
+        ud.dept_id,
+        d.dept_name,
+        d.dept_code,
+        d.status AS dept_status,
+        (ve.id IS NOT NULL) AS dept_effective,
+        ud.is_primary,
+        ud.created_at,
+        ud.updated_at,
+        ud.created_by,
+        ud.updated_by,
+        ud.version,
+        ud.remark
+        FROM
+        user_dept ud
+        INNER JOIN sys_dept d ON d.id = ud.dept_id
+        LEFT JOIN v_dept_effective ve ON ve.id = d.id
+        WHERE
+        ud.user_id = #{userId}
+        <if test="query.deptName != null and query.deptName != ''">
+            AND d.dept_name LIKE CONCAT('%', #{query.deptName}, '%')
+        </if>
+        <if test="query.deptCode != null and query.deptCode != ''">
+            AND d.dept_code LIKE CONCAT('%', #{query.deptCode}, '%')
+        </if>
+        ORDER BY
+        ud.is_primary DESC,
+        ud.created_at DESC,
+        ud.id DESC
+    </select>
+
+    <!-- 按用户与关联主键加载（基表，供更新） -->
+    <select id="selectByIdAndUserId" resultType="com.auth.service.system.admin.model.entity.UserDeptEntity">
+        SELECT id,
+               user_id,
+               dept_id,
+               is_primary,
+               created_at,
+               updated_at,
+               created_by,
+               updated_by,
+               version,
+               remark
+        FROM user_dept
+        WHERE id = #{id}
+          AND user_id = #{userId}
+    </select>
+
+    <!-- 按用户与部门加载关联（基表，防重） -->
+    <select id="selectByUserIdAndDeptId" resultType="com.auth.service.system.admin.model.entity.UserDeptEntity">
+        SELECT id,
+               user_id,
+               dept_id,
+               is_primary,
+               created_at,
+               updated_at,
+               created_by,
+               updated_by,
+               version,
+               remark
+        FROM user_dept
+        WHERE user_id = #{userId}
+          AND dept_id = #{deptId}
+        LIMIT 1
+    </select>
+
+    <!-- 用户主部门（有效任职且 is_primary） -->
+    <select id="selectPrimaryDeptByUserId"
+            resultType="com.auth.service.system.admin.model.po.user.UserPrimaryDeptPO">
+        SELECT ud.dept_id  AS deptId,
+               d.dept_name AS deptName
+        FROM v_user_dept_effective ud
+                 INNER JOIN sys_dept d ON d.id = ud.dept_id
+        WHERE ud.user_id = #{userId}
+          AND ud.is_primary = 1
+        LIMIT 1
+    </select>
+</mapper>

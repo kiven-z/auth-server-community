@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.authorization.UserEffectiveAuthorizationQueryMapper">
+
+    <!-- 用户部门关联数（有效任职） -->
+    <select id="countDeptsByUserId" resultType="long">
+        SELECT
+            COUNT(1)
+        FROM
+            v_user_dept_effective ud
+        WHERE
+            ud.user_id = #{userId}
+    </select>
+
+    <!-- 用户岗位关联数（有效任职） -->
+    <select id="countPostsByUserId" resultType="long">
+        SELECT
+            COUNT(1)
+        FROM
+            v_user_post_effective up
+        WHERE
+            up.user_id = #{userId}
+    </select>
+
+    <!-- 统计用户生效角色（仅 USER 直授 + 启用） -->
+    <select id="countEffectiveRolesByUserId" resultType="long">
+        SELECT COUNT(1)
+        FROM (
+        SELECT DISTINCT r.id
+        FROM grant_table gt
+        JOIN sys_role r ON r.id = gt.role_id
+        WHERE gt.subject_type = 'USER'
+        AND gt.subject_id = #{userId}
+        AND r.status = 1
+        <if test="query != null and query.roleCode != null and query.roleCode != ''">
+            AND r.role_code LIKE CONCAT('%', #{query.roleCode}, '%')
+        </if>
+        <if test="query != null and query.roleName != null and query.roleName != ''">
+            AND r.role_name LIKE CONCAT('%', #{query.roleName}, '%')
+        </if>
+        ) t
+    </select>
+
+    <!-- 分页查询用户生效角色（仅 USER 直授 + 启用） -->
+    <select id="selectEffectiveRolesByUserIdPage"
+            resultType="com.auth.service.system.admin.model.po.reference.RoleReferencePO">
+        SELECT DISTINCT
+            r.id,
+            r.role_code,
+            r.role_name,
+            r.status
+        FROM
+            grant_table gt
+            JOIN sys_role r ON r.id = gt.role_id
+        WHERE
+            gt.subject_type = 'USER'
+            AND gt.subject_id = #{userId}
+            AND r.status = 1
+        <if test="query != null and query.roleCode != null and query.roleCode != ''">
+            AND r.role_code LIKE CONCAT('%', #{query.roleCode}, '%')
+        </if>
+        <if test="query != null and query.roleName != null and query.roleName != ''">
+            AND r.role_name LIKE CONCAT('%', #{query.roleName}, '%')
+        </if>
+        ORDER BY
+            r.role_code
+    </select>
+
+    <!-- 统计用户生效权限（仅 USER 直授 + 启用角色 + 启用权限） -->
+    <select id="countEffectivePermissionsByUserId" resultType="long">
+        WITH all_role_ids AS (
+        SELECT DISTINCT r.id AS role_id
+        FROM grant_table gt
+        JOIN sys_role r ON r.id = gt.role_id
+        WHERE gt.subject_type = 'USER'
+        AND gt.subject_id = #{userId}
+        AND r.status = 1
+        )
+        SELECT COUNT(1)
+        FROM (
+        SELECT DISTINCT p.id
+        FROM sys_role_permission rp
+        JOIN all_role_ids ar ON rp.role_id = ar.role_id
+        JOIN sys_permission p ON p.id = rp.permission_id
+        WHERE p.status = 1
+        <if test="query != null and query.permissionCode != null and query.permissionCode != ''">
+            AND p.permission_code LIKE CONCAT('%', #{query.permissionCode}, '%')
+        </if>
+        <if test="query != null and query.permissionName != null and query.permissionName != ''">
+            AND p.permission_name LIKE CONCAT('%', #{query.permissionName}, '%')
+        </if>
+        ) t
+    </select>
+
+    <!-- 分页查询用户生效权限（仅 USER 直授 + 启用角色 + 启用权限） -->
+    <select id="selectEffectivePermissionsByUserIdPage"
+            resultType="com.auth.service.system.admin.model.po.reference.PermissionReferencePO">
+        WITH
+            all_role_ids AS (
+                SELECT DISTINCT
+                    r.id AS role_id
+                FROM
+                    grant_table gt
+                    JOIN sys_role r ON r.id = gt.role_id
+                WHERE
+                    gt.subject_type = 'USER'
+                    AND gt.subject_id = #{userId}
+                    AND r.status = 1
+            )
+        SELECT DISTINCT
+            p.id,
+            p.permission_code,
+            p.permission_name,
+            p.status
+        FROM
+            sys_role_permission rp
+            JOIN all_role_ids ar ON rp.role_id = ar.role_id
+            JOIN sys_permission p ON p.id = rp.permission_id
+        WHERE
+            p.status = 1
+        <if test="query != null and query.permissionCode != null and query.permissionCode != ''">
+            AND p.permission_code LIKE CONCAT('%', #{query.permissionCode}, '%')
+        </if>
+        <if test="query != null and query.permissionName != null and query.permissionName != ''">
+            AND p.permission_name LIKE CONCAT('%', #{query.permissionName}, '%')
+        </if>
+        ORDER BY
+            p.permission_code
+    </select>
+
+</mapper>

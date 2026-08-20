@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.role.SysRoleMapper">
+
+    <!-- 角色分页列表：仅查业务表；创建人/更新人用户名由 {@link com.auth.service.system.common.service.AuditUserDisplayService} 批量补全 -->
+    <select id="selectListByPage" resultType="com.auth.service.system.admin.model.entity.SysRoleEntity">
+        SELECT
+        r.id,
+        r.role_code,
+        r.role_name,
+        r.status,
+        r.order_num,
+        r.created_at,
+        r.updated_at,
+        r.created_by,
+        r.updated_by
+        FROM
+        sys_role r
+        <where>
+            <if test="query.roleCode != null and query.roleCode != ''">
+                AND r.role_code LIKE CONCAT('%',
+                #{query.roleCode},
+                '%'
+                )
+            </if>
+            <if test="query.roleName != null and query.roleName != ''">
+                AND r.role_name LIKE CONCAT('%',
+                #{query.roleName},
+                '%'
+                )
+            </if>
+            <if test="query.status != null">
+                AND r.status =
+                #{query.status}
+            </if>
+        </where>
+        ORDER BY
+        ${orderBySql}
+    </select>
+
+    <!-- 查询角色下拉选项 -->
+    <select id="selectRoleOptions" resultType="com.auth.service.system.admin.model.entity.SysRoleEntity">
+        SELECT
+        id,
+        role_code,
+        role_name
+        FROM
+        sys_role
+        <where>
+            status = 1
+            <if test="roleName != null and roleName != ''">
+                AND role_name LIKE CONCAT('%',
+                #{roleName},
+                '%'
+                )
+            </if>
+            <if test="roleCode != null and roleCode != ''">
+                AND role_code LIKE CONCAT('%',
+                #{roleCode},
+                '%'
+                )
+            </if>
+        </where>
+        ORDER BY
+        order_num
+        LIMIT
+        15
+    </select>
+
+    <!-- 按角色编码批量查询角色关联投影 -->
+    <select id="selectReferenceByRoleCodes"
+            resultType="com.auth.service.system.admin.model.po.reference.RoleReferencePO">
+        SELECT
+        r.id,
+        r.role_code,
+        r.role_name,
+        r.status
+        FROM
+        sys_role r
+        WHERE
+        r.role_code IN
+        <foreach collection="roleCodes" item="roleCode" open="(" separator="," close=")">
+            #{roleCode}
+        </foreach>
+        ORDER BY
+        r.role_code
+    </select>
+
+    <!-- 批量查询存在且已启用的角色 ID -->
+    <select id="selectActiveRoleIds" resultType="long">
+        SELECT
+        r.id
+        FROM
+        sys_role r
+        WHERE
+        r.id IN
+        <foreach collection="roleIds" item="roleId" open="(" separator="," close=")">
+            #{roleId}
+        </foreach>
+        AND r.status = 1
+    </select>
+</mapper>

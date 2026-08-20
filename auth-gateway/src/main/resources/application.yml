@@ -1,0 +1,61 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/plain
+    min-response-size: 1024
+  servlet:
+    session:
+      timeout: 40m
+  reactive:
+    session:
+      timeout: 40m
+spring:
+  application:
+    name: auth-gateway
+  main:
+    web-application-type: reactive
+  config:
+    import:
+      - nacos:common-config.yaml?group=AUTH_COMMON
+      - nacos:${spring.application.name}-${spring.profiles.active}.yaml?group=${spring.cloud.nacos.config.group}
+  profiles:
+    active: dev
+    include:
+      - route
+
+  cloud:
+    nacos:
+      server-addr: 192.168.3.4:8848
+      discovery:
+        namespace: ${spring.profiles.active:dev}
+        group: DEFAULT_GROUP
+      config:
+        import-check:
+          enabled: true
+        namespace: ${spring.profiles.active:dev}
+        group: AUTH_GATEWAY
+        file-extension: yaml
+    gateway:
+      server:
+        webflux:
+          httpclient:
+            connect-timeout: 3000
+            response-timeout: 10s
+            pool:
+              type: elastic
+              max-connections: 500
+              max-idle-time: 30s
+          loadbalancer:
+            use404: true
+          discovery:
+            locator:
+              # 开启服务发现自动路由
+              enabled: true
+              # 服务名转为小写
+              lower-case-service-id: true
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

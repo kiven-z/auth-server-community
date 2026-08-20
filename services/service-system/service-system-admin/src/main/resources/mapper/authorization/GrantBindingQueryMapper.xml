@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper">
+
+    <!-- 统计主体已授角色 -->
+    <select id="countBoundRolesBySubject" resultType="long">
+        SELECT
+            COUNT(1)
+        FROM
+            grant_table gt
+            INNER JOIN sys_role r ON r.id = gt.role_id
+        WHERE
+            gt.subject_type = #{subjectType}
+            AND gt.subject_id = #{subjectId}
+        <if test="query != null and query.roleCode != null and query.roleCode != ''">
+            AND r.role_code LIKE CONCAT('%', #{query.roleCode}, '%')
+        </if>
+        <if test="query != null and query.roleName != null and query.roleName != ''">
+            AND r.role_name LIKE CONCAT('%', #{query.roleName}, '%')
+        </if>
+        <if test="query != null and query.status != null">
+            AND r.status = #{query.status}
+        </if>
+    </select>
+
+    <!-- 分页查询主体已授角色 -->
+    <select id="selectBoundRolesBySubjectPage"
+            resultType="com.auth.service.system.admin.model.po.reference.RoleReferencePO">
+        SELECT
+            r.id,
+            r.role_code,
+            r.role_name,
+            r.status
+        FROM
+            grant_table gt
+            INNER JOIN sys_role r ON r.id = gt.role_id
+        WHERE
+            gt.subject_type = #{subjectType}
+            AND gt.subject_id = #{subjectId}
+        <if test="query != null and query.roleCode != null and query.roleCode != ''">
+            AND r.role_code LIKE CONCAT('%', #{query.roleCode}, '%')
+        </if>
+        <if test="query != null and query.roleName != null and query.roleName != ''">
+            AND r.role_name LIKE CONCAT('%', #{query.roleName}, '%')
+        </if>
+        <if test="query != null and query.status != null">
+            AND r.status = #{query.status}
+        </if>
+        ORDER BY
+            r.role_code
+    </select>
+
+    <!-- 统计角色下指定类型授权主体（仅 USER） -->
+    <select id="countSubjectsByRoleIdAndType" resultType="long">
+        SELECT
+            COUNT(1)
+        FROM
+            grant_table gt
+            INNER JOIN sys_user u ON u.id = gt.subject_id
+        WHERE
+            gt.role_id = #{roleId}
+            AND gt.subject_type = #{subjectType}
+            AND gt.subject_type = 'USER'
+    </select>
+
+</mapper>

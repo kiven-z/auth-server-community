@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.dept.DeptClosureMapper">
+
+    <!-- 批量新增部门：写入自环与父链 -->
+    <insert id="insertPathsBatch">
+        INSERT INTO
+        dept_closure (ancestor_id, descendant_id, depth)
+        SELECT
+        chain.ancestor_id,
+        nodes.dept_id,
+        chain.depth + 1
+        FROM
+        dept_closure chain
+        INNER JOIN (
+        <foreach collection="nodes" item="node" separator=" UNION ALL ">
+            SELECT
+            #{node.deptId} AS dept_id,
+            #{node.parentId} AS parent_id
+        </foreach>
+        ) nodes ON chain.descendant_id = nodes.parent_id
+        WHERE
+        nodes.parent_id > 0
+        UNION ALL
+        SELECT
+        nodes.dept_id,
+        nodes.dept_id,
+        0
+        FROM
+        (
+        <foreach collection="nodes" item="node" separator=" UNION ALL ">
+            SELECT
+            #{node.deptId} AS dept_id,
+            #{node.parentId} AS parent_id
+        </foreach>
+        ) nodes
+    </insert>
+
+    <!-- 物理删除子树：移除子树节点作为后代的全部闭包路径 -->
+    <update id="deletePaths">
+        DELETE dc
+        FROM dept_closure dc
+                 INNER JOIN dept_closure sub ON sub.descendant_id = dc.descendant_id
+        WHERE sub.ancestor_id = #{deptId}
+    </update>
+
+    <!-- 移动部门（步骤1）：清理旧祖先到子树的跨树路径，保留子树内部路径 -->
+    <update id="deleteMovePaths">
+        DELETE stale
+        FROM dept_closure stale
+                 INNER JOIN dept_closure sub ON sub.descendant_id = stale.descendant_id
+                 LEFT JOIN dept_closure keep ON keep.ancestor_id = sub.ancestor_id
+            AND keep.descendant_id = stale.ancestor_id
+        WHERE sub.ancestor_id = #{deptId}
+          AND keep.ancestor_id IS NULL
+    </update>
+
+    <!-- 移动部门（步骤2）：补齐新祖先到子树的跨树路径 -->
+    <insert id="insertMovePaths">
+        INSERT INTO dept_closure (ancestor_id, descendant_id, depth)
+        SELECT super_chain.ancestor_id,
+               sub.descendant_id,
+               super_chain.depth + sub.depth + 1
+        FROM dept_closure sub
+                 INNER JOIN dept_closure super_chain ON super_chain.descendant_id = #{newParentId}
+        WHERE #{newParentId} > 0
+          AND sub.ancestor_id = #{deptId}
+    </insert>
+
+    <!-- 统计：parent_id 与 dept_closure(depth=1) 不一致 -->
+    <select id="countParentLinkAnomalies" resultType="long">
+        SELECT COUNT(1)
+        FROM sys_dept d
+        WHERE d.parent_id > 0
+          AND NOT EXISTS (SELECT 1
+                          FROM dept_closure c
+                          WHERE c.descendant_id = d.id
+                            AND c.ancestor_id = d.parent_id
+                            AND c.depth = 1)
+    </select>
+
+    <!-- 样本：父子直连缺失 -->
+    <select id="selectParentLinkAnomalies"
+            resultType="com.auth.service.system.admin.model.po.dept.DeptClosureParentLinkRowPO">
+        SELECT d.id,
+               d.dept_name,
+               d.parent_id
+        FROM sys_dept d
+        WHERE d.parent_id > 0
+          AND NOT EXISTS (SELECT 1
+                          FROM dept_closure c
+                          WHERE c.descendant_id = d.id
+                            AND c.ancestor_id = d.parent_id
+                            AND c.depth = 1)
+        ORDER BY d.id
+        LIMIT #{limit}
+    </select>
+
+    <!-- 统计：子节点闭包行数 ≠ 父节点闭包行数 + 1 -->
+    <select id="countDepthChainAnomalies" resultType="long">
+        SELECT COUNT(1)
+        FROM sys_dept child
+                 JOIN (SELECT descendant_id,
+                              COUNT(*) AS closure_cnt
+                       FROM dept_closure
+                       GROUP BY descendant_id) child_cnt ON child_cnt.descendant_id = child.id
+                 LEFT JOIN (SELECT descendant_id,
+                                   COUNT(*) AS closure_cnt
+                            FROM dept_closure
+                            GROUP BY descendant_id) parent_cnt ON parent_cnt.descendant_id = child.parent_id
+        WHERE child.parent_id > 0
+          AND child_cnt.closure_cnt &lt;&gt; (COALESCE(parent_cnt.closure_cnt, 0) + 1)
+    </select>
+
+    <!-- 样本：深度链条异常 -->
+    <select id="selectDepthChainAnomalies"
+            resultType="com.auth.service.system.admin.model.po.dept.DeptClosureDepthChainRowPO">
+        SELECT child.id,
+               child.dept_name,
+               child.parent_id,
+               child_cnt.closure_cnt                     AS child_closure_cnt,
+               parent_cnt.closure_cnt                    AS parent_closure_cnt,
+               (COALESCE(parent_cnt.closure_cnt, 0) + 1) AS expected_child_cnt
+        FROM sys_dept child
+                 JOIN (SELECT descendant_id,
+                              COUNT(*) AS closure_cnt
+                       FROM dept_closure
+                       GROUP BY descendant_id) child_cnt ON child_cnt.descendant_id = child.id
+                 LEFT JOIN (SELECT descendant_id,
+                                   COUNT(*) AS closure_cnt
+                            FROM dept_closure
+                            GROUP BY descendant_id) parent_cnt ON parent_cnt.descendant_id = child.parent_id
+        WHERE child.parent_id > 0
+          AND child_cnt.closure_cnt &lt;&gt; (COALESCE(parent_cnt.closure_cnt, 0) + 1)
+        ORDER BY child.id
+        LIMIT #{limit}
+    </select>
+
+    <!-- 健康度：部门闭包行数分布 -->
+    <select id="selectHealthStats" resultType="com.auth.service.system.admin.model.po.dept.DeptClosureHealthStatsPO">
+        SELECT SUM(IF(cnt = 0, 1, 0)) AS zero_closure,
+               SUM(IF(cnt = 1, 1, 0)) AS only_self,
+               SUM(IF(cnt > 1, 1, 0)) AS has_ancestors,
+               COUNT(*)               AS total
+        FROM (SELECT d.id,
+                     (SELECT COUNT(*)
+                      FROM dept_closure c
+                      WHERE c.descendant_id = d.id) AS cnt
+              FROM sys_dept d) x
+    </select>
+
+</mapper>

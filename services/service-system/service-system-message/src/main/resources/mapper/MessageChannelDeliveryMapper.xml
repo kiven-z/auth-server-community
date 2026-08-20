@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.message.mapper.MessageChannelDeliveryMapper">
+
+    <!-- 分页查询渠道投递记录 -->
+    <select id="selectChannelDeliveryPage"
+            resultType="com.auth.service.system.message.model.po.MessageChannelDeliveryPageRowPO">
+        SELECT
+        id,
+        task_id,
+        channel,
+        status,
+        provider_msg_id,
+        error_code,
+        sent_at,
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
+        FROM
+        message_channel_delivery
+        <where>
+            <if test="query.taskId != null">
+                AND task_id = #{query.taskId}
+            </if>
+            <if test="query.channel != null and query.channel != ''">
+                AND channel = #{query.channel}
+            </if>
+            <if test="query.status != null and query.status != ''">
+                AND status = #{query.status}
+            </if>
+        </where>
+        ORDER BY
+        created_at DESC
+    </select>
+
+    <!-- 按任务+渠道+目标逐条回写投递结果（每个目标独立 SET） -->
+    <update id="batchUpdateResult">
+        UPDATE message_channel_delivery
+        SET status = CASE target_value
+        <foreach collection="list" item="item">
+            WHEN #{item.targetValue} THEN #{item.status}
+        </foreach>
+        END,
+        provider_msg_id = CASE target_value
+        <foreach collection="list" item="item">
+            WHEN #{item.targetValue} THEN #{item.providerMsgId}
+        </foreach>
+        END,
+        error_code = CASE target_value
+        <foreach collection="list" item="item">
+            WHEN #{item.targetValue} THEN #{item.errorCode}
+        </foreach>
+        END,
+        error_message = CASE target_value
+        <foreach collection="list" item="item">
+            WHEN #{item.targetValue} THEN #{item.errorMessage}
+        </foreach>
+        END,
+        sent_at = CASE target_value
+        <foreach collection="list" item="item">
+            WHEN #{item.targetValue} THEN #{item.sentAt}
+        </foreach>
+        END
+        WHERE
+        task_id = #{taskId}
+        AND channel = #{channel}
+        AND target_value IN
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item.targetValue}
+        </foreach>
+    </update>
+
+</mapper>

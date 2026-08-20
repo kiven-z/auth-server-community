@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.message.mapper.MessageTemplateMapper">
+
+    <!-- 按场景与渠道查询启用且优先级最高的模板 -->
+    <select id="selectEnabledBySceneCodeAndChannel"
+            resultType="com.auth.service.system.message.model.entity.MessageTemplateEntity">
+        SELECT id,
+               scene_code,
+               channel,
+               template_name,
+               description,
+               subject,
+               body_content,
+               require_fields,
+               provider_template_code,
+               im_message_type,
+               channel_defaults_json,
+               priority,
+               status,
+               created_at,
+               updated_at,
+               updated_by,
+               created_by,
+               version,
+               remark
+        FROM message_template
+        WHERE scene_code = #{sceneCode}
+          AND channel = #{channel}
+          AND status = 1
+          AND priority = (SELECT MAX(priority)
+                          FROM message_template
+                          WHERE scene_code = #{sceneCode}
+                            AND channel = #{channel}
+                            AND status = 1)
+        LIMIT 1
+    </select>
+
+    <!-- 消息模板分页（channel 动态传入） -->
+    <select id="selectMessageTemplatePage"
+            resultType="com.auth.service.system.message.model.po.MessageTemplatePageRowPO">
+        SELECT
+        id,
+        channel,
+        scene_code AS templateCode,
+        template_name,
+        description,
+        subject,
+        im_message_type AS imMessageType,
+        priority,
+        status,
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
+        FROM
+        message_template
+        <where>
+            channel = #{query.channel}
+            <if test="query.templateCode != null and query.templateCode != ''">
+                AND scene_code LIKE CONCAT('%', #{query.templateCode}, '%')
+            </if>
+            <if test="query.templateName != null and query.templateName != ''">
+                AND template_name LIKE CONCAT('%', #{query.templateName}, '%')
+            </if>
+            <if test="query.subject != null and query.subject != ''">
+                AND subject LIKE CONCAT('%', #{query.subject}, '%')
+            </if>
+            <if test="query.imMessageType != null and query.imMessageType != ''">
+                AND im_message_type = #{query.imMessageType}
+            </if>
+            <if test="query.status != null">
+                AND status = #{query.status}
+            </if>
+        </where>
+        ORDER BY
+        created_at DESC
+    </select>
+
+</mapper>

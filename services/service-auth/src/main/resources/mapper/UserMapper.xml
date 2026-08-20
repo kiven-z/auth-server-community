@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.auth.mapper.UserMapper">
+    <!-- 按凭证维度查询用户：activeOnly 控制是否过滤 status=1 -->
+    <select id="selectByCredential" resultType="com.auth.module.platform.persistence.model.UserEntity">
+        SELECT
+        id,
+        username,
+        password,
+        status,
+        nickname,
+        email,
+        phone,
+        avatar,
+        gender,
+        birthday,
+        age,
+        employee_no,
+        introduction,
+        perm_version,
+        created_at,
+        updated_at,
+        created_by,
+        updated_by,
+        version,
+        remark
+        FROM
+        sys_user
+        <where>
+            <if test="activeOnly">
+                status = 1
+            </if>
+            <choose>
+                <when test="dimension.name() == 'USERNAME'">
+                    AND username = #{value}
+                </when>
+                <when test="dimension.name() == 'EMAIL'">
+                    AND email = #{value}
+                </when>
+                <when test="dimension.name() == 'PHONE'">
+                    AND phone = #{value}
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <!-- 批量查询用户失效分桶状态 -->
+    <select id="selectInvalidationStatesByUserIds"
+            resultType="com.auth.service.auth.model.po.user.UserInvalidationStatePO">
+        SELECT
+        id AS userId,
+        status
+        FROM
+        sys_user
+        WHERE
+        id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <!-- 批量递增用户权限版本号 -->
+    <update id="incrementPermVersionByUserIds">
+        UPDATE sys_user
+        SET
+        perm_version = perm_version + 1
+        WHERE
+        status = 1
+        AND id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </update>
+
+</mapper>

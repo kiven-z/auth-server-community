@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+FORMATTER="${REPO_ROOT}/spring-format.sh"
+
+if [[ -f "$FORMATTER" ]]; then
+  echo "pre-commit: running spring-format.sh..."
+  "$FORMATTER"
+  echo "pre-commit: re-staging formatted tracked files..."
+  git add -u
+  echo "pre-commit: formatting complete."
+else
+  echo "pre-commit: spring-format.sh not found at ${FORMATTER}; skipping." >&2
+fi
+
+# clone 新项目需要手动执行以下命令：
+# The following commands need to be manually executed to clone a new project
+# git config core.hooksPath .githooks

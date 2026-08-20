@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.auth.mapper.AuthorizationInvalidationEventMapper">
+
+    <!-- 按 eventId 查询已处理失效事件 -->
+    <select id="selectByEventId"
+            resultType="com.auth.service.auth.model.po.invalidation.AuthorizationInvalidationEventPO">
+        SELECT id,
+               event_id,
+               change_kind,
+               impacted_user_count,
+               version_bumped_count,
+               profile_refreshed_count,
+               profile_evicted_count,
+               processed_at
+        FROM auth_authorization_invalidation_event
+        WHERE event_id = #{eventId}
+        LIMIT 1
+    </select>
+
+    <!-- 插入处理中占位（event_id 唯一约束，并发时仅一行成功） -->
+    <insert id="insertProcessingClaim">
+        INSERT INTO auth_authorization_invalidation_event (id,
+                                                           event_id,
+                                                           change_kind,
+                                                           impacted_user_count,
+                                                           version_bumped_count,
+                                                           profile_refreshed_count,
+                                                           profile_evicted_count,
+                                                           processed_at,
+                                                           created_at,
+                                                           updated_at,
+                                                           version)
+        VALUES (#{id},
+                #{eventId},
+                #{changeKind},
+                #{impactedUserCount},
+                #{versionBumpedCount},
+                #{profileRefreshedCount},
+                #{profileEvictedCount},
+                #{processedAt},
+                #{processedAt},
+                #{processedAt},
+                0)
+    </insert>
+
+    <!-- 占位行更新为最终处理结果 -->
+    <update id="updateProcessedOutcome">
+        UPDATE auth_authorization_invalidation_event
+        SET impacted_user_count     = #{impactedUserCount},
+            version_bumped_count    = #{versionBumpedCount},
+            profile_refreshed_count = #{profileRefreshedCount},
+            profile_evicted_count   = #{profileEvictedCount},
+            processed_at            = #{processedAt},
+            updated_at              = #{processedAt}
+        WHERE event_id = #{eventId}
+          AND impacted_user_count = -1
+    </update>
+
+    <!-- 失败时释放占位，允许 Outbox 重试 -->
+    <delete id="deleteProcessingClaim">
+        DELETE
+        FROM auth_authorization_invalidation_event
+        WHERE event_id = #{eventId}
+          AND impacted_user_count = -1
+    </delete>
+
+    <!-- 分页查询幂等事件（运维只读） -->
+    <select id="selectListByPage"
+            resultType="com.auth.service.auth.model.po.invalidation.AuthorizationInvalidationEventPageRowPO">
+        SELECT
+        aie.id,
+        aie.event_id,
+        aie.change_kind,
+        aie.impacted_user_count,
+        aie.version_bumped_count,
+        aie.profile_refreshed_count,
+        aie.profile_evicted_count,
+        aie.processed_at,
+        aie.created_at,
+        aie.updated_at,
+        aie.created_by,
+        aie.updated_by
+        FROM
+        auth_authorization_invalidation_event aie
+        <where>
+            <if test="query.eventId != null and query.eventId != ''">
+                AND aie.event_id LIKE CONCAT(#{query.eventId}, '%')
+            </if>
+            <if test="query.changeKind != null and query.changeKind != ''">
+                AND aie.change_kind = #{query.changeKind}
+            </if>
+            <if test="query.processing != null and query.processing">
+                AND aie.impacted_user_count = -1
+            </if>
+            <if test="query.processing != null and !query.processing">
+                AND aie.impacted_user_count != -1
+            </if>
+            <if test="query.processedAtStart != null">
+                AND aie.processed_at &gt; = #{query.processedAtStart}
+            </if>
+            <if test="query.processedAtEnd != null">
+                AND aie.processed_at &lt; = #{query.processedAtEnd}
+            </if>
+        </where>
+        ORDER BY
+        aie.processed_at DESC,
+        aie.created_at DESC
+    </select>
+
+    <!-- 按主键查询幂等事件详情 -->
+    <select id="selectDetailById"
+            resultType="com.auth.service.auth.model.po.invalidation.AuthorizationInvalidationEventPageRowPO">
+        SELECT aie.id,
+               aie.event_id,
+               aie.change_kind,
+               aie.impacted_user_count,
+               aie.version_bumped_count,
+               aie.profile_refreshed_count,
+               aie.profile_evicted_count,
+               aie.processed_at,
+               aie.created_at,
+               aie.updated_at,
+               aie.created_by,
+               aie.updated_by,
+               aie.remark
+        FROM auth_authorization_invalidation_event aie
+        WHERE aie.id = #{id}
+    </select>
+
+    <!-- 幂等事件统计（运维只读） -->
+    <select id="selectEventStats"
+            resultType="com.auth.service.auth.model.po.invalidation.AuthorizationInvalidationEventStatsPO">
+        SELECT COUNT(*)                                     AS total_count,
+               SUM(IF(aie.impacted_user_count = -1, 1, 0))  AS processing_count,
+               SUM(IF(aie.impacted_user_count != -1, 1, 0)) AS completed_count
+        FROM auth_authorization_invalidation_event aie
+    </select>
+
+    <!-- 批量释放超时的 processing 占位 -->
+    <delete id="deleteStaleProcessingClaims">
+        DELETE
+        FROM auth_authorization_invalidation_event
+        WHERE impacted_user_count = -1
+          AND updated_at &lt; #{cutoffTime}
+        LIMIT #{batchSize}
+    </delete>
+
+    <!-- 批量删除已完成的过期幂等事件 -->
+    <delete id="deleteCompletedBefore">
+        DELETE
+        FROM auth_authorization_invalidation_event
+        WHERE impacted_user_count != -1
+          AND processed_at IS NOT NULL
+          AND processed_at &lt; #{cutoffTime}
+        LIMIT #{batchSize}
+    </delete>
+
+</mapper>

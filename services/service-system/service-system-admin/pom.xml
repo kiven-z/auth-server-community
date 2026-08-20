@@ -1,0 +1,36 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.auth</groupId>
+        <artifactId>service-system</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>service-system-admin</artifactId>
+    <packaging>jar</packaging>
+
+    <name>service-system-admin</name>
+    <description>IAM 管理与运维查询</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.auth</groupId>
+            <artifactId>service-system-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.auth</groupId>
+            <artifactId>module-message-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.auth</groupId>
+            <artifactId>service-system-authorization</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.auth</groupId>
+            <artifactId>module-file</artifactId>
+            <version>${revision}</version>
+        </dependency>
+    </dependencies>
+</project>

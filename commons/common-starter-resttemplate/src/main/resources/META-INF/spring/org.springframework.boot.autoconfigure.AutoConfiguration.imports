@@ -1,0 +1,2 @@
+com.auth.common.web.resttemplate.CommonRestTemplateAutoConfiguration
+com.auth.common.web.resttemplate.feign.CommonFeignAutoConfiguration

@@ -1,0 +1,66 @@
+{
+  "properties": [
+    {
+      "name": "auth.common.webdoc.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable webdoc configuration.",
+      "defaultValue": true,
+      "sourceType": "com.auth.common.web.config.properties.WebDocProperties"
+    },
+    {
+      "name": "auth.common.webdoc.title",
+      "type": "java.lang.String",
+      "description": "OpenAPI title.",
+      "sourceType": "com.auth.common.web.config.properties.WebDocProperties"
+    },
+    {
+      "name": "auth.common.webdoc.description",
+      "type": "java.lang.String",
+      "description": "OpenAPI description.",
+      "sourceType": "com.auth.common.web.config.properties.WebDocProperties"
+    },
+    {
+      "name": "auth.common.webdoc.summary",
+      "type": "java.lang.String",
+      "description": "OpenAPI summary.",
+      "sourceType": "com.auth.common.web.config.properties.WebDocProperties"
+    },
+    {
+      "name": "auth.common.webdoc.version",
+      "type": "java.lang.String",
+      "description": "OpenAPI version.",
+      "sourceType": "com.auth.common.web.config.properties.WebDocProperties"
+    },
+    {
+      "name": "auth.common.webdoc.contact-name",
+      "type": "java.lang.String",
+      "description": "OpenAPI contact name.",
+      "sourceType": "com.auth.common.web.config.properties.WebDocProperties"
+    },
+    {
+      "name": "auth.common.webdoc.contact-email",
+      "type": "java.lang.String",
+      "description": "OpenAPI contact email.",
+      "sourceType": "com.auth.common.web.config.properties.WebDocProperties"
+    },
+    {
+      "name": "auth.common.webdoc.license-name",
+      "type": "java.lang.String",
+      "description": "OpenAPI license name.",
+      "sourceType": "com.auth.common.web.config.properties.WebDocProperties"
+    },
+    {
+      "name": "auth.common.webdoc.license-url",
+      "type": "java.lang.String",
+      "description": "OpenAPI license url.",
+      "sourceType": "com.auth.common.web.config.properties.WebDocProperties"
+    },
+    {
+      "name": "auth.common.webdoc.groups",
+      "type": "java.util.List<com.auth.common.web.config.properties.WebDocProperties$ApiGroup>",
+      "description": "OpenAPI groups configuration.",
+      "sourceType": "com.auth.common.web.config.properties.WebDocProperties"
+    }
+  ]
+}
+

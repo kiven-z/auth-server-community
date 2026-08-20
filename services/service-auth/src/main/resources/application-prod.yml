@@ -1,0 +1,24 @@
+server:
+  tomcat:
+    threads:
+      max: 100
+      min-spare: 10
+    accept-count: 100
+    max-connections: 2000
+
+spring:
+  session:
+    jdbc:
+      initialize-schema: embedded
+      schema: classpath:org/springframework/session/jdbc/schema-mysql.sql
+
+  cloud:
+    nacos:
+      # Docker Compose 会用 SPRING_CLOUD_NACOS_SERVER_ADDR=nacos:8848 覆盖
+      server-addr: nacos:8848
+
+logging:
+  level:
+    root: warn
+    com.auth: info
+    org.springframework: warn

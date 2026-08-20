@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.file.mapper.FileRecordMapper">
+
+    <sql id="fileRecordColumns">
+        id, storage_platform, upload_mode, bucket, object_key, url,
+        original_name, extension, content_type, size, etag,
+        is_private, biz_type, biz_id, delete_source, deleted_by, deleted_at,
+        remark, created_at, updated_at, created_by, updated_by, version, is_deleted
+    </sql>
+
+    <!-- 文件记录分页查询 -->
+    <select id="selectListByPage" resultType="com.auth.service.system.file.model.po.FileRecordPageRowPO">
+        SELECT
+        id,
+        storage_platform,
+        upload_mode,
+        original_name,
+        content_type,
+        size,
+        is_private,
+        biz_type,
+        biz_id,
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
+        FROM
+        file_record
+        <where>
+            <if test="isDeleted != null">
+                is_deleted = #{isDeleted}
+            </if>
+            <if test="query.isPrivate != null">
+                AND is_private = #{query.isPrivate}
+            </if>
+            <if test="query.deleteSources != null and query.deleteSources.size() > 0">
+                AND delete_source IN
+                <foreach collection="query.deleteSources" item="source" open="(" separator="," close=")">
+                    #{source}
+                </foreach>
+            </if>
+            <if test="(query.deleteSources == null or query.deleteSources.size() == 0) and query.deleteSource != null and query.deleteSource != ''">
+                AND delete_source = #{query.deleteSource}
+            </if>
+            <if test="query.ownerUserId != null">
+                AND created_by = #{query.ownerUserId}
+            </if>
+            <if test="query.bizType != null and query.bizType != ''">
+                AND biz_type = #{query.bizType}
+            </if>
+            <if test="query.bizId != null and query.bizId != ''">
+                AND biz_id = #{query.bizId}
+            </if>
+            <if test="query.contentType != null and query.contentType != ''">
+                AND content_type LIKE CONCAT(#{query.contentType}, '%')
+            </if>
+            <if test="query.originalName != null and query.originalName != ''">
+                AND original_name LIKE CONCAT('%', #{query.originalName}, '%')
+            </if>
+            <if test="query.startTime != null and query.endTime != null">
+                AND created_at <![CDATA[ >= ]]> #{query.startTime}
+                AND created_at <![CDATA[ <= ]]> #{query.endTime}
+            </if>
+        </where>
+        ORDER BY
+        created_at DESC
+    </select>
+
+    <!-- 按主键查询文件记录详情 -->
+    <select id="selectDetailById" resultType="com.auth.service.system.file.model.entity.FileRecordEntity">
+        SELECT
+        <include refid="fileRecordColumns"/>
+        FROM
+        file_record
+        <where>
+            id = #{id}
+            <if test="expectedDeleted != null">
+                AND is_deleted = #{expectedDeleted}
+            </if>
+            <if test="isPrivate != null">
+                AND is_private = #{isPrivate}
+            </if>
+            <if test="deleteSources != null and deleteSources.size() > 0">
+                AND delete_source IN
+                <foreach collection="deleteSources" item="source" open="(" separator="," close=")">
+                    #{source}
+                </foreach>
+            </if>
+            <if test="ownerUserId != null">
+                AND created_by = #{ownerUserId}
+            </if>
+        </where>
+    </select>
+
+    <!-- 按主键批量查询已逻辑删除的文件记录 -->
+    <select id="selectIsDeletedByIds" resultType="com.auth.service.system.file.model.entity.FileRecordEntity">
+        SELECT
+        <include refid="fileRecordColumns"/>
+        FROM
+        file_record
+        <where>
+            <if test="expectedDeleted != null">
+                AND is_deleted = #{expectedDeleted}
+            </if>
+            <if test="isPrivate != null">
+                AND is_private = #{isPrivate}
+            </if>
+            <if test="deleteSources != null and deleteSources.size() > 0">
+                AND delete_source IN
+                <foreach collection="deleteSources" item="source" open="(" separator="," close=")">
+                    #{source}
+                </foreach>
+            </if>
+            <if test="ownerUserId != null">
+                AND created_by = #{ownerUserId}
+            </if>
+            AND id IN
+            <foreach collection="ids" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </where>
+    </select>
+
+    <!-- 按 URL 查询活跃文件记录 -->
+    <select id="selectActiveByUrlAndOwner" resultType="com.auth.service.system.file.model.entity.FileRecordEntity">
+        SELECT
+        <include refid="fileRecordColumns"/>
+        FROM
+        file_record
+        WHERE
+        is_deleted = 0
+        <if test="url != null and url != ''">
+            AND url = #{url}
+        </if>
+        <if test="objectKey != null and objectKey != ''">
+            AND object_key = #{objectKey}
+        </if>
+        <if test="ownerUserId != null">
+            AND created_by = #{ownerUserId}
+        </if>
+        <if test="bizType != null and bizType != ''">
+            AND biz_type = #{bizType}
+        </if>
+        LIMIT
+        1
+    </select>
+
+    <!-- 批量逻辑删除文件记录（显式写 is_deleted，避开 @TableLogic 对 updateById 的拦截） -->
+    <update id="softDeleteByIds">
+        UPDATE file_record
+        SET
+        is_deleted = 1,
+        delete_source = #{deleteSource},
+        deleted_by = #{deletedBy},
+        deleted_at = NOW(),
+        version = version + 1,
+        updated_by = #{deletedBy},
+        updated_at = NOW()
+        WHERE
+        is_deleted = 0
+        AND id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!-- 恢复已逻辑删除的文件记录 -->
+    <update id="restoreByIds">
+        UPDATE file_record
+        SET
+        is_deleted = 0,
+        delete_source = NULL,
+        deleted_by = NULL,
+        deleted_at = NULL,
+        version = version + 1,
+        updated_by = #{updatedBy},
+        updated_at = NOW()
+        WHERE
+        is_deleted = 1
+        AND id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </update>
+
+    <!-- 按逻辑删除状态物理删除文件记录 -->
+    <delete id="deletePhysicallyByIds">
+        DELETE FROM file_record
+        WHERE
+        is_deleted = #{expectedDeleted}
+        AND id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 查询已过保留期的逻辑删除文件记录 -->
+    <select id="selectExpiredDeleted" resultType="com.auth.service.system.file.model.entity.FileRecordEntity">
+        SELECT
+        <include refid="fileRecordColumns"/>
+        FROM
+        file_record
+        WHERE
+        is_deleted = 1
+        AND deleted_at IS NOT NULL
+        AND deleted_at <![CDATA[ < ]]> #{cutoff}
+        ORDER BY
+        deleted_at ASC,
+        id ASC
+        LIMIT
+        #{limit}
+    </select>
+
+</mapper>

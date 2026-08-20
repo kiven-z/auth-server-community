@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.menu.SysMenuMapper">
+
+    <!-- 菜单列表查询条件 -->
+    <sql id="listWhere">
+        SELECT
+        m.id,
+        m.parent_id,
+        m.name,
+        m.title,
+        m.icon,
+        m.path,
+        m.component,
+        m.menu_type,
+        m.status,
+        m.show_link,
+        m.public_access,
+        m.menu_rank,
+        m.keep_alive,
+        m.fixed_tag,
+        m.remark,
+        m.created_at,
+        m.updated_at,
+        m.created_by,
+        m.updated_by
+        FROM
+        sys_menu m
+        <where>
+            <if test="query.name != null and query.name != ''">
+                AND m.name LIKE CONCAT('%',
+                #{query.name},
+                '%'
+                )
+            </if>
+            <if test="query.title != null and query.title != ''">
+                AND m.title LIKE CONCAT('%',
+                #{query.title},
+                '%'
+                )
+            </if>
+            <if test="query.menuType != null">
+                AND m.menu_type =
+                #{query.menuType}
+            </if>
+            <if test="query.status != null">
+                AND m.status =
+                #{query.status}
+            </if>
+            <if test="query.component != null and query.component != ''">
+                AND m.component LIKE CONCAT('%',
+                #{query.component},
+                '%'
+                )
+            </if>
+        </where>
+        ORDER BY
+        m.menu_rank,
+        m.id
+    </sql>
+
+    <!-- 菜单扁平列表查询（无分页，供树形构建） -->
+    <select id="selectListByQuery"
+            resultType="com.auth.service.system.admin.model.entity.SysMenuEntity">
+        <include refid="listWhere"/>
+    </select>
+
+    <!-- 分页查询菜单 -->
+    <select id="selectPageByQuery"
+            resultType="com.auth.service.system.admin.model.entity.SysMenuEntity">
+        <include refid="listWhere"/>
+    </select>
+
+    <!-- 删除前校验：待删父节点下是否仍有未纳入本次删除的子菜单 -->
+    <select id="selectFirstBlockedParentId" resultType="java.lang.Long">
+        SELECT
+        parent_id
+        FROM
+        sys_menu
+        WHERE
+        parent_id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        AND id NOT IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        LIMIT
+        1
+    </select>
+
+</mapper>

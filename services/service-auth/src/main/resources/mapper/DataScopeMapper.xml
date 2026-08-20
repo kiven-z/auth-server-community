@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.auth.mapper.DataScopeMapper">
+
+    <!-- 按用户 ID 批量查询 user_scope -->
+    <select id="selectByUserIds" resultType="com.auth.service.auth.model.po.scope.UserScopeByUserPO">
+        SELECT
+        user_id AS userId,
+        scope_type AS scopeType,
+        scope_dept_ids AS scopeDeptIds
+        FROM
+        user_scope
+        WHERE
+        user_id IN
+        <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <!-- 按角色码批量查询 role_scope（经 sys_role 桥接 role_id）；roleCodes 为空时返回空集 -->
+    <select id="selectByRoleCodes"
+            resultType="com.auth.service.auth.model.po.scope.RoleScopePO">
+        SELECT
+        r.role_code AS roleCode,
+        rs.scope_type AS scopeType,
+        rs.scope_dept_ids AS scopeDeptIds
+        FROM
+        role_scope rs
+        INNER JOIN sys_role r ON r.id = rs.role_id
+        <where>
+            <choose>
+                <when test="roleCodes != null and roleCodes.size() > 0">
+                    r.role_code IN
+                    <foreach collection="roleCodes" item="roleCode" open="(" separator="," close=")">
+                        #{roleCode}
+                    </foreach>
+                </when>
+                <otherwise>
+                    1 = 0
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+</mapper>

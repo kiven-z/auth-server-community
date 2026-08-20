@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.role.SysRolePermissionMapper">
+
+    <!-- 查询角色已分配权限 -->
+    <select id="selectAssignedPermissionsByRoleId"
+            resultType="com.auth.service.system.admin.model.po.reference.PermissionReferencePO">
+        SELECT p.id,
+               p.permission_code,
+               COALESCE(p.permission_name, p.permission_code) AS permission_name,
+               p.status
+        FROM sys_role_permission rp
+                 INNER JOIN sys_permission p ON p.id = rp.permission_id
+        WHERE rp.role_id = #{roleId}
+        ORDER BY p.permission_code
+    </select>
+
+    <!-- 按权限 ID 查询已绑定角色编码（删除前失效快照） -->
+    <select id="selectRoleCodesByPermissionId" resultType="java.lang.String">
+        SELECT r.role_code
+        FROM sys_role_permission rp
+                 INNER JOIN sys_role r ON r.id = rp.role_id
+        WHERE rp.permission_id = #{permissionId}
+          AND r.role_code IS NOT NULL
+          AND r.role_code &lt;&gt; ''
+        ORDER BY r.role_code
+    </select>
+
+    <!-- 批量插入角色权限关联 -->
+    <insert id="batchInsertRolePermissions">
+        INSERT INTO
+        sys_role_permission (
+        role_id,
+        permission_id,
+        grantor_id,
+        created_by,
+        updated_by,
+        version
+        )
+        VALUES
+        <foreach collection="permissionIds" item="permissionId" separator=",">
+            (
+            #{roleId},
+            #{permissionId},
+            #{grantorId},
+            #{createdBy},
+            #{createdBy},
+            0
+            )
+        </foreach>
+    </insert>
+
+</mapper>

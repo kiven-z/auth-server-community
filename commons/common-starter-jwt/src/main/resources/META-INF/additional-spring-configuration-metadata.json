@@ -1,0 +1,64 @@
+{
+  "properties": [
+    {
+      "name": "auth.common.jwt.algorithm",
+      "type": "java.lang.String",
+      "description": "JWT signing algorithm: HS256 or RS256.",
+      "sourceType": "com.auth.common.jwt.autoconfigure.JwtProperties"
+    },
+    {
+      "name": "auth.common.jwt.issuer",
+      "type": "java.lang.String",
+      "description": "JWT issuer (iss).",
+      "sourceType": "com.auth.common.jwt.autoconfigure.JwtProperties"
+    },
+    {
+      "name": "auth.common.jwt.secret",
+      "type": "java.lang.String",
+      "description": "HMAC secret (UTF-8, at least 32 bytes) when algorithm is HS256.",
+      "sourceType": "com.auth.common.jwt.autoconfigure.JwtProperties"
+    },
+    {
+      "name": "auth.common.jwt.access-expired",
+      "type": "java.lang.Long",
+      "description": "Access token TTL in seconds.",
+      "sourceType": "com.auth.common.jwt.autoconfigure.JwtProperties"
+    },
+    {
+      "name": "auth.common.jwt.refresh-expired",
+      "type": "java.lang.Long",
+      "description": "Refresh token TTL in seconds (must be greater than access-expired).",
+      "sourceType": "com.auth.common.jwt.autoconfigure.JwtProperties"
+    },
+    {
+      "name": "auth.common.jwt.clock-skew-seconds",
+      "type": "java.lang.Long",
+      "description": "Clock skew for exp validation.",
+      "sourceType": "com.auth.common.jwt.autoconfigure.JwtProperties"
+    },
+    {
+      "name": "auth.common.jwt.keystore-path",
+      "type": "java.lang.String",
+      "description": "PKCS12 path for RS256 (classpath: or file path).",
+      "sourceType": "com.auth.common.jwt.autoconfigure.JwtProperties"
+    },
+    {
+      "name": "auth.common.jwt.password",
+      "type": "java.lang.String",
+      "description": "PKCS12 password for RS256.",
+      "sourceType": "com.auth.common.jwt.autoconfigure.JwtProperties"
+    },
+    {
+      "name": "auth.common.jwt.alias",
+      "type": "java.lang.String",
+      "description": "Private key alias in PKCS12.",
+      "sourceType": "com.auth.common.jwt.autoconfigure.JwtProperties"
+    },
+    {
+      "name": "auth.common.jwt.auto-generate",
+      "type": "java.lang.Boolean",
+      "description": "If true and keystore file is missing (non-classpath path), generate a dev keystore.",
+      "sourceType": "com.auth.common.jwt.autoconfigure.JwtProperties"
+    }
+  ]
+}

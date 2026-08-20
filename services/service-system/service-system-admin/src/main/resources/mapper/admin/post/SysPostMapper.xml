@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.post.SysPostMapper">
+
+    <!-- 岗位分页列表：关联部门名称；含计算有效 -->
+    <select id="selectListByPage" resultType="com.auth.service.system.admin.model.po.post.SysPostPageRowPO">
+        SELECT
+        p.id,
+        p.dept_id,
+        d.dept_code,
+        d.dept_name,
+        p.post_code,
+        p.post_name,
+        p.status,
+        (vpe.id IS NOT NULL) AS effective,
+        p.order_num,
+        p.remark,
+        p.created_at,
+        p.updated_at,
+        p.created_by,
+        p.updated_by
+        FROM
+        sys_post p
+        INNER JOIN sys_dept d ON p.dept_id = d.id
+        LEFT JOIN v_post_effective vpe ON vpe.id = p.id
+        <where>
+            <if test="query.postCode != null and query.postCode != ''">
+                AND p.post_code LIKE CONCAT('%', #{query.postCode}, '%')
+            </if>
+            <if test="query.postName != null and query.postName != ''">
+                AND p.post_name LIKE CONCAT('%', #{query.postName}, '%')
+            </if>
+            <if test="query.deptName != null and query.deptName != ''">
+                AND d.dept_name LIKE CONCAT('%', #{query.deptName}, '%')
+            </if>
+            <if test="query.status != null">
+                AND p.status = #{query.status}
+            </if>
+        </where>
+        ORDER BY
+        ${orderBySql}
+    </select>
+
+    <!-- 岗位远程搜索：启用时仅计算有效岗位；停用打基表 -->
+    <select id="search" resultType="com.auth.service.system.admin.model.po.post.SysPostSearchItemPO">
+        SELECT
+        p.id,
+        p.dept_id,
+        d.dept_name,
+        p.post_code,
+        p.post_name,
+        p.status
+        FROM
+        sys_post p
+        INNER JOIN sys_dept d ON p.dept_id = d.id
+        <where>
+            <if test="status != null and status">
+                AND EXISTS (
+                SELECT
+                1
+                FROM
+                v_post_effective vpe
+                WHERE
+                vpe.id = p.id
+                )
+            </if>
+            <if test="status != null and !status">
+                AND p.status = #{status}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                p.post_code LIKE CONCAT(#{keyword}, '%')
+                OR p.post_name LIKE CONCAT(#{keyword}, '%')
+                )
+            </if>
+        </where>
+        ORDER BY
+        p.order_num,
+        p.id DESC
+        LIMIT
+        #{limit}
+    </select>
+
+    <!-- 可挂载岗位（批量）：目标部门须计算有效 -->
+    <select id="selectAssignableDeptIds" resultType="long">
+        SELECT
+        d.id
+        FROM
+        v_dept_effective d
+        WHERE
+        d.id IN
+        <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+    </select>
+
+    <!-- 按 (部门 ID, 岗位编码) 批量查询已存在的岗位键 -->
+    <select id="selectReferenceByDeptPostPairs"
+            resultType="com.auth.service.system.admin.model.po.post.PostDeptCodePairPO">
+        SELECT
+        p.dept_id,
+        p.post_code
+        FROM
+        sys_post p
+        WHERE
+        (
+        <foreach collection="pairs" item="pair" separator=" OR ">
+            (
+            p.dept_id = #{pair.deptId}
+            AND p.post_code = #{pair.postCode}
+            )
+        </foreach>
+        )
+    </select>
+
+    <!-- 岗位详情：所属部门快照（基数≈1，详情内嵌） -->
+    <select id="selectBoundDeptByPostId"
+            resultType="com.auth.service.system.admin.model.po.reference.DeptReferencePO">
+        SELECT d.id,
+               d.dept_code,
+               d.dept_name,
+               d.status
+        FROM sys_post p
+                 LEFT JOIN sys_dept d ON d.id = p.dept_id
+        WHERE p.id = #{postId}
+    </select>
+
+</mapper>

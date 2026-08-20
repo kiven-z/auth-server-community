@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.message.mapper.InAppMessageRecipientMapper">
+
+    <!-- 批量写入收件箱：撞 uk(message_id,user_id) 时忽略，返回实际插入行数 -->
+    <insert id="insertIgnoreBatch">
+        INSERT IGNORE INTO
+        in_app_message_recipient (
+        id,
+        message_id,
+        user_id,
+        is_read,
+        is_deleted,
+        created_by,
+        updated_by,
+        version
+        )
+        VALUES
+        <foreach collection="rows" item="row" separator=",">
+            (
+            #{row.id},
+            #{row.messageId},
+            #{row.userId},
+            #{row.isRead},
+            #{row.isDeleted},
+            #{row.createdBy},
+            #{row.updatedBy},
+            #{row.version}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 当前用户收件箱：可见未读行标已读 -->
+    <update id="markRead">
+        UPDATE in_app_message_recipient r
+        INNER JOIN in_app_message m ON m.id = r.message_id
+        SET
+        r.is_read = 1,
+        r.read_time = #{readTime},
+        r.updated_by = #{userId}
+        WHERE
+        r.user_id = #{userId}
+        AND r.is_deleted = 0
+        AND r.is_read = 0
+        AND m.status IN ('SUCCESS', 'PARTIAL')
+        AND r.message_id IN
+        <foreach collection="messageIds" item="messageId" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </update>
+
+    <!-- 当前用户收件箱：可见未删行软删除 -->
+    <update id="markDeleted">
+        UPDATE in_app_message_recipient r
+        INNER JOIN in_app_message m ON m.id = r.message_id
+        SET
+        r.is_deleted = 1,
+        r.updated_by = #{userId}
+        WHERE
+        r.user_id = #{userId}
+        AND r.is_deleted = 0
+        AND m.status IN ('SUCCESS', 'PARTIAL')
+        AND r.message_id IN
+        <foreach collection="messageIds" item="messageId" open="(" separator="," close=")">
+            #{messageId}
+        </foreach>
+    </update>
+
+    <!-- 管理端：按任务分页查询写扩散收件人 -->
+    <select id="selectRecipientPage"
+            resultType="com.auth.service.system.message.model.po.InAppSendTaskRecipientPageRowPO">
+        SELECT
+        id,
+        message_id,
+        user_id,
+        is_read,
+        read_time,
+        is_deleted,
+        created_at,
+        updated_at,
+        created_by,
+        updated_by
+        FROM
+        in_app_message_recipient
+        <where>
+            message_id = #{messageId}
+            <if test="query.userId != null">
+                AND user_id = #{query.userId}
+            </if>
+            <if test="query.isRead != null">
+                AND is_read = #{query.isRead}
+            </if>
+            <if test="query.isDeleted != null">
+                AND is_deleted = #{query.isDeleted}
+            </if>
+        </where>
+        ORDER BY
+        id DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.message.mapper.InAppMessageCategoryMapper">
+
+    <!-- 管理端扁平全量列表（左联父级展示名） -->
+    <select id="selectCategoryList"
+            resultType="com.auth.service.system.message.model.po.InAppMessageCategoryPageRowPO">
+        SELECT
+        c.id,
+        c.parent_id,
+        p.code AS parent_code,
+        p.name AS parent_name,
+        c.code,
+        c.name,
+        c.sort_order,
+        c.status,
+        c.created_at,
+        c.updated_at,
+        c.created_by,
+        c.updated_by
+        FROM
+        in_app_message_category c
+        LEFT JOIN in_app_message_category p ON c.parent_id = p.id
+        <where>
+            <if test="query.code != null and query.code != ''">
+                AND c.code LIKE CONCAT(#{query.code}, '%')
+            </if>
+            <if test="query.name != null and query.name != ''">
+                AND c.name LIKE CONCAT(#{query.name}, '%')
+            </if>
+            <if test="query.parentId != null">
+                AND c.parent_id = #{query.parentId}
+            </if>
+            <!-- rootOnly：true=仅大类(parent_id=0)；false=仅小类 -->
+            <if test="query.parentId == null and query.rootOnly != null and query.rootOnly">
+                AND c.parent_id = 0
+            </if>
+            <if test="query.parentId == null and query.rootOnly != null and !query.rootOnly">
+                AND c.parent_id &gt; 0
+            </if>
+            <if test="query.status != null">
+                AND c.status = #{query.status}
+            </if>
+        </where>
+        ORDER BY
+        c.sort_order,
+        c.id
+    </select>
+
+    <!-- 管理端详情（左联父级；无父级则 parent_code/name 为空） -->
+    <select id="selectDetailById"
+            resultType="com.auth.service.system.message.model.po.InAppMessageCategoryDetailRowPO">
+        SELECT c.id,
+               c.parent_id,
+               p.code AS parent_code,
+               p.name AS parent_name,
+               c.code,
+               c.name,
+               c.sort_order,
+               c.status,
+               c.remark,
+               c.created_at,
+               c.updated_at,
+               c.created_by,
+               c.updated_by
+        FROM in_app_message_category c
+                 LEFT JOIN in_app_message_category p ON c.parent_id = p.id
+        WHERE c.id = #{id}
+    </select>
+
+    <!-- 按父级列出；parent_id=0 为大类；status 为空则不限启停 -->
+    <select id="selectByParentId"
+            resultType="com.auth.service.system.message.model.entity.InAppMessageCategoryEntity">
+        SELECT
+        id,
+        parent_id,
+        code,
+        name,
+        sort_order,
+        status,
+        created_at,
+        updated_at,
+        created_by,
+        updated_by,
+        version,
+        remark
+        FROM
+        in_app_message_category
+        WHERE
+        parent_id = #{parentId}
+        <if test="status != null">
+            AND status = #{status}
+        </if>
+        ORDER BY
+        sort_order,
+        id
+    </select>
+
+</mapper>

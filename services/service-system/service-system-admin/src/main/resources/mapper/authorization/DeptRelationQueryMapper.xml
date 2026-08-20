@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.authorization.DeptRelationQueryMapper">
+
+    <!-- 统计部门绑定用户（基表，含用户已停用） -->
+    <select id="countUsersByDeptId" resultType="long">
+        SELECT
+        COUNT(1)
+        FROM
+        user_dept ud
+        INNER JOIN sys_user u ON u.id = ud.user_id
+        WHERE
+        ud.dept_id = #{deptId}
+        <if test="query != null and query.keyword != null and query.keyword != ''">
+            AND (
+            u.username LIKE CONCAT('%', #{query.keyword}, '%')
+            OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
+            )
+        </if>
+        <if test="query != null and query.status != null">
+            AND u.status = #{query.status}
+        </if>
+        <if test="query != null and query.isPrimary != null">
+            AND ud.is_primary = #{query.isPrimary}
+        </if>
+    </select>
+
+    <!-- 分页查询部门绑定用户（基表，含用户已停用） -->
+    <select id="selectUsersByDeptIdPage"
+            resultType="com.auth.service.system.admin.model.po.dept.SysDeptBoundUserPO">
+        SELECT
+        u.id,
+        u.username,
+        u.status,
+        u.nickname,
+        u.avatar,
+        u.gender,
+        u.employee_no,
+        ud.is_primary
+        FROM
+        user_dept ud
+        INNER JOIN sys_user u ON u.id = ud.user_id
+        WHERE
+        ud.dept_id = #{deptId}
+        <if test="query != null and query.keyword != null and query.keyword != ''">
+            AND (
+            u.username LIKE CONCAT('%', #{query.keyword}, '%')
+            OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
+            )
+        </if>
+        <if test="query != null and query.status != null">
+            AND u.status = #{query.status}
+        </if>
+        <if test="query != null and query.isPrimary != null">
+            AND ud.is_primary = #{query.isPrimary}
+        </if>
+        ORDER BY
+        ud.is_primary DESC,
+        ud.created_at DESC,
+        u.username
+    </select>
+
+    <!-- 统计部门下属岗位 -->
+    <select id="countPostsByDeptId" resultType="long">
+        SELECT
+        COUNT(1)
+        FROM
+        sys_post p
+        WHERE
+        p.dept_id = #{deptId}
+        <if test="query != null and query.postCode != null and query.postCode != ''">
+            AND p.post_code LIKE CONCAT('%', #{query.postCode}, '%')
+        </if>
+        <if test="query != null and query.postName != null and query.postName != ''">
+            AND p.post_name LIKE CONCAT('%', #{query.postName}, '%')
+        </if>
+        <if test="query != null and query.status != null">
+            AND p.status = #{query.status}
+        </if>
+    </select>
+
+    <!-- 分页查询部门下属岗位 -->
+    <select id="selectPostsByDeptIdPage"
+            resultType="com.auth.service.system.admin.model.po.reference.PostReferencePO">
+        SELECT
+        p.id,
+        p.post_code,
+        p.post_name,
+        p.status
+        FROM
+        sys_post p
+        WHERE
+        p.dept_id = #{deptId}
+        <if test="query != null and query.postCode != null and query.postCode != ''">
+            AND p.post_code LIKE CONCAT('%', #{query.postCode}, '%')
+        </if>
+        <if test="query != null and query.postName != null and query.postName != ''">
+            AND p.post_name LIKE CONCAT('%', #{query.postName}, '%')
+        </if>
+        <if test="query != null and query.status != null">
+            AND p.status = #{query.status}
+        </if>
+        ORDER BY
+        p.order_num,
+        p.post_code
+    </select>
+
+</mapper>

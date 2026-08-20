@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.authorization.PostRelationQueryMapper">
+
+    <!-- 统计岗位绑定用户（基表，含岗位已停用） -->
+    <select id="countUsersByPostId" resultType="long">
+        SELECT
+        COUNT(1)
+        FROM
+        user_post up
+        INNER JOIN sys_user u ON u.id = up.user_id
+        WHERE
+        up.post_id = #{postId}
+        <if test="query != null and query.keyword != null and query.keyword != ''">
+            AND (
+            u.username LIKE CONCAT('%', #{query.keyword}, '%')
+            OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
+            )
+        </if>
+        <if test="query != null and query.status != null">
+            AND u.status = #{query.status}
+        </if>
+        <if test="query != null and query.isPrimary != null">
+            AND up.is_primary = #{query.isPrimary}
+        </if>
+    </select>
+
+    <!-- 分页查询岗位绑定用户（基表，含岗位已停用） -->
+    <select id="selectUsersByPostIdPage"
+            resultType="com.auth.service.system.admin.model.po.post.SysPostBoundUserPO">
+        SELECT
+        u.id,
+        u.username,
+        u.status,
+        u.nickname,
+        u.avatar,
+        u.gender,
+        u.employee_no,
+        up.is_primary
+        FROM
+        user_post up
+        INNER JOIN sys_user u ON u.id = up.user_id
+        WHERE
+        up.post_id = #{postId}
+        <if test="query != null and query.keyword != null and query.keyword != ''">
+            AND (
+            u.username LIKE CONCAT('%', #{query.keyword}, '%')
+            OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
+            )
+        </if>
+        <if test="query != null and query.status != null">
+            AND u.status = #{query.status}
+        </if>
+        <if test="query != null and query.isPrimary != null">
+            AND up.is_primary = #{query.isPrimary}
+        </if>
+        ORDER BY
+        up.is_primary DESC,
+        up.created_at DESC,
+        u.username
+    </select>
+
+</mapper>

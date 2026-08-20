@@ -1,0 +1,20 @@
+# 构建产物
+dist/
+build/
+target/
+*.class
+
+# 依赖包
+node_modules/
+.vite/
+.cache/
+.obsidian
+
+# 日志和数据文件
+logs/
+*.log
+*.tmp
+
+# 系统目录
+.DS_Store
+Thumbs.db

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.menu.SysMenuRoleMapper">
+
+    <!-- 查询菜单已分配角色（左连 sys_role 获取角色名称） -->
+    <select id="selectAssignedRolesByMenuId"
+            resultType="com.auth.service.system.admin.model.po.reference.RoleReferencePO">
+        SELECT r.id,
+               r.role_code,
+               r.role_name,
+               r.status
+        FROM sys_menu_role mr
+                 JOIN sys_role r ON r.id = mr.role_id
+            AND r.status = 1
+        WHERE mr.menu_id = #{menuId}
+        ORDER BY r.order_num
+    </select>
+
+    <!-- 批量查询菜单关联角色编码（仅启用且未删除的角色；供动态路由 meta） -->
+    <select id="selectActiveRoleLinksByMenuIds"
+            resultType="com.auth.service.system.admin.model.po.menu.SysMenuRoleLinkRowPO">
+        SELECT
+        mr.menu_id,
+        r.role_code
+        FROM
+        sys_menu_role mr
+        INNER JOIN sys_role r ON r.id = mr.role_id
+        AND r.status = 1
+        WHERE
+        mr.menu_id IN
+        <foreach collection="menuIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <!-- 批量插入菜单-角色关联 -->
+    <insert id="batchInsertMenuRoles">
+        INSERT INTO
+        sys_menu_role (menu_id, role_id)
+        VALUES
+        <foreach collection="roleIds" item="roleId" separator=",">
+            (#{menuId}, #{roleId})
+        </foreach>
+    </insert>
+</mapper>

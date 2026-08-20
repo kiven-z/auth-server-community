@@ -1,0 +1,21 @@
+# 仅本地 / CI 构建用。与 compose.yml 同目录时，直接 docker compose 会自动合并；
+# dockerctl 的 up/pull 只使用 compose.yml，避免服务器误走 build。
+
+services:
+  service-auth:
+    build:
+      context: ..
+      dockerfile: docker/service-auth/Dockerfile
+      pull: false
+
+  service-system:
+    build:
+      context: ..
+      dockerfile: docker/service-system/Dockerfile
+      pull: false
+
+  auth-gateway:
+    build:
+      context: ..
+      dockerfile: docker/auth-gateway/Dockerfile
+      pull: false

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.auth.mapper.AuthorizationImpactMapper">
+    <!--
+        反向影响面：业务键 → userId。
+        grant_table 仅 USER 主体；按角色码反查仍经 grant_table。
+        selectUserIdsByDeptIds / selectUserIdsByPostIds 用于 USER_DEPT / USER_POST 失效，非 grant 主体。
+    -->
+
+    <!-- 角色码 IN 条件（grant_table 反查复用） -->
+    <sql id="roleCodesInCondition">
+        gt.role_id IN (
+        SELECT r.id
+        FROM sys_role r
+        WHERE r.role_code IN
+        <foreach collection="roleCodes" item="roleCode" open="(" separator="," close=")">
+            #{roleCode}
+        </foreach>
+        )
+    </sql>
+
+    <!-- 按角色码反查受影响用户 ID（grant_table USER） -->
+    <select id="selectUserIdsByRoleCodes" resultType="java.lang.Long">
+        SELECT DISTINCT
+        gt.subject_id AS user_id
+        FROM
+        grant_table gt
+        WHERE
+        gt.subject_type = 'USER'
+        AND
+        <include refid="roleCodesInCondition"/>
+    </select>
+
+    <!-- 按 grant_table USER 主体反查用户 ID -->
+    <select id="selectUserIdsByGrantUserSubjectIds" resultType="java.lang.Long">
+        SELECT DISTINCT
+        gt.subject_id AS user_id
+        FROM
+        grant_table gt
+        WHERE
+        gt.subject_type = 'USER'
+        AND gt.subject_id IN
+        <foreach collection="subjectIds" item="subjectId" open="(" separator="," close=")">
+            #{subjectId}
+        </foreach>
+    </select>
+
+    <!-- 按部门 ID 反查部门成员（含子部门） -->
+    <select id="selectUserIdsByDeptIds" resultType="java.lang.Long">
+        SELECT DISTINCT
+        ud.user_id
+        FROM
+        user_dept ud
+        INNER JOIN dept_closure dc ON ud.dept_id = dc.descendant_id
+        INNER JOIN sys_dept d ON d.id = dc.descendant_id
+        WHERE
+        dc.ancestor_id IN
+        <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+    </select>
+
+    <!-- 按岗位 ID 反查岗位成员 -->
+    <select id="selectUserIdsByPostIds" resultType="java.lang.Long">
+        SELECT DISTINCT
+        up.user_id
+        FROM
+        user_post up
+        WHERE
+        up.post_id IN
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+    </select>
+
+    <!-- 权限码桥接：查询关联角色码 -->
+    <select id="selectRoleCodesByPermissionCodes" resultType="java.lang.String">
+        SELECT DISTINCT
+        r.role_code
+        FROM
+        sys_role_permission rp
+        INNER JOIN sys_permission p ON p.id = rp.permission_id
+        INNER JOIN sys_role r ON r.id = rp.role_id
+        WHERE
+        p.permission_code IN
+        <foreach collection="permissionCodes" item="permissionCode" open="(" separator="," close=")">
+            #{permissionCode}
+        </foreach>
+    </select>
+
+</mapper>

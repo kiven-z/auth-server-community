@@ -1,0 +1,99 @@
+server:
+  port: 20002
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/plain
+    min-response-size: 1024
+  tomcat:
+    threads:
+      max: 100
+      min-spare: 10
+    accept-count: 100
+    max-connections: 2000
+  servlet:
+    session:
+      timeout: 40m
+  reactive:
+    session:
+      timeout: 40m
+
+spring:
+  application:
+    name: service-system
+  freemarker:
+    check-template-location: false
+  config:
+    import:
+      - nacos:common-config.yaml?group=AUTH_COMMON
+      - nacos:${spring.application.name}-${spring.profiles.active}.yaml?group=${spring.cloud.nacos.config.group}
+  profiles:
+    active: dev
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 3000
+            read-timeout: 10000
+            logger-level: basic
+    nacos:
+      server-addr: 192.168.3.4:8848
+      discovery:
+        namespace: ${spring.profiles.active:dev}
+        group: DEFAULT_GROUP
+      config:
+        import-check:
+          enabled: true
+        namespace: ${spring.profiles.active:dev}
+        group: SERVICE_SYSTEM
+        file-extension: yaml
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+
+  messages:
+    encoding: UTF-8
+    cache-duration: 3600
+    fallback-to-system-locale: false
+
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: never
+    auto-startup: false
+    overwrite-existing-jobs: false
+    properties:
+      org.quartz.scheduler.instanceName: AuthClusteredScheduler
+      org.quartz.scheduler.instanceId: AUTO
+      org.quartz.jobStore.class: org.springframework.scheduling.quartz.LocalDataSourceJobStore
+      org.quartz.jobStore.driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+      org.quartz.jobStore.useProperties: "false"
+      org.quartz.jobStore.tablePrefix: QRTZ_
+      org.quartz.jobStore.isClustered: "true"
+      org.quartz.jobStore.clusterCheckinInterval: "20000"
+      org.quartz.threadPool.class: org.quartz.simpl.SimpleThreadPool
+      org.quartz.threadPool.threadCount: 10
+      org.quartz.threadPool.threadPriority: 5
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+  mapper-locations:
+    - "classpath*:/mapper/**/*.xml"
+  global-config:
+    db-config:
+      id-type: assign_id
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

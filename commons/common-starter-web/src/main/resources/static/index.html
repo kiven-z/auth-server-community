@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Auth Deploy Marker</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 40rem;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            line-height: 1.6;
+        }
+
+        #meta {
+            color: #444;
+            padding: 0;
+        }
+
+        #meta li {
+            list-style: none;
+        }
+
+        #error {
+            color: #c0392b;
+        }
+    </style>
+</head>
+<body>
+<h1 id="title">加载中…</h1>
+<ul id="meta"></ul>
+<p hidden id="error"></p>
+<script>
+    (function () {
+        const meta = document.getElementById('meta');
+        const error = document.getElementById('error');
+
+        function formatUtcToLocal(isoUtc) {
+            if (!isoUtc) {
+                return '-';
+            }
+            const date = new Date(isoUtc);
+            if (Number.isNaN(date.getTime())) {
+                return isoUtc;
+            }
+            return date.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false,
+                timeZoneName: 'short'
+            });
+        }
+
+        fetch('/actuator/info')
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+                return response.json();
+            })
+            .then(function (data) {
+                const build = data.build || {};
+                const commitId = data.git && data.git.commit && data.git.commit.id
+                    ? data.git.commit.id.slice(0, 7)
+                    : '-';
+                document.getElementById('title').textContent =
+                    build.name || build.artifact || 'Auth Service';
+                meta.innerHTML =
+                    '<li>版本：' + (build.version || '-') + '</li>' +
+                    '<li>构建时间：' + formatUtcToLocal(build.time) + '</li>' +
+                    '<li>Git：' + commitId + '</li>';
+            })
+            .catch(function (err) {
+                document.getElementById('title').textContent =
+                    'Spring Security 6 | 自定义权限校验后台管理系统';
+                error.hidden = false;
+                error.textContent = '无法读取构建信息（' + err.message + '）';
+            });
+    })();
+</script>
+</body>
+</html>

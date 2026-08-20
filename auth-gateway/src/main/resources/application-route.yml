@@ -1,0 +1,54 @@
+spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          # 全局跨域
+          # globalcors:
+          #   cors-configurations:
+          #     '[/**]':
+          #       allowed-headers:
+          #         - "*"
+          #       allowed-origin-patterns:
+          #         - "*"
+          #       allowed-methods:
+          #         - "*"
+
+          # 默认过滤器
+          default-filters:
+            - name: Retry
+              args:
+                retries: 1
+                methods: GET,HEAD,OPTIONS
+                statuses: BAD_GATEWAY
+                backoff:
+                  firstBackoff: 1000ms
+                  maxBackoff: 1600ms
+                  factor: 2
+                  basedOnPreviousValue: false
+            # - OnceToken=X-Gateway-Token, gateway-token
+
+          # 路由
+          routes:
+            - id: auth-route
+              uri: lb://service-auth
+              predicates:
+                - Path=/api/auth/**
+
+            - id: system-route
+              uri: lb://service-system
+              predicates:
+                - Path=/api/system/**,/api/local-file/**
+
+            - id: example-route
+              uri: lb://service-example
+              predicates:
+                - Path=/api/example/**
+
+            # - id: ollama-route
+            #   uri: lb://service-ollama
+            #   predicates:
+            #     - name: Path
+            #       args:
+            #         patterns: /api/ollama/**
+            #         matchTrailingSlash: true

@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.AutoConfigurationImportFilter=\
+com.auth.module.security.autoconfigure.boot.filter.SecurityStarterAutoConfigurationImportFilter

@@ -1,0 +1,42 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.auth</groupId>
+        <artifactId>service-system</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>service-system-file</artifactId>
+    <packaging>jar</packaging>
+
+    <name>service-system-file</name>
+    <description>文件存储与记录管理</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.auth</groupId>
+            <artifactId>service-system-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.auth</groupId>
+            <artifactId>module-file-api</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.auth</groupId>
+            <artifactId>module-file</artifactId>
+            <version>${revision}</version>
+        </dependency>
+        <!-- 统一使用 AWS SDK v2 S3 协议客户端覆盖 MinIO / 阿里云 OSS；S3Presigner 已包含在 s3 模块中 -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>s3</artifactId>
+        </dependency>
+        <!-- 上传内容魔数检测（仅 core，不引入完整 parsers） -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+        </dependency>
+    </dependencies>
+</project>

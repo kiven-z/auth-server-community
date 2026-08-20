@@ -1,0 +1,49 @@
+# service-example：集成验证专用；JWT/密钥等以 Nacos common-config 为准
+server:
+  port: 20009
+  tomcat:
+    threads:
+      max: 100
+      min-spare: 10
+    accept-count: 100
+    max-connections: 2000
+
+spring:
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.3.4:3306/auth_admin?serverTimezone=UTC&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&cachePrepStmts=true&useServerPrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useLocalSessionState=true
+    username: root
+    password: Dev1234!
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 10000
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+      connection-init-sql: SET time_zone = '+00:00'
+
+  cloud:
+    nacos:
+      server-addr: 192.168.3.4:8848
+
+  data:
+    redis:
+      host: 192.168.3.4
+      port: 6379
+      database: 0
+      password: "Dev1234!"
+      timeout: 3000ms
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 32
+          max-wait: 2000ms
+          max-idle: 16
+          min-idle: 4
+
+logging:
+  level:
+    root: info
+    com.auth: debug

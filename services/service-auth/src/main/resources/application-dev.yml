@@ -1,0 +1,23 @@
+server:
+  port: 20001
+  tomcat:
+    threads:
+      max: 100
+      min-spare: 10
+    accept-count: 100
+    max-connections: 2000
+
+spring:
+  session:
+    jdbc:
+      initialize-schema: embedded
+      schema: classpath:org/springframework/session/jdbc/schema-mysql.sql
+
+  cloud:
+    nacos:
+      server-addr: 192.168.3.4:8848
+
+logging:
+  level:
+    root: info
+    com.auth: debug

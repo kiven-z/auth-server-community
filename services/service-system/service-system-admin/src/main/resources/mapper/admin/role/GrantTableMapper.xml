@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.role.GrantTableMapper">
+
+    <!-- 按授权主体查询已分配角色（管理部门/岗位角色表单） -->
+    <select id="selectAssignedRolesBySubject"
+            resultType="com.auth.service.system.admin.model.po.reference.RoleReferencePO">
+        SELECT r.id,
+               r.role_code,
+               r.role_name,
+               r.status
+        FROM grant_table gt
+                 INNER JOIN sys_role r ON r.id = gt.role_id
+        WHERE gt.subject_type = #{subjectType}
+          AND gt.subject_id = #{subjectId}
+        ORDER BY r.role_code
+    </select>
+
+    <!-- 按授权主体类型与主体 ID 列表批量删除 -->
+    <delete id="deleteBySubjectIds">
+        DELETE FROM grant_table
+        WHERE
+        subject_type = #{subjectType}
+        AND subject_id IN
+        <foreach collection="subjectIds" item="subjectId" open="(" separator="," close=")">
+            #{subjectId}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,60 @@
+server:
+  port: 20009
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/plain
+    min-response-size: 1024
+  tomcat:
+    threads:
+      max: 100
+      min-spare: 10
+    accept-count: 100
+    max-connections: 2000
+  servlet:
+    session:
+      timeout: 40m
+
+spring:
+  application:
+    name: service-example
+  config:
+    import:
+      - nacos:common-config.yaml?group=AUTH_COMMON
+      - nacos:${spring.application.name}-${spring.profiles.active}.yaml?group=${spring.cloud.nacos.config.group}
+  profiles:
+    active: dev
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connect-timeout: 3000
+            read-timeout: 10000
+            logger-level: basic
+    nacos:
+      server-addr: 192.168.3.4:8848
+      discovery:
+        namespace: ${spring.profiles.active:dev}
+        group: DEFAULT_GROUP
+      config:
+        import-check:
+          enabled: true
+        namespace: ${spring.profiles.active:dev}
+        group: SERVICE_EXAMPLE
+        file-extension: yaml
+
+  jackson:
+    time-zone: UTC
+    serialization:
+      write-dates-as-timestamps: false
+
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+mybatis-plus:
+  mapper-locations:
+    - "classpath*:/mapper/**/*.xml"

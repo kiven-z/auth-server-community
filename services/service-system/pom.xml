@@ -1,0 +1,78 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.auth</groupId>
+        <artifactId>services</artifactId>
+        <version>${revision}</version>
+    </parent>
+
+    <artifactId>service-system</artifactId>
+    <packaging>pom</packaging>
+
+    <name>service-system</name>
+    <description>系统服务（模块化单体父工程）</description>
+
+    <modules>
+        <module>service-system-common</module>
+        <module>service-system-authorization</module>
+        <module>service-system-message</module>
+        <module>service-system-schedule</module>
+        <module>service-system-admin</module>
+        <module>service-system-file</module>
+        <module>service-system-bootstrap</module>
+    </modules>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.auth</groupId>
+                <artifactId>service-system-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.auth</groupId>
+                <artifactId>service-system-authorization</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.auth</groupId>
+                <artifactId>service-system-message</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.auth</groupId>
+                <artifactId>service-system-schedule</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.auth</groupId>
+                <artifactId>service-system-admin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.auth</groupId>
+                <artifactId>service-system-file</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <configuration>
+                        <skip>true</skip>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.authorization.RolePermissionBindingQueryMapper">
+
+    <!-- 统计角色已绑定权限 -->
+    <select id="countPermissionsByRoleId" resultType="long">
+        SELECT
+            COUNT(1)
+        FROM
+            sys_role_permission rp
+            INNER JOIN sys_permission p ON p.id = rp.permission_id
+        WHERE
+            rp.role_id = #{roleId}
+        <if test="query != null and query.permissionCode != null and query.permissionCode != ''">
+            AND p.permission_code LIKE CONCAT('%', #{query.permissionCode}, '%')
+        </if>
+        <if test="query != null and query.permissionName != null and query.permissionName != ''">
+            AND p.permission_name LIKE CONCAT('%', #{query.permissionName}, '%')
+        </if>
+        <if test="query != null and query.status != null">
+            AND p.status = #{query.status}
+        </if>
+    </select>
+
+    <!-- 分页查询角色已绑定权限 -->
+    <select id="selectPermissionsByRoleIdPage"
+            resultType="com.auth.service.system.admin.model.po.reference.PermissionReferencePO">
+        SELECT
+            p.id,
+            p.permission_code,
+            COALESCE(p.permission_name, p.permission_code) AS permission_name,
+            p.status
+        FROM
+            sys_role_permission rp
+            INNER JOIN sys_permission p ON p.id = rp.permission_id
+        WHERE
+            rp.role_id = #{roleId}
+        <if test="query != null and query.permissionCode != null and query.permissionCode != ''">
+            AND p.permission_code LIKE CONCAT('%', #{query.permissionCode}, '%')
+        </if>
+        <if test="query != null and query.permissionName != null and query.permissionName != ''">
+            AND p.permission_name LIKE CONCAT('%', #{query.permissionName}, '%')
+        </if>
+        <if test="query != null and query.status != null">
+            AND p.status = #{query.status}
+        </if>
+        ORDER BY
+            p.permission_code
+    </select>
+
+    <!-- 统计权限已绑定角色 -->
+    <select id="countRolesByPermissionId" resultType="long">
+        SELECT
+            COUNT(1)
+        FROM
+            sys_role_permission rp
+            INNER JOIN sys_role r ON r.id = rp.role_id
+        WHERE
+            rp.permission_id = #{permissionId}
+        <if test="query != null and query.roleCode != null and query.roleCode != ''">
+            AND r.role_code LIKE CONCAT('%', #{query.roleCode}, '%')
+        </if>
+        <if test="query != null and query.roleName != null and query.roleName != ''">
+            AND r.role_name LIKE CONCAT('%', #{query.roleName}, '%')
+        </if>
+        <if test="query != null and query.status != null">
+            AND r.status = #{query.status}
+        </if>
+    </select>
+
+    <!-- 分页查询权限已绑定角色 -->
+    <select id="selectRolesByPermissionIdPage"
+            resultType="com.auth.service.system.admin.model.po.reference.RoleReferencePO">
+        SELECT
+            r.id,
+            r.role_code,
+            r.role_name,
+            r.status
+        FROM
+            sys_role_permission rp
+            INNER JOIN sys_role r ON r.id = rp.role_id
+        WHERE
+            rp.permission_id = #{permissionId}
+        <if test="query != null and query.roleCode != null and query.roleCode != ''">
+            AND r.role_code LIKE CONCAT('%', #{query.roleCode}, '%')
+        </if>
+        <if test="query != null and query.roleName != null and query.roleName != ''">
+            AND r.role_name LIKE CONCAT('%', #{query.roleName}, '%')
+        </if>
+        <if test="query != null and query.status != null">
+            AND r.status = #{query.status}
+        </if>
+        ORDER BY
+            r.role_code
+    </select>
+ 
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.message.mapper.RecipientUserMapper">
+
+    <!-- 指定用户展开：正常/锁定用户均可收信，仅排除禁用（游标分页） -->
+    <select id="selectEnabledUserIdsAfter" resultType="java.lang.Long">
+        SELECT
+        u.id
+        FROM
+        sys_user u
+        WHERE
+        u.status IN (1, 2)
+        AND u.id &gt; #{lastUserId}
+        AND u.id IN
+        <foreach collection="userIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY
+        u.id
+        LIMIT
+        #{limit}
+    </select>
+
+    <!-- 按岗位展开：正常/锁定用户均可收信，仅排除禁用（游标分页） -->
+    <select id="selectUserIdsByPostIdsAfter" resultType="java.lang.Long">
+        SELECT DISTINCT
+        up.user_id
+        FROM
+        v_user_post_effective up
+        INNER JOIN sys_user u ON u.id = up.user_id
+        WHERE
+        u.status IN (1, 2)
+        AND up.user_id &gt; #{lastUserId}
+        AND up.post_id IN
+        <foreach collection="postIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY
+        up.user_id
+        LIMIT
+        #{limit}
+    </select>
+
+    <!-- 按部门展开：仅当前部门；正常/锁定用户均可收信，仅排除禁用（游标分页） -->
+    <select id="selectUserIdsByDeptIdsAfter" resultType="java.lang.Long">
+        SELECT DISTINCT
+        ud.user_id
+        FROM
+        v_user_dept_effective ud
+        INNER JOIN sys_user u ON u.id = ud.user_id
+        WHERE
+        u.status IN (1, 2)
+        AND ud.user_id &gt; #{lastUserId}
+        AND ud.dept_id IN
+        <foreach collection="deptIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY
+        ud.user_id
+        LIMIT
+        #{limit}
+    </select>
+
+    <!-- 按部门展开：含子部门；正常/锁定用户均可收信，仅排除禁用（游标分页） -->
+    <select id="selectUserIdsByDeptIdsWithChildrenAfter" resultType="java.lang.Long">
+        SELECT DISTINCT
+        ud.user_id
+        FROM
+        v_user_dept_effective ud
+        INNER JOIN dept_closure dc ON dc.descendant_id = ud.dept_id
+        INNER JOIN sys_user u ON u.id = ud.user_id
+        WHERE
+        u.status IN (1, 2)
+        AND ud.user_id &gt; #{lastUserId}
+        AND dc.ancestor_id IN
+        <foreach collection="deptIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        ORDER BY
+        ud.user_id
+        LIMIT
+        #{limit}
+    </select>
+
+</mapper>

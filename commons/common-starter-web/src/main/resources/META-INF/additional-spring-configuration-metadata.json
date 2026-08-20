@@ -1,0 +1,11 @@
+{
+  "properties": [
+    {
+      "name": "auth.common.web.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Whether to enable web configuration.",
+      "defaultValue": true,
+      "sourceType": "com.auth.common.web.autoconfigure.CommonWebAutoConfiguration"
+    }
+  ]
+}

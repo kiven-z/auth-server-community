@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper">
+
+    <!-- 部门扁平列表查询（无分页，供树形构建；含计算有效） -->
+    <select id="selectListByQuery"
+            resultType="com.auth.service.system.admin.model.po.dept.SysDeptPageRowPO">
+        SELECT
+        d.id,
+        d.parent_id,
+        d.dept_name,
+        d.dept_code,
+        d.status,
+        (ve.id IS NOT NULL) AS effective,
+        d.order_num,
+        d.remark,
+        d.created_at,
+        d.updated_at,
+        d.created_by,
+        d.updated_by
+        FROM
+        sys_dept d
+        LEFT JOIN v_dept_effective ve ON ve.id = d.id
+        <where>
+            <if test="query.status != null">
+                d.status = #{query.status}
+            </if>
+            <if test="query.keyword != null and query.keyword != ''">
+                <if test="query.status != null">
+                    AND
+                </if>
+                d.id IN (
+                SELECT
+                dc.ancestor_id
+                FROM
+                dept_closure dc
+                INNER JOIN sys_dept m ON m.id = dc.descendant_id
+                WHERE
+                m.dept_name LIKE CONCAT('%', #{query.keyword}, '%')
+                OR m.dept_code LIKE CONCAT('%', #{query.keyword}, '%')
+                )
+            </if>
+        </where>
+        ORDER BY
+        d.order_num,
+        d.id
+    </select>
+
+    <!-- 分页查询部门（含父部门信息与计算有效；表格视图与 Excel 导出共用） -->
+    <select id="selectListByPage"
+            resultType="com.auth.service.system.admin.model.po.dept.SysDeptPageRowPO">
+        SELECT
+        d.id,
+        d.parent_id,
+        p.dept_code AS parent_dept_code,
+        p.dept_name AS parent_dept_name,
+        d.dept_name,
+        d.dept_code,
+        d.status,
+        (ve.id IS NOT NULL) AS effective,
+        d.order_num,
+        d.remark,
+        d.created_at,
+        d.updated_at,
+        d.created_by,
+        d.updated_by
+        FROM
+        sys_dept d
+        LEFT JOIN sys_dept p ON d.parent_id = p.id
+        LEFT JOIN v_dept_effective ve ON ve.id = d.id
+        <where>
+            <if test="query.status != null">
+                d.status = #{query.status}
+            </if>
+            <if test="query.deptName != null and query.deptName != ''">
+                <if test="query.status != null">
+                    AND
+                </if>
+                d.dept_name LIKE CONCAT('%', #{query.deptName}, '%')
+            </if>
+            <if test="query.deptCode != null and query.deptCode != ''">
+                <if test="query.status != null or (query.deptName != null and query.deptName != '')">
+                    AND
+                </if>
+                d.dept_code LIKE CONCAT('%', #{query.deptCode}, '%')
+            </if>
+        </where>
+        ORDER BY
+        d.order_num,
+        d.id
+    </select>
+
+    <!-- 批量查询部门全路径（根到叶，基于 dept_closure） -->
+    <select id="selectDeptPathByIds"
+            resultType="com.auth.service.system.admin.model.po.dept.SysDeptPathRowPO">
+        SELECT
+        dc.descendant_id AS id,
+        GROUP_CONCAT(
+        a.dept_name
+        ORDER BY
+        dc.depth DESC SEPARATOR '/'
+        ) AS dept_path
+        FROM
+        dept_closure dc
+        INNER JOIN sys_dept a ON a.id = dc.ancestor_id
+        WHERE
+        dc.descendant_id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        GROUP BY
+        dc.descendant_id
+    </select>
+
+    <!-- 按编码批量查询部门（供导入阶段预加载映射） -->
+    <select id="selectActiveByDeptCodes"
+            resultType="com.auth.service.system.admin.model.entity.SysDeptEntity">
+        SELECT
+        d.id,
+        d.parent_id,
+        d.dept_name,
+        d.dept_code,
+        d.status,
+        d.order_num,
+        d.remark,
+        d.created_at,
+        d.updated_at,
+        d.created_by,
+        d.updated_by
+        FROM
+        sys_dept d
+        WHERE
+        d.dept_code IN
+        <foreach collection="deptCodes" item="deptCode" open="(" separator="," close=")">
+            #{deptCode}
+        </foreach>
+    </select>
+
+    <!-- 引用检查：子树内是否存在用户-部门 / 岗位引用 -->
+    <select id="existsSubtreeReference" resultType="boolean">
+        WITH subtree AS (SELECT dc.descendant_id
+                         FROM dept_closure dc
+                         WHERE dc.ancestor_id = #{deptId})
+        SELECT EXISTS (SELECT 1
+                       FROM user_dept ud
+                                INNER JOIN subtree s ON ud.dept_id = s.descendant_id)
+                   OR EXISTS (SELECT 1
+                              FROM sys_post p
+                                       INNER JOIN subtree s ON p.dept_id = s.descendant_id)
+    </select>
+
+    <!-- 引用检查：后代关系（含 depth=0 自身） -->
+    <select id="countDescendantRelation" resultType="long">
+        SELECT COUNT(1)
+        FROM dept_closure dc
+        WHERE dc.ancestor_id = #{ancestorId}
+          AND dc.descendant_id = #{descendantId}
+    </select>
+</mapper>

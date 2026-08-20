@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.auth.service.system.admin.mapper.admin.log.LogLoginLogMapper">
+
+    <!-- 分页查询登录日志 -->
+    <select id="selectListByPage"
+            resultType="com.auth.service.system.admin.model.po.loglogin.LogLoginLogPageRowPO">
+        SELECT
+        ll.id,
+        ll.user_id,
+        ll.username,
+        ll.login_result,
+        ll.login_time,
+        ll.login_region,
+        ll.login_type,
+        ll.created_at,
+        ll.updated_at,
+        ll.created_by,
+        ll.updated_by
+        FROM
+        log_login ll
+        <where>
+            <if test="query.userId != null">
+                AND ll.user_id =
+                #{query.userId}
+            </if>
+            <if test="query.loginResult != null">
+                AND ll.login_result =
+                #{query.loginResult}
+            </if>
+            <if test="query.loginTimeStart != null">
+                AND ll.login_time &gt;=
+                #{query.loginTimeStart}
+            </if>
+            <if test="query.loginTimeEnd != null">
+                AND ll.login_time &lt;=
+                #{query.loginTimeEnd}
+            </if>
+            <if test="query.loginType != null and query.loginType != ''">
+                AND ll.login_type =
+                #{query.loginType}
+            </if>
+        </where>
+        ORDER BY
+        ll.login_time DESC,
+        ll.created_at DESC
+    </select>
+
+</mapper>

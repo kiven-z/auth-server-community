@@ -1,0 +1,8 @@
+# Maven / Docker build context exclusions (auth-server-community root)
+.git
+.idea
+**/.cursor
+**/target
+assets
+*.md
+# CI 产物 build/jars 需进入 runtime 构建上下文，勿忽略 build/
