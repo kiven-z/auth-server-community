@@ -89,8 +89,7 @@ class AuthProfileMaterializationServiceTest {
 		doThrow(new IllegalStateException("redis down")).when(authProfileRedisCache).cacheProfiles(List.of(profile));
 		List<Long> userIds = List.of(1L);
 
-		assertThrows(IllegalStateException.class,
-				() -> authProfileMaterializationService.refreshInBatches(userIds));
+		assertThrows(IllegalStateException.class, () -> authProfileMaterializationService.refreshInBatches(userIds));
 	}
 
 }
