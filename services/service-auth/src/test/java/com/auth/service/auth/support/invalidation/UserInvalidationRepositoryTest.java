@@ -52,4 +52,19 @@ class UserInvalidationRepositoryTest {
 		verify(userMapper, times(3)).selectInvalidationStatesByUserIds(anyList());
 	}
 
+	@Test
+	@DisplayName("用户 ID 超过分片大小时应分批递增 perm_version")
+	void incrementPermVersionInBatches_largeInput_shouldUpdateInChunks() {
+		List<Long> userIds = IntStream.rangeClosed(1, BatchSizes.SIZE_500 * 2 + 200).mapToObj(Long::valueOf).toList();
+		when(userMapper.incrementPermVersionByUserIds(anyList())).thenAnswer(invocation -> {
+			List<Long> chunk = invocation.getArgument(0);
+			return chunk.size();
+		});
+
+		int updated = repository.incrementPermVersionInBatches(userIds);
+
+		assertEquals(BatchSizes.SIZE_500 * 2 + 200, updated);
+		verify(userMapper, times(3)).incrementPermVersionByUserIds(anyList());
+	}
+
 }

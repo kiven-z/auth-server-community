@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -28,7 +27,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Component
-@Transactional(rollbackFor = Exception.class)
 public class FileRecycleCleanupJob {
 
 	private final FileRecycleCleanupProperties properties;
@@ -49,12 +47,11 @@ public class FileRecycleCleanupJob {
 
 		Integer retentionDays = properties.getRetentionDays();
 		Instant cutoff = Instant.now().minus(retentionDays, ChronoUnit.DAYS);
-		int batchSize = BatchSizes.SIZE_500;
 		int total = 0;
 		for (int round = 0; round < properties.getMaxRounds(); round++) {
-			int purged = purgeExpiredBefore(cutoff, batchSize);
+			int purged = purgeExpiredBefore(cutoff);
 			total += purged;
-			if (purged < batchSize) {
+			if (purged < BatchSizes.SIZE_500) {
 				break;
 			}
 		}
@@ -66,14 +63,13 @@ public class FileRecycleCleanupJob {
 	/**
 	 * 清理过期回收站文件
 	 * @param cutoff 截止时间
-	 * @param batchSize 批量大小
 	 * @return 清理数量
 	 */
-	private int purgeExpiredBefore(Instant cutoff, int batchSize) {
-		if (cutoff == null || batchSize < 1) {
-			throw new SystemBusinessException(SystemCommonResultCode.PARAM_REQUIRED, "cutoff/batchSize");
+	private int purgeExpiredBefore(Instant cutoff) {
+		if (cutoff == null) {
+			throw new SystemBusinessException(SystemCommonResultCode.PARAM_REQUIRED, "cutoff");
 		}
-		List<FileRecordEntity> entities = fileRecordMapper.selectExpiredDeleted(cutoff, batchSize);
+		List<FileRecordEntity> entities = fileRecordMapper.selectExpiredDeleted(cutoff, BatchSizes.SIZE_500);
 		if (CollUtil.isEmpty(entities)) {
 			return 0;
 		}

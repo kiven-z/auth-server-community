@@ -1,5 +1,6 @@
 package com.auth.service.auth.support.invalidation;
 
+import com.auth.common.core.constants.BatchSizes;
 import com.auth.module.security.contract.api.authorization.AuthProfile;
 import com.auth.service.auth.support.authorization.AuthProfileRepository;
 import com.auth.service.auth.support.redis.AuthProfileRedisCache;
@@ -11,8 +12,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 /**
@@ -36,7 +40,7 @@ class AuthProfileMaterializationServiceTest {
 		AuthProfile profile = mock(AuthProfile.class);
 		when(authProfileRepository.buildByUserIds(List.of(1L, 2L))).thenReturn(List.of(profile));
 
-		int refreshed = authProfileMaterializationService.refreshInBatches(List.of(1L, 2L), 500);
+		int refreshed = authProfileMaterializationService.refreshInBatches(List.of(1L, 2L));
 
 		assertEquals(1, refreshed);
 		verify(authProfileRepository).buildByUserIds(List.of(1L, 2L));
@@ -48,7 +52,7 @@ class AuthProfileMaterializationServiceTest {
 	void evictInBatches_shouldEvictByBatch() {
 		when(authProfileRedisCache.evictProfiles(List.of(3L, 4L))).thenReturn(2);
 
-		int evicted = authProfileMaterializationService.evictInBatches(List.of(3L, 4L), 500);
+		int evicted = authProfileMaterializationService.evictInBatches(List.of(3L, 4L));
 
 		assertEquals(2, evicted);
 		verify(authProfileRedisCache).evictProfiles(List.of(3L, 4L));
@@ -57,8 +61,35 @@ class AuthProfileMaterializationServiceTest {
 	@Test
 	@DisplayName("空入参时跳过刷新")
 	void refreshInBatches_shouldSkipWhenEmpty() {
-		assertEquals(0, authProfileMaterializationService.refreshInBatches(List.of(), 500));
+		assertEquals(0, authProfileMaterializationService.refreshInBatches(List.of()));
 		verifyNoInteractions(authProfileRepository, authProfileRedisCache);
+	}
+
+	@Test
+	@DisplayName("用户 ID 超过分片大小时应分批刷新")
+	void refreshInBatches_largeInput_shouldRefreshInChunks() {
+		List<Long> userIds = IntStream.rangeClosed(1, BatchSizes.SIZE_500 * 2 + 200).mapToObj(Long::valueOf).toList();
+		when(authProfileRepository.buildByUserIds(anyList())).thenAnswer(invocation -> {
+			List<Long> chunk = invocation.getArgument(0);
+			return List.of(AuthProfile.builder().userId(chunk.get(0)).build());
+		});
+
+		int refreshed = authProfileMaterializationService.refreshInBatches(userIds);
+
+		assertEquals(3, refreshed);
+		verify(authProfileRepository, times(3)).buildByUserIds(anyList());
+		verify(authProfileRedisCache, times(3)).cacheProfiles(anyList());
+	}
+
+	@Test
+	@DisplayName("写入 Redis 失败时应向上抛出")
+	void refreshInBatches_cacheFailure_shouldPropagate() {
+		AuthProfile profile = mock(AuthProfile.class);
+		when(authProfileRepository.buildByUserIds(List.of(1L))).thenReturn(List.of(profile));
+		doThrow(new IllegalStateException("redis down")).when(authProfileRedisCache).cacheProfiles(List.of(profile));
+
+		assertThrows(IllegalStateException.class,
+				() -> authProfileMaterializationService.refreshInBatches(List.of(1L)));
 	}
 
 }

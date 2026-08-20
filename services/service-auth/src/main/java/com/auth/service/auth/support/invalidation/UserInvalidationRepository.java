@@ -57,16 +57,15 @@ public class UserInvalidationRepository {
 	/**
 	 * 分批递增 perm_version
 	 * @param userIds 待递增用户 ID
-	 * @param batchSize 每批大小，须 &gt; 0
 	 * @return 实际更新行数合计
 	 */
-	public int incrementPermVersionInBatches(Collection<Long> userIds, int batchSize) {
-		if (CollUtil.isEmpty(userIds) || batchSize <= 0) {
+	public int incrementPermVersionInBatches(Collection<Long> userIds) {
+		if (CollUtil.isEmpty(userIds)) {
 			return 0;
 		}
 
 		int totalUpdated = 0;
-		for (List<Long> batch : BatchPartition.partitionIds(userIds, batchSize)) {
+		for (List<Long> batch : BatchPartition.partitionIds(userIds, BatchSizes.SIZE_500)) {
 			totalUpdated += userMapper.incrementPermVersionByUserIds(batch);
 		}
 		return totalUpdated;

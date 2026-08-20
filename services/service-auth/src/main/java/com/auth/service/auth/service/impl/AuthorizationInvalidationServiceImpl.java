@@ -1,7 +1,6 @@
 package com.auth.service.auth.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.auth.common.core.constants.BatchSizes;
 import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
 import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
 import com.auth.service.auth.model.command.invalidation.InvalidationCommand;
@@ -41,9 +40,7 @@ public class AuthorizationInvalidationServiceImpl implements AuthorizationInvali
 	private final AuthProfileMaterializationService authProfileMaterializationService;
 
 	/**
-	 * 执行授权失效流水线
-	 * @param request 统一失效请求
-	 * @return 执行结果摘要
+	 * {@inheritDoc}
 	 */
 	@Override
 	public AuthorizationInvalidateResponse invalidate(AuthorizationInvalidateRequest request) {
@@ -88,16 +85,17 @@ public class AuthorizationInvalidationServiceImpl implements AuthorizationInvali
 			Set<Long> evictOnlyUserIds = buckets.evictOnlyUserIds();
 			Set<Long> versionBumpUserIds = buckets.versionBumpUserIds();
 
-			int batchSize = BatchSizes.SIZE_500;
+			int versionBumpedCount = 0;
+			int profileRefreshedCount = 0;
+			if (CollUtil.isNotEmpty(versionBumpUserIds)) {
+				versionBumpedCount = userInvalidationRepository.incrementPermVersionInBatches(versionBumpUserIds);
+				profileRefreshedCount = authProfileMaterializationService.refreshInBatches(versionBumpUserIds);
+			}
 
-			// 分批递增版本
-			int versionBumpedCount = userInvalidationRepository.incrementPermVersionInBatches(versionBumpUserIds,
-					batchSize);
-			int profileRefreshedCount = authProfileMaterializationService.refreshInBatches(versionBumpUserIds,
-					batchSize);
-
-			// 分批驱逐画像
-			int profileEvictedCount = authProfileMaterializationService.evictInBatches(evictOnlyUserIds, batchSize);
+			int profileEvictedCount = 0;
+			if (CollUtil.isNotEmpty(evictOnlyUserIds)) {
+				profileEvictedCount = authProfileMaterializationService.evictInBatches(evictOnlyUserIds);
+			}
 
 			// 构建执行结果
 			int impactedUserCount = impactedUserIds.size();
