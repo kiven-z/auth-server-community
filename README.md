@@ -1,13 +1,13 @@
 # auth-server-community
 
 Auth 管理后台 **Community Edition** 后端仓库。基于 Spring Boot 3.5、Spring Cloud 2025、Spring Cloud Alibaba
-构建，提供鉴权、网关限流与系统业务能力。
+构建，提供鉴权与系统业务能力。
 
 配套前端：[auth-web-community](https://github.com/kiven-z/auth-web-community)。
 
 ## Community Edition 说明
 
-本仓库为开源社区版，与闭源完整版共享同一套数据库 schema 与核心代码结构，便于问题修复双向合并。部分高级能力将在后续版本中从对外入口层裁剪；表结构与底层服务代码现阶段保持对齐。
+本仓库为开源社区版，与闭源完整版共享同一套数据库 schema 与核心代码结构，便于问题修复双向合并。
 
 ## 技术栈
 
@@ -51,25 +51,12 @@ auth-server-community
 ## 环境要求
 
 - JDK 17+
-- Maven 3.9+（或使用仓库内 `./mvnw`）
-- MySQL 9.x、Redis、Nacos（本地开发可用 Docker Compose 拉起中间件）
-- 可选：MinIO、ip2region xdb 文件（见 `docker/compose.yml` 注释）
+- Maven 3.9+
+- MySQL 9.x、Redis、Nacos
+- MinIO/Aliyun OSS,
+- （可选）ip2region xdb 文件
 
 ## 快速开始
-
-```bash
-# 编译（默认 dev profile）
-./mvnw -T 1C clean install -DskipTests
-
-# 单服务运行（以 service-system 为例）
-cd services/service-system/service-system-bootstrap
-../../mvnw spring-boot:run
-
-# 切换 profile
-./mvnw -P prod clean package
-```
-
-默认服务端口：
 
 | 服务             | 端口    |
 |----------------|-------|
@@ -95,7 +82,7 @@ export IMAGE_TAG=latest
 
 ## 代码规范
 
-- 遵循《阿里巴巴 Java 开发手册（泰山版）》与 SonarQube Quality Gate。
+- 遵循 SonarQube Quality Gate。
 - 代码格式：`./spring-format.sh`（spring-javaformat + Spotless）。
 
 ## 赞助
