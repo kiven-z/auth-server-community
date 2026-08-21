@@ -98,8 +98,26 @@ export IMAGE_TAG=latest
 - 遵循《阿里巴巴 Java 开发手册（泰山版）》与 SonarQube Quality Gate。
 - 代码格式：`./spring-format.sh`（spring-javaformat + Spotless）。
 
+## 赞助
+
+如果这个项目对你有帮助，欢迎打赏支持。
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="./donate/WeChatPay.jpg" width="220" alt="微信" /><br/>
+      微信
+    </td>
+    <td align="center">
+      <img src="./donate/AliPay.jpg" width="220" alt="支付宝" /><br/>
+      支付宝
+    </td>
+  </tr>
+</table>
+
 ## 许可证
 
 Copyright 2024-2026 Bunny。
 
 本仓库基于 [Apache License 2.0](./LICENSE) 发布。
+
