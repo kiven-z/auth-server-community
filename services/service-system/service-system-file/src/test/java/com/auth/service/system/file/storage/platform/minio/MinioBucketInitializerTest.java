@@ -43,9 +43,9 @@ class MinioBucketInitializerTest {
 	@BeforeEach
 	void setUp() {
 		FileUploadProperties properties = new FileUploadProperties();
-		properties.getMinio().setBucket(BUCKET);
 		when(clientManager.getClient(StoragePlatformEnum.MINIO)).thenReturn(s3Client);
-		initializer = new MinioBucketInitializer(S3PlatformProfileResolverFixtures.defaultResolver(properties),
+		initializer = new MinioBucketInitializer(
+				S3PlatformProfileResolverFixtures.resolverWithMinio(properties, "http://127.0.0.1:9000", BUCKET),
 				clientManager, new S3ExceptionClassifier());
 	}
 

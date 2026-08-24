@@ -31,9 +31,6 @@ public class DingTalkProperties implements MessageChannelCapability {
 	private boolean enabled = true;
 
 	@Nullable
-	private String appId;
-
-	@Nullable
 	private Long agentId;
 
 	@Nullable

@@ -2,6 +2,7 @@ package com.auth.service.system.file.storage.core.provider;
 
 import com.auth.module.file.api.model.enums.StoragePlatformEnum;
 import com.auth.service.system.file.config.properties.FileUploadProperties;
+import com.auth.service.system.file.config.properties.S3PlatformProfile;
 import com.auth.service.system.file.exception.FileStorageException;
 import com.auth.service.system.file.model.value.FileUploadCommand;
 import com.auth.service.system.file.model.value.StoredFile;
@@ -82,11 +83,8 @@ class S3CompatibleFileStorageProviderTest {
 		headObjectExistence.clear();
 		headObjectStubRegistered = false;
 		FileUploadProperties properties = new FileUploadProperties();
-		properties.getMinio().setEndpoint("http://127.0.0.1:9000");
-		properties.getMinio().setAccessKey("ak");
-		properties.getMinio().setSecretKey("sk");
-		properties.getMinio().setBucket(BUCKET);
-		profileResolver = S3PlatformProfileResolverFixtures.defaultResolver(properties);
+		profileResolver = S3PlatformProfileResolverFixtures.resolverWithMinio(properties, "http://127.0.0.1:9000",
+				BUCKET);
 		provider = new S3CompatibleFileStorageProvider(PLATFORM, profileResolver, clientManager, configValidator,
 				classifier);
 	}
@@ -295,11 +293,15 @@ class S3CompatibleFileStorageProviderTest {
 	void resolvePublicUrl_preferConfiguredDomain() {
 		// 验证有 publicUrl 时不再走 endpoint 拼接。
 		FileUploadProperties properties = new FileUploadProperties();
-		properties.getMinio().setEndpoint("http://127.0.0.1:9000");
-		properties.getMinio().setAccessKey("ak");
-		properties.getMinio().setSecretKey("sk");
-		properties.getMinio().setBucket(BUCKET);
-		properties.getMinio().setPublicUrl("https://cdn.example.com/assets");
+		S3PlatformProfile profile = new S3PlatformProfile();
+		profile.setEndpoint("http://127.0.0.1:9000");
+		profile.setRegion("us-east-1");
+		profile.setAccessKey("ak");
+		profile.setSecretKey("sk");
+		profile.setBucket(BUCKET);
+		profile.setPublicUrl("https://cdn.example.com/assets");
+		profile.setPathStyleAccess(true);
+		properties.getPlatforms().put(StoragePlatformEnum.MINIO, profile);
 		profileResolver = S3PlatformProfileResolverFixtures.defaultResolver(properties);
 		provider = new S3CompatibleFileStorageProvider(PLATFORM, profileResolver, clientManager, configValidator,
 				classifier);
@@ -313,11 +315,8 @@ class S3CompatibleFileStorageProviderTest {
 	@DisplayName("resolvePublicUrl：阿里云 virtual-hosted 回退拼 bucket.endpoint")
 	void resolvePublicUrl_aliyunVirtualHostedFallback() {
 		FileUploadProperties properties = new FileUploadProperties();
-		properties.getAliyunOss().setEndpoint("oss-cn-shanghai.aliyuncs.com");
-		properties.getAliyunOss().setAccessKeyId("ak");
-		properties.getAliyunOss().setAccessKeySecret("sk");
-		properties.getAliyunOss().setBucket("bunny-auth");
-		profileResolver = S3PlatformProfileResolverFixtures.defaultResolver(properties);
+		profileResolver = S3PlatformProfileResolverFixtures.resolverWithAliyunOss(properties,
+				"oss-cn-shanghai.aliyuncs.com", "bunny-auth");
 		provider = new S3CompatibleFileStorageProvider(StoragePlatformEnum.ALIYUN_OSS, profileResolver, clientManager,
 				configValidator, classifier);
 

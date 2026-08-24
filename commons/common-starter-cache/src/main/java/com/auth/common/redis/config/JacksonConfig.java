@@ -9,7 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,12 +19,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
 /**
- * Jackson 序列化/反序列化配置类 注意：如果要禁用可以使用：common.redis.config.enabled，没有设置默认为启用
+ * Redis 专用 ObjectMapper（日期格式与 UTC 时区）
  *
  * @author Bunny
  */
 @Slf4j
-@ConditionalOnBooleanProperty(prefix = "auth.common.redis.jackson", name = "enabled", matchIfMissing = true)
 @Configuration
 public class JacksonConfig {
 

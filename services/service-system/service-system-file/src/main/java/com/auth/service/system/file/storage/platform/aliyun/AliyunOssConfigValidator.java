@@ -27,6 +27,7 @@ public class AliyunOssConfigValidator implements StoragePlatformConfigValidator 
 	public void validateOrThrow() {
 		S3PlatformProfile profile = profileResolver.resolve(StoragePlatformEnum.ALIYUN_OSS);
 		assertNotBlank(profile.getEndpoint(), CONFIG_PREFIX + ".endpoint");
+		assertNotBlank(profile.getRegion(), CONFIG_PREFIX + ".region");
 		assertNotBlank(profile.getAccessKey(), CONFIG_PREFIX + ".access-key");
 		assertNotBlank(profile.getSecretKey(), CONFIG_PREFIX + ".secret-key");
 		assertNotBlank(profile.getBucket(), CONFIG_PREFIX + ".bucket");

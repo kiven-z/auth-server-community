@@ -11,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -26,7 +25,6 @@ import org.springframework.context.annotation.Import;
  */
 @Slf4j
 @AutoConfiguration(before = { WebMvcAutoConfiguration.class })
-@ConditionalOnBooleanProperty(prefix = "auth.common.web", name = "enabled", matchIfMissing = true)
 @EnableConfigurationProperties()
 @Import({ ControllerStringParamTrimConfig.class, WebConfig.class,
 		// 导入异常处理器

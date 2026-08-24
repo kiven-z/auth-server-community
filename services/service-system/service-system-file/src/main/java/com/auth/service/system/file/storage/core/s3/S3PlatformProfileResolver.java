@@ -9,13 +9,10 @@ import com.auth.service.system.file.exception.FileUploadResultCode;
 import com.auth.service.system.file.utils.StorageUrlUtil;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 
 /**
- * S3 协议配置解析器：优先读取 platforms 显式配置，缺省时委托平台来源适配
+ * S3 协议配置解析器：仅读取 {@code auth.file.platforms}
  *
  * @author Bunny
  */
@@ -24,21 +21,8 @@ public class S3PlatformProfileResolver {
 
 	private final FileUploadProperties fileUploadProperties;
 
-	private final Map<StoragePlatformEnum, S3PlatformProfileSource> sourceByPlatform;
-
-	public S3PlatformProfileResolver(FileUploadProperties fileUploadProperties,
-			List<S3PlatformProfileSource> profileSources) {
+	public S3PlatformProfileResolver(FileUploadProperties fileUploadProperties) {
 		this.fileUploadProperties = fileUploadProperties;
-		Map<StoragePlatformEnum, S3PlatformProfileSource> mutableSourceByPlatform = new EnumMap<>(
-				StoragePlatformEnum.class);
-		for (S3PlatformProfileSource profileSource : profileSources) {
-			StoragePlatformEnum platform = profileSource.platform();
-			S3PlatformProfileSource previousSource = mutableSourceByPlatform.put(platform, profileSource);
-			if (previousSource != null) {
-				throw new FileStorageException(FileUploadResultCode.FILE_STORAGE_PLATFORM_DUPLICATED, platform.name());
-			}
-		}
-		this.sourceByPlatform = Collections.unmodifiableMap(mutableSourceByPlatform);
 	}
 
 	/**
@@ -48,9 +32,6 @@ public class S3PlatformProfileResolver {
 	 */
 	public S3PlatformProfile resolve(StoragePlatformEnum platform) {
 		S3PlatformProfile raw = resolveRaw(platform);
-		if (raw == null) {
-			return null;
-		}
 		S3PlatformProfile profile = raw.copy();
 		if (CharSequenceUtil.isBlank(profile.getEndpoint())) {
 			return profile;
@@ -60,23 +41,17 @@ public class S3PlatformProfileResolver {
 	}
 
 	/**
-	 * 解析原始平台配置：platforms 优先，否则走平台来源适配
+	 * 解析原始平台配置
 	 * @param platform 存储平台
 	 * @return 未经规范化的配置（可能是 Spring 绑定实例，勿直接改写）
 	 */
 	private S3PlatformProfile resolveRaw(StoragePlatformEnum platform) {
 		Map<StoragePlatformEnum, S3PlatformProfile> platforms = fileUploadProperties.getPlatforms();
-		if (platforms != null) {
-			S3PlatformProfile profile = platforms.get(platform);
-			if (profile != null) {
-				return profile;
-			}
+		S3PlatformProfile profile = platforms == null ? null : platforms.get(platform);
+		if (profile == null) {
+			throw new FileStorageException(FileUploadResultCode.FILE_STORAGE_CONFIG_MISSING, platform.name());
 		}
-		S3PlatformProfileSource profileSource = sourceByPlatform.get(platform);
-		if (profileSource == null) {
-			throw new FileStorageException(FileUploadResultCode.FILE_STORAGE_PLATFORM_UNSUPPORTED, platform.name());
-		}
-		return profileSource.resolveFallback(fileUploadProperties);
+		return profile;
 	}
 
 }

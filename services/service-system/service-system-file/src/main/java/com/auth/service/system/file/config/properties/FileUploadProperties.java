@@ -1,8 +1,6 @@
 package com.auth.service.system.file.config.properties;
 
 import com.auth.module.file.api.model.enums.StoragePlatformEnum;
-import com.auth.service.system.file.config.properties.platform.AliyunOssStorageProperties;
-import com.auth.service.system.file.config.properties.platform.MinioStorageProperties;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -34,12 +32,8 @@ public class FileUploadProperties {
 	@NotNull(message = "默认上传平台不能为空")
 	private StoragePlatformEnum defaultPlatform = StoragePlatformEnum.MINIO;
 
-	private MinioStorageProperties minio = new MinioStorageProperties();
-
-	private AliyunOssStorageProperties aliyunOss = new AliyunOssStorageProperties();
-
 	/**
-	 * S3 协议统一配置表：新配置写这里；不配置时由 minio / aliyunOss 自动适配
+	 * S3 协议统一配置表（按平台枚举名）；缺省平台在使用时校验失败
 	 */
 	private Map<StoragePlatformEnum, S3PlatformProfile> platforms = new EnumMap<>(StoragePlatformEnum.class);
 

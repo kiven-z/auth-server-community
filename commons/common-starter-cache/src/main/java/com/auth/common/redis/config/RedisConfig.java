@@ -3,7 +3,6 @@ package com.auth.common.redis.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBooleanProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -13,12 +12,11 @@ import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
- * 注意：如果要禁用可以使用：common.redis.config.enabled，没有设置默认为启用
+ * RedisTemplate 装配（String key + JSON value；会话索引另用纯字符串模板）
  *
  * @author Bunny
  */
 @Slf4j
-@ConditionalOnBooleanProperty(prefix = "auth.common.redis.config", name = "enabled", matchIfMissing = true)
 @Configuration
 public class RedisConfig {
 

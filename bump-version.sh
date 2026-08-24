@@ -28,7 +28,7 @@ EOF
 
 reject_release_flags() {
   echo "错误: 本脚本不发布 GitHub Release（不支持 $1）。" >&2
-  echo "打包上传请用产品目录下 assets/upload-community-kit-release.sh" >&2
+  echo "打包上传请用 Auth/assets/upload-kit-release.sh community <tag> --create --upload" >&2
   exit 1
 }
 

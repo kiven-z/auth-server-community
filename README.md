@@ -3,27 +3,9 @@
 Auth 管理后台 **Community Edition** 后端仓库。基于 Spring Boot 3.5、Spring Cloud 2025、Spring Cloud Alibaba
 构建，提供鉴权与系统业务能力。
 
-配套前端：[auth-web-community](https://github.com/kiven-z/auth-web-community)。
+配套前端：[auth-web-community](https://github.com/kiven-z/auth-web-community)
 
-## Community Edition 说明
-
-本仓库为开源社区版，与闭源完整版共享同一套数据库 schema 与核心代码结构，便于问题修复双向合并。
-
-## 技术栈
-
-| 类别      | 选型                                                                      |
-|---------|-------------------------------------------------------------------------|
-| 运行时     | JDK 17                                                                  |
-| 框架      | Spring Boot 3.5.x、Spring Cloud 2025.0.0、Spring Cloud Alibaba 2025.0.0.0 |
-| 构建      | Apache Maven 3.9.x（CI-friendly `${revision}`）                           |
-| 持久层     | MyBatis-Plus 3.5、HikariCP、dynamic-datasource                            |
-| 数据库     | MySQL 9.x                                                               |
-| 缓存/会话   | Redis（验证码、限流）                                                           |
-| 注册/配置中心 | Nacos                                                                   |
-| 对象存储    | AWS SDK v2（S3 协议），本地推荐 MinIO                                            |
-| 鉴权      | JJWT 0.12、自研 Security 二次封装                                              |
-| 文档      | springdoc-openapi 2.8                                                   |
-| 工具      | Hutool、MapStruct、EasyExcel、Quartz、ip2region、yauaa                       |
+配套文档：https://github.com/kiven-z/auth-docs
 
 ## 模块结构
 

@@ -2,6 +2,7 @@ package com.auth.service.system.file.storage.core.provider;
 
 import com.auth.module.file.api.model.enums.StoragePlatformEnum;
 import com.auth.service.system.file.config.properties.FileUploadProperties;
+import com.auth.service.system.file.config.properties.S3PlatformProfile;
 import com.auth.service.system.file.exception.FileStorageException;
 import com.auth.service.system.file.exception.FileUploadResultCode;
 import com.auth.service.system.file.storage.S3PlatformProfileResolverFixtures;
@@ -84,10 +85,14 @@ class S3ClientManagerTest {
 
 	private S3ClientManager buildConfiguredManager() {
 		FileUploadProperties properties = new FileUploadProperties();
-		properties.getMinio().setEndpoint(MINIO_ENDPOINT);
-		properties.getMinio().setAccessKey(ACCESS_KEY);
-		properties.getMinio().setSecretKey(SECRET_KEY);
-		properties.getMinio().setBucket(BUCKET);
+		S3PlatformProfile profile = new S3PlatformProfile();
+		profile.setEndpoint(MINIO_ENDPOINT);
+		profile.setRegion("us-east-1");
+		profile.setAccessKey(ACCESS_KEY);
+		profile.setSecretKey(SECRET_KEY);
+		profile.setBucket(BUCKET);
+		profile.setPathStyleAccess(true);
+		properties.getPlatforms().put(StoragePlatformEnum.MINIO, profile);
 		return new S3ClientManager(S3PlatformProfileResolverFixtures.defaultResolver(properties));
 	}
 

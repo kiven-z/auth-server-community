@@ -43,11 +43,9 @@ class AliyunOssBucketInitializerTest {
 	@BeforeEach
 	void setUp() {
 		FileUploadProperties properties = new FileUploadProperties();
-		properties.getAliyunOss().setBucket(BUCKET);
-		properties.getAliyunOss().setEndpoint("https://oss-cn-hangzhou.aliyuncs.com");
 		when(clientManager.getClient(StoragePlatformEnum.ALIYUN_OSS)).thenReturn(s3Client);
-		initializer = new AliyunOssBucketInitializer(S3PlatformProfileResolverFixtures.defaultResolver(properties),
-				clientManager, new S3ExceptionClassifier());
+		initializer = new AliyunOssBucketInitializer(S3PlatformProfileResolverFixtures.resolverWithAliyunOss(properties,
+				"https://oss-cn-hangzhou.aliyuncs.com", BUCKET), clientManager, new S3ExceptionClassifier());
 	}
 
 	@Test
