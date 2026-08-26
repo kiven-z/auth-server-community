@@ -7,7 +7,7 @@ name: auth-app
 #   IMAGE_TAG                 例：community-latest、community-<sha> 或 local（本地构建，默认 local）
 #   SPRING_PROFILES_ACTIVE    Spring / Nacos 命名空间 profile（默认 dev；生产写 prod）
 #
-# 远程部署：只放本文件 + env（或复制 docker/.env.example 为 docker/.env）；先 docker login 再：
+# 远程部署：本文件 + docker/.env；先 docker login 再：
 #   export IMAGE_PREFIX=registry.cn-hangzhou.aliyuncs.com/kiven-z-auth
 #   export IMAGE_TAG=community-latest
 #   export SPRING_PROFILES_ACTIVE=prod
@@ -34,8 +34,6 @@ services:
   service-system:
     image: ${IMAGE_PREFIX:-auth}/service-system:${IMAGE_TAG:-local}
     container_name: service-system
-    env_file:
-      - ./env/service-system.env
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
       SPRING_CLOUD_NACOS_SERVER_ADDR: nacos:8848
@@ -56,7 +54,6 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
       SPRING_CLOUD_NACOS_SERVER_ADDR: nacos:8848
-      SERVER_PORT: 8080
       JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -XX:InitialRAMPercentage=40.0 -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -Duser.timezone=UTC"
     mem_limit: 1536m
     mem_reservation: 384m

@@ -41,7 +41,3 @@ logs/
 ipdb/
 assets/
 docker/.env
-docker/env/*.env
-docker/env/**/*.env
-!docker/env/*.env.example
-!docker/env/**/*.env.example

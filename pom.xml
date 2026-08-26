@@ -288,13 +288,6 @@
                 <profiles.active>prod</profiles.active>
             </properties>
         </profile>
-        <!--docker compose 部署-->
-        <profile>
-            <id>docker</id>
-            <properties>
-                <profiles.active>docker</profiles.active>
-            </properties>
-        </profile>
     </profiles>
 
     <build>

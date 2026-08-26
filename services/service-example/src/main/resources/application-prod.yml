@@ -1,23 +1,4 @@
-server:
-  port: 22009
-  tomcat:
-    threads:
-      max: 120
-      min-spare: 10
-    accept-count: 100
-    max-connections: 2000
-
 spring:
-  threads:
-    virtual:
-      enabled: true
-
   cloud:
     nacos:
       server-addr: nacos:8848
-
-logging:
-  level:
-    root: warn
-    com.auth: info
-    org.springframework: warn

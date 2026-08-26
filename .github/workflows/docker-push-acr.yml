@@ -15,7 +15,7 @@ name: Build and push auth-server-community to ACR
 
 on:
   push:
-    tags: ["v*"]
+    branches: [main]
   workflow_dispatch:
 
 env:
@@ -39,7 +39,7 @@ jobs:
         run: |
           mvn -B \
             -pl services/service-auth,services/service-system/service-system-bootstrap,auth-gateway \
-            -am package -Pdocker -DskipTests
+            -am package -DskipTests
 
       - name: Stage jars
         run: |

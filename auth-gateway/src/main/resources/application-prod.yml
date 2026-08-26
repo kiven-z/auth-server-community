@@ -1,25 +1,4 @@
-server:
-  port: 8080
-
 spring:
   cloud:
     nacos:
       server-addr: nacos:8848
-
-logging:
-  level:
-    root: warn
-    com.auth: info
-    org.springframework: warn
-    reactor.netty: warn
-
-# JWT 校验（JwtValidateGlobalFilter）。路由仍在 application-route.yml。
-# 轻校验：无 Token / 过期放行，非法拒绝。严格路径：无 Token / 过期 / 非法一律拒绝。
-auth:
-  gateway:
-    security:
-      strict-enabled: false
-      strict-patterns: []
-      # strict-patterns:
-      #   - /api/system/admin/**
-      #   - /api/auth/session/**
