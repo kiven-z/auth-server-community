@@ -84,12 +84,12 @@ class ChannelDefaultsEnricherTest {
 	void enrich_mergesRequestOverDefaults() {
 		MessageTemplateEntity template = new MessageTemplateEntity();
 		template.setChannelDefaultsJson("{\"categoryId\":104,\"linkUrl\":\"/from-template\"}");
-		when(messageTemplateLoader.loadEnabled(MessageChannel.IN_APP, "file-export-success")).thenReturn(template);
+		when(messageTemplateLoader.loadEnabled(MessageChannel.IN_APP, "in-app-sys-notice")).thenReturn(template);
 		InAppChannelOptions request = new InAppChannelOptions();
 		request.setLinkUrl("/from-request");
 		TemplateMessageCommand command = TemplateMessageCommand.builder()
 			.channel(MessageChannel.IN_APP)
-			.templateCode("file-export-success")
+			.templateCode("in-app-sys-notice")
 			.targets(List.of("1"))
 			.options(request)
 			.build();
@@ -105,7 +105,7 @@ class ChannelDefaultsEnricherTest {
 	@DisplayName("请求无 options：整份使用模板默认")
 	void enrich_nullRequest_usesDefaults() {
 		MessageTemplateEntity template = new MessageTemplateEntity();
-		template.setChannelDefaultsJson("{\"categoryId\":104,\"linkUrl\":\"/personal/export-task\"}");
+		template.setChannelDefaultsJson("{\"categoryId\":104,\"linkUrl\":\"/personal/inbox\"}");
 		when(messageTemplateLoader.loadEnabled(MessageChannel.IN_APP, "notice")).thenReturn(template);
 		TemplateMessageCommand command = TemplateMessageCommand.builder()
 			.channel(MessageChannel.IN_APP)
@@ -117,7 +117,7 @@ class ChannelDefaultsEnricherTest {
 
 		InAppChannelOptions merged = (InAppChannelOptions) command.getOptions();
 		assertThat(merged.getCategoryId()).isEqualTo(104L);
-		assertThat(merged.getLinkUrl()).isEqualTo("/personal/export-task");
+		assertThat(merged.getLinkUrl()).isEqualTo("/personal/inbox");
 	}
 
 	@Test

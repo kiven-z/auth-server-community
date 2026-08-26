@@ -9,7 +9,7 @@ Auth 管理后台 **Community Edition** 后端仓库。基于 Spring Boot 3.5、
 
 ## 模块结构
 
-``` 
+```
 auth-server-community
 ├── commons/                 # 公共基础库
 │   ├── common-core
@@ -46,26 +46,15 @@ auth-server-community
 | service-auth   | 20001 |
 | service-system | 20002 |
 
-## 容器化部署
-
-`docker/` 提供运行时 compose 与本地构建 override：
-
-```bash
-cd docker
-./dockerctl.sh dev build-up    # 本地构建并启动
-
-# 使用远程镜像仓库（需先 docker login）
-export IMAGE_PREFIX=ghcr.io/<your-org>
-export IMAGE_TAG=latest
-./dockerctl.sh prod up
-```
-
-变量与挂载说明见 `docker/compose.yml` 顶部注释。
-
 ## 代码规范
 
 - 遵循 SonarQube Quality Gate。
 - 代码格式：`./spring-format.sh`（spring-javaformat + Spotless）。
+
+```bash
+# 开始项目前执行
+git config core.hooksPath .githooks
+```
 
 ## 赞助
 
@@ -89,4 +78,3 @@ export IMAGE_TAG=latest
 Copyright 2024-2026 Bunny。
 
 本仓库基于 [Apache License 2.0](./LICENSE) 发布。
-

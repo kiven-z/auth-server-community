@@ -38,13 +38,13 @@ class ChannelDefaultsJsonSupportTest {
 	@Test
 	@DisplayName("parse：无 type 的站内信 JSON 能读出小类与跳转")
 	void parse_inAppWithoutType() {
-		String json = "{\"linkUrl\":\"/personal/export-task\",\"categoryId\":104}";
+		String json = "{\"linkUrl\":\"/personal/inbox\",\"categoryId\":104}";
 
 		InAppChannelOptions options = (InAppChannelOptions) ChannelDefaultsJsonSupport.parse(MessageChannel.IN_APP,
 				json);
 
 		assertThat(options.getCategoryId()).isEqualTo(104L);
-		assertThat(options.getLinkUrl()).isEqualTo("/personal/export-task");
+		assertThat(options.getLinkUrl()).isEqualTo("/personal/inbox");
 	}
 
 	@Test
@@ -59,11 +59,11 @@ class ChannelDefaultsJsonSupportTest {
 	@Test
 	@DisplayName("toInAppJson/parseInApp：往返保留小类与跳转，空白链接省略")
 	void toInAppJson_parseInApp_roundTrip() {
-		String json = ChannelDefaultsJsonSupport.toInAppJson(104L, " /personal/export-task ");
+		String json = ChannelDefaultsJsonSupport.toInAppJson(104L, " /personal/inbox ");
 		InAppChannelDefaults defaults = ChannelDefaultsJsonSupport.parseInApp(json);
 
 		assertThat(defaults.getCategoryId()).isEqualTo(104L);
-		assertThat(defaults.getLinkUrl()).isEqualTo("/personal/export-task");
+		assertThat(defaults.getLinkUrl()).isEqualTo("/personal/inbox");
 		assertThat(json).doesNotContain("title");
 
 		String withoutLink = ChannelDefaultsJsonSupport.toInAppJson(104L, "  ");

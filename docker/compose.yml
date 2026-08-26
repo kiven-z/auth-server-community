@@ -3,17 +3,12 @@ name: auth-app
 # 运行时定义（本地 / 服务器同一份）。不含 build，可单独拷到任意目录启动。
 #
 # 变量：
-#   AUTH_ENV                  Spring profile（dockerctl 会设置）
-#   AUTH_ENV_FILE             密钥文件（默认 ./env/service-system.env，仅 service-system 注入）
-#   IMAGE_PREFIX              镜像仓库前缀，例：ghcr.io/<your-org>（默认 auth，本地构建）
-#   IMAGE_TAG                 例：latest 或 local（本地构建）
-#   SPRING_CLOUD_NACOS_SERVER_ADDR  默认 nacos:8848
-#   AUTH_IPDB_HOST_PATH            宿主机 ip2region 目录（默认 /opt/ipdb），挂到容器 /opt/ipdb
+#   IMAGE_PREFIX              镜像仓库前缀，例：registry.cn-hangzhou.aliyuncs.com/kiven-z-auth（默认 auth，本地构建）
+#   IMAGE_TAG                 例：community-latest、community-<sha> 或 local（本地构建，默认 local）
 #
-# 本地构建请用 compose.override.yml（dockerctl build / build-up 会自动叠加）。
-# 远程部署：只放本文件 + env，不要带 override；先 docker login 再：
-#   export IMAGE_PREFIX=ghcr.io/<your-org> IMAGE_TAG=latest
-#   ./dockerctl.sh prod up
+# 远程部署：只放本文件 + env（或复制 docker/.env.example 为 docker/.env）；先 docker login 再：
+#   export IMAGE_PREFIX=registry.cn-hangzhou.aliyuncs.com/kiven-z-auth
+#   export IMAGE_TAG=community-latest
 # 宿主机需准备：/opt/ipdb/ip2region_v4.xdb、ip2region_v6.xdb（与 Nacos auth.common.ip-tool 路径一致）
 
 services:
@@ -21,13 +16,13 @@ services:
     image: ${IMAGE_PREFIX:-auth}/service-auth:${IMAGE_TAG:-local}
     container_name: service-auth
     environment:
-      SPRING_PROFILES_ACTIVE: ${AUTH_ENV:-dev}
-      SPRING_CLOUD_NACOS_SERVER_ADDR: ${SPRING_CLOUD_NACOS_SERVER_ADDR:-nacos:8848}
-      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS:--XX:MaxRAMPercentage=70.0 -XX:InitialRAMPercentage=40.0 -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -Duser.timezone=UTC}
-    mem_limit: ${AUTH_MEM_LIMIT_AUTH:-1536m}
-    mem_reservation: ${AUTH_MEM_RESERVATION_AUTH:-384m}
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_NACOS_SERVER_ADDR: nacos:8848
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -XX:InitialRAMPercentage=40.0 -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -Duser.timezone=UTC"
+    mem_limit: 1536m
+    mem_reservation: 384m
     volumes:
-      - ${AUTH_IPDB_HOST_PATH:-/opt/ipdb}:/opt/ipdb:ro
+      - /opt/ipdb:/opt/ipdb:ro
     ports:
       - "20001:20001"
     restart: unless-stopped
@@ -38,15 +33,15 @@ services:
     image: ${IMAGE_PREFIX:-auth}/service-system:${IMAGE_TAG:-local}
     container_name: service-system
     env_file:
-      - ${AUTH_ENV_FILE:-./env/service-system.env}
+      - ./env/service-system.env
     environment:
-      SPRING_PROFILES_ACTIVE: ${AUTH_ENV:-dev}
-      SPRING_CLOUD_NACOS_SERVER_ADDR: ${SPRING_CLOUD_NACOS_SERVER_ADDR:-nacos:8848}
-      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS:--XX:MaxRAMPercentage=70.0 -XX:InitialRAMPercentage=40.0 -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -Duser.timezone=UTC}
-    mem_limit: ${AUTH_MEM_LIMIT_SYSTEM:-1536m}
-    mem_reservation: ${AUTH_MEM_RESERVATION_SYSTEM:-384m}
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_NACOS_SERVER_ADDR: nacos:8848
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -XX:InitialRAMPercentage=40.0 -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -Duser.timezone=UTC"
+    mem_limit: 1536m
+    mem_reservation: 384m
     volumes:
-      - ${AUTH_IPDB_HOST_PATH:-/opt/ipdb}:/opt/ipdb:ro
+      - /opt/ipdb:/opt/ipdb:ro
     ports:
       - "20002:20002"
     restart: unless-stopped
@@ -57,14 +52,14 @@ services:
     image: ${IMAGE_PREFIX:-auth}/auth-gateway:${IMAGE_TAG:-local}
     container_name: auth-gateway
     environment:
-      SPRING_PROFILES_ACTIVE: ${AUTH_ENV:-dev}
-      SPRING_CLOUD_NACOS_SERVER_ADDR: ${SPRING_CLOUD_NACOS_SERVER_ADDR:-nacos:8848}
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_NACOS_SERVER_ADDR: nacos:8848
       SERVER_PORT: 8080
-      JAVA_TOOL_OPTIONS: ${JAVA_TOOL_OPTIONS:--XX:MaxRAMPercentage=70.0 -XX:InitialRAMPercentage=40.0 -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -Duser.timezone=UTC}
-    mem_limit: ${AUTH_MEM_LIMIT_GATEWAY:-1536m}
-    mem_reservation: ${AUTH_MEM_RESERVATION_GATEWAY:-384m}
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -XX:InitialRAMPercentage=40.0 -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -Duser.timezone=UTC"
+    mem_limit: 1536m
+    mem_reservation: 384m
     volumes:
-      - ${AUTH_IPDB_HOST_PATH:-/opt/ipdb}:/opt/ipdb:ro
+      - /opt/ipdb:/opt/ipdb:ro
     ports:
       - "8080:8080"
     restart: unless-stopped

@@ -1,0 +1,115 @@
+# 将业务镜像构建并推送到阿里云容器镜像服务 ACR（个人版 / 企业版均可）
+# 使用前在仓库 Settings → Secrets 配置：
+#   ACR_REGISTRY   例：registry.cn-hangzhou.aliyuncs.com
+#   ACR_NAMESPACE  例：kiven-z-auth
+#   ACR_USERNAME   镜像仓库登录名
+#   ACR_PASSWORD   镜像仓库登录密码 / 临时令牌
+#
+# 流程：同一 runner 内 Maven 只编一次 → 串行推三个 runtime 镜像（不上传 Actions Artifact）
+#
+# 推送结果示例：
+#   registry.cn-hangzhou.aliyuncs.com/kiven-z-auth/service-auth:community-<sha>
+#   registry.cn-hangzhou.aliyuncs.com/kiven-z-auth/service-auth:community-latest
+
+name: Build and push auth-server-community to ACR
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+env:
+  IMAGE_TAG_PREFIX: community
+  JAVA_VERSION: "17"
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Package all services (once)
+        run: |
+          mvn -B \
+            -pl services/service-auth,services/service-system/service-system-bootstrap,auth-gateway \
+            -am package -Pdocker -DskipTests
+
+      - name: Stage jars
+        run: |
+          mkdir -p build/jars
+          cp services/service-auth/target/service-auth-*.jar build/jars/service-auth.jar
+          cp services/service-system/service-system-bootstrap/target/service-system.jar build/jars/service-system.jar
+          cp auth-gateway/target/auth-gateway-*.jar build/jars/auth-gateway.jar
+          ls -lh build/jars
+
+      - name: Log in to ACR
+        uses: docker/login-action@v4
+        with:
+          registry: ${{ secrets.ACR_REGISTRY }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Set image tags
+        id: meta
+        run: |
+          SHA_SHORT="${GITHUB_SHA::7}"
+          echo "tag_sha=${IMAGE_TAG_PREFIX}-${SHA_SHORT}" >> "$GITHUB_OUTPUT"
+          echo "tag_latest=${IMAGE_TAG_PREFIX}-latest" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push service-auth
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/runtime/Dockerfile
+          push: true
+          pull: false
+          provenance: false
+          sbom: false
+          build-args: |
+            APP_JAR=build/jars/service-auth.jar
+            SERVER_PORT=20001
+          tags: |
+            ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/service-auth:${{ steps.meta.outputs.tag_sha }}
+            ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/service-auth:${{ steps.meta.outputs.tag_latest }}
+
+      - name: Build and push service-system
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/runtime/Dockerfile
+          push: true
+          pull: false
+          provenance: false
+          sbom: false
+          build-args: |
+            APP_JAR=build/jars/service-system.jar
+            SERVER_PORT=20002
+          tags: |
+            ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/service-system:${{ steps.meta.outputs.tag_sha }}
+            ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/service-system:${{ steps.meta.outputs.tag_latest }}
+
+      - name: Build and push auth-gateway
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/runtime/Dockerfile
+          push: true
+          pull: false
+          provenance: false
+          sbom: false
+          build-args: |
+            APP_JAR=build/jars/auth-gateway.jar
+            SERVER_PORT=8080
+          tags: |
+            ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/auth-gateway:${{ steps.meta.outputs.tag_sha }}
+            ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/auth-gateway:${{ steps.meta.outputs.tag_latest }}

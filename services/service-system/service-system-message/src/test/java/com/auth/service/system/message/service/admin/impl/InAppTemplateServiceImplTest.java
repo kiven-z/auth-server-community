@@ -94,7 +94,7 @@ class InAppTemplateServiceImplTest {
 		form.setDescription("站内通知模板");
 		form.setStatus(true);
 		form.setPriority(5);
-		form.setLinkUrl("/personal/export-task");
+		form.setLinkUrl("/personal/inbox");
 
 		sysInAppTemplateService.create(form);
 
@@ -114,7 +114,7 @@ class InAppTemplateServiceImplTest {
 		assertThat(saved.getRequireFields()).isEqualTo("[]");
 		InAppChannelDefaults defaults = ChannelDefaultsJsonSupport.parseInApp(saved.getChannelDefaultsJson());
 		assertThat(defaults.getCategoryId()).isEqualTo(MINOR_CATEGORY_ID);
-		assertThat(defaults.getLinkUrl()).isEqualTo("/personal/export-task");
+		assertThat(defaults.getLinkUrl()).isEqualTo("/personal/inbox");
 	}
 
 	@Test

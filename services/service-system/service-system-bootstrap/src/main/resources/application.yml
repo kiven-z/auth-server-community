@@ -25,7 +25,7 @@ spring:
   config:
     import:
       - nacos:common-config.yaml?group=AUTH_COMMON
-      - nacos:${spring.application.name}-${spring.profiles.active}.yaml?group=${spring.cloud.nacos.config.group}
+      - optional:nacos:${spring.application.name}-${spring.profiles.active}.yaml?group=${spring.cloud.nacos.config.group}
   profiles:
     active: dev
 

@@ -13,6 +13,22 @@ spring:
       initialize-schema: embedded
       schema: classpath:org/springframework/session/jdbc/schema-mysql.sql
 
+  # 登录会话 JDBC 表、失效幂等事件、用户授权读模型等。JWT / Redis / 会话策略在 Nacos AUTH_COMMON。
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.3.4:3306/auth_admin?serverTimezone=UTC&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&cachePrepStmts=true&useServerPrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useLocalSessionState=true
+    username: root
+    password: Dev1234!
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 10000
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+      connection-init-sql: SET time_zone = '+00:00'
+
   cloud:
     nacos:
       server-addr: 192.168.3.4:8848
@@ -21,3 +37,16 @@ logging:
   level:
     root: info
     com.auth: debug
+
+# system Outbox 投递后，本服务用 processing 占位保证幂等；下列 Job 清理孤儿占位与过期 SUCCESS。
+# 批大小由代码常量控制，不可配。
+auth:
+  invalidation:
+    # 超时后清理 Job 删除占位，允许 Outbox 重投
+    processing-claim-timeout-minutes: 30
+    processing-claim-cleanup-enabled: true
+    # 须 ≥ 60000
+    processing-claim-cleanup-interval-ms: 300000
+    success-retention-days: 90
+    success-cleanup-enabled: true
+    success-cleanup-cron: "0 0 4 * * ?"

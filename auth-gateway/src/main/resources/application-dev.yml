@@ -10,3 +10,16 @@ logging:
   level:
     root: info
     com.auth: debug
+
+# JWT 校验（JwtValidateGlobalFilter）。路由仍在 application-route.yml。
+# 轻校验：无 Token / 过期放行，非法拒绝。严格路径：无 Token / 过期 / 非法一律拒绝。
+auth:
+  gateway:
+    security:
+      # false 时 strict-patterns 不生效，全部走轻校验
+      strict-enabled: false
+      # Ant 风格；仅 strict-enabled=true 时生效
+      strict-patterns: []
+      # strict-patterns:
+      #   - /api/system/admin/**
+      #   - /api/auth/session/**

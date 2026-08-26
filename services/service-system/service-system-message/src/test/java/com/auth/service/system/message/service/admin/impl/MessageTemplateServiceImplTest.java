@@ -172,13 +172,13 @@ class MessageTemplateServiceImplTest {
 		MessageTemplateEntity entity = new MessageTemplateEntity();
 		entity.setId(30L);
 		entity.setChannel(MessageChannel.IN_APP.name());
-		entity.setSceneCode("file-export-success");
-		entity.setTemplateName("导出成功");
+		entity.setSceneCode("in-app-sys-notice");
+		entity.setTemplateName("系统通知");
 		entity.setSubject("完成");
 		entity.setBodyContent("ok");
 		entity.setImMessageType("MARKDOWN");
 		entity.setRequireFields("[]");
-		entity.setChannelDefaultsJson("{\"linkUrl\":\"/personal/export-task\",\"categoryId\":104}");
+		entity.setChannelDefaultsJson("{\"linkUrl\":\"/personal/inbox\",\"categoryId\":104}");
 		entity.setPriority(5);
 		entity.setStatus(true);
 		when(messageTemplateMapper.selectById(30L)).thenReturn(entity);
@@ -187,7 +187,7 @@ class MessageTemplateServiceImplTest {
 				MessageChannel.IN_APP.name());
 
 		assertThat(vo.getCategoryId()).isEqualTo(104L);
-		assertThat(vo.getLinkUrl()).isEqualTo("/personal/export-task");
+		assertThat(vo.getLinkUrl()).isEqualTo("/personal/inbox");
 		assertThat(vo.getContentType()).isEqualTo("MARKDOWN");
 	}
 

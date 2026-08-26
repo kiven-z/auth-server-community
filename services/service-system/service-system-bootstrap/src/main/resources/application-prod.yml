@@ -7,9 +7,41 @@ server:
     max-connections: 2000
 
 spring:
+  mail:
+    default-encoding: UTF-8
+    ssl:
+      enabled: true
+    host: smtp.qq.com
+    port: 465
+    username: ${AUTH_EMAIL_CONFIG_USERNAME:}
+    password: ${AUTH_EMAIL_CONFIG_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectionTimeout: 5000
+          timeout: 5000
+          writeTimeout: 5000
+
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://mysql-master:3306/auth_admin?serverTimezone=UTC&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&cachePrepStmts=true&useServerPrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useLocalSessionState=true
+    username: ${AUTH_DB_USERNAME:root}
+    password: ${AUTH_DB_PASSWORD:Dev1234!}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 10000
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+      connection-init-sql: SET time_zone = '+00:00'
+
   cloud:
     nacos:
-      # Docker Compose 会用 SPRING_CLOUD_NACOS_SERVER_ADDR=nacos:8848 覆盖
       server-addr: nacos:8848
 
 logging:
@@ -17,3 +49,66 @@ logging:
     root: warn
     com.auth: info
     org.springframework: warn
+
+auth:
+  authorization:
+    sync-dispatch-enabled: true
+    poll-interval-ms: 30000
+    retry-backoff-seconds: 30
+    manual-processing-unlock-timeout-minutes: 5
+    success-retention-days: 90
+    success-cleanup-enabled: true
+    success-cleanup-cron: "0 30 3 * * ?"
+
+  file:
+    default-platform: MINIO
+    expire-seconds: 300
+    allowed-content-types:
+      - image/*
+      - application/pdf
+
+    platforms:
+      MINIO:
+        endpoint: ${AUTH_FILE_MINIO_ENDPOINT:http://minio:9000}
+        region: us-east-1
+        access-key: ${AUTH_FILE_MINIO_ACCESS_KEY:admin}
+        secret-key: ${AUTH_FILE_MINIO_SECRET_KEY:Dev1234!}
+        bucket: ${AUTH_FILE_MINIO_BUCKET:auth-files-prod}
+        path-style-access: true
+        public-url: ${AUTH_FILE_MINIO_PUBLIC_URL:}
+      ALIYUN_OSS:
+        endpoint: https://oss-cn-shanghai.aliyuncs.com
+        region: cn-shanghai
+        access-key: ${AUTH_FILE_ALIYUN_OSS_ACCESS_KEY_ID:}
+        secret-key: ${AUTH_FILE_ALIYUN_OSS_ACCESS_KEY_SECRET:}
+        bucket: bunny-auth
+        path-style-access: false
+
+    recycle-cleanup:
+      enabled: true
+      retention-days: 90
+      cron: "0 0 3 * * ?"
+      max-rounds: 20
+
+  message:
+    email:
+      enabled: ${AUTH_SERVICE_SYSTEM_MESSAGE_CHANNEL_EMAIL_ENABLED:true}
+    sms:
+      enabled: ${AUTH_SERVICE_SYSTEM_MESSAGE_CHANNEL_SMS_ALIYUN_DYPNS_ENABLED:true}
+      region: cn-hangzhou
+      endpoint: dypnsapi.aliyuncs.com
+      sign-name: ${AUTH_SMS_SIGN_NAME:速通互联验证码}
+      access-key-id: ${AUTH_SMS_ACCESS_KEY_ID:}
+      access-key-secret: ${AUTH_SMS_ACCESS_KEY_SECRET:}
+    ding-talk:
+      enabled: ${AUTH_SERVICE_SYSTEM_MESSAGE_CHANNEL_DING_TALK_ENABLED:true}
+      agent-id: ${AUTH_DING_TALK_AGENT_ID:}
+      client-id: ${AUTH_DING_TALK_CLIENT_ID:}
+      client-secret: ${AUTH_DING_TALK_CLIENT_SECRET:}
+      default-message-type: TEXT
+
+  schedule:
+    job:
+      consecutive-failure-threshold: 5
+      success-enabled: false
+      bootstrap-delay-seconds: 30

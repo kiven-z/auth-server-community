@@ -8,6 +8,41 @@ server:
     max-connections: 2000
 
 spring:
+  # 邮件渠道凭证由 Spring Mail 托管；开关见 auth.message.email。密钥走 env，勿把生产密钥打进样例。
+  mail:
+    default-encoding: UTF-8
+    ssl:
+      enabled: true
+    host: smtp.qq.com
+    port: 465
+    username: ${AUTH_EMAIL_CONFIG_USERNAME:}
+    password: ${AUTH_EMAIL_CONFIG_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectionTimeout: 5000
+          timeout: 5000
+          writeTimeout: 5000
+
+  # 业务表、Quartz、Outbox、文件元数据等。JWT / Redis / 会话策略在 Nacos AUTH_COMMON。
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.3.4:3306/auth_admin?serverTimezone=UTC&useSSL=false&characterEncoding=utf-8&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true&cachePrepStmts=true&useServerPrepStmts=true&prepStmtCacheSize=250&prepStmtCacheSqlLimit=2048&useLocalSessionState=true
+    username: root
+    password: Dev1234!
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 10000
+      idle-timeout: 300000
+      max-lifetime: 1800000
+      leak-detection-threshold: 60000
+      connection-init-sql: SET time_zone = '+00:00'
+
   cloud:
     nacos:
       server-addr: 192.168.3.4:8848
@@ -16,3 +51,71 @@ logging:
   level:
     root: info
     com.auth: debug
+
+auth:
+  # 授权失效 Outbox（system → auth）：事务后同步投递 + 失败补偿
+  authorization:
+    sync-dispatch-enabled: true
+    # 须 ≥ 5000
+    poll-interval-ms: 30000
+    retry-backoff-seconds: 30
+    manual-processing-unlock-timeout-minutes: 5
+    success-retention-days: 90
+    success-cleanup-enabled: true
+    success-cleanup-cron: "0 30 3 * * ?"
+
+  file:
+    # MINIO | ALIYUN_OSS
+    default-platform: MINIO
+    expire-seconds: 300
+    allowed-content-types:
+      - image/*
+      - application/pdf
+
+    platforms:
+      MINIO:
+        endpoint: http://192.168.3.4:9000
+        region: us-east-1
+        access-key: ${AUTH_FILE_MINIO_ACCESS_KEY:admin}
+        secret-key: ${AUTH_FILE_MINIO_SECRET_KEY:Dev1234!}
+        bucket: auth-files-dev
+        path-style-access: true
+        # public-url: https://files.example.com
+      ALIYUN_OSS:
+        endpoint: https://oss-cn-shanghai.aliyuncs.com
+        region: cn-shanghai
+        access-key: ${AUTH_FILE_ALIYUN_OSS_ACCESS_KEY_ID:}
+        secret-key: ${AUTH_FILE_ALIYUN_OSS_ACCESS_KEY_SECRET:}
+        bucket: bunny-auth
+        # 阿里云须 virtual-hosted；path-style 会 403
+        path-style-access: false
+        # public-url: https://cdn.example.com
+
+    recycle-cleanup:
+      enabled: true
+      retention-days: 90
+      cron: "0 0 3 * * ?"
+      max-rounds: 20
+
+  message:
+    email:
+      enabled: ${AUTH_SERVICE_SYSTEM_MESSAGE_CHANNEL_EMAIL_ENABLED:true}
+    sms:
+      enabled: ${AUTH_SERVICE_SYSTEM_MESSAGE_CHANNEL_SMS_ALIYUN_DYPNS_ENABLED:true}
+      region: cn-hangzhou
+      endpoint: dypnsapi.aliyuncs.com
+      sign-name: ${AUTH_SMS_SIGN_NAME:速通互联验证码}
+      access-key-id: ${AUTH_SMS_ACCESS_KEY_ID:}
+      access-key-secret: ${AUTH_SMS_ACCESS_KEY_SECRET:}
+    ding-talk:
+      enabled: ${AUTH_SERVICE_SYSTEM_MESSAGE_CHANNEL_DING_TALK_ENABLED:true}
+      agent-id: ${AUTH_DING_TALK_AGENT_ID:}
+      client-id: ${AUTH_DING_TALK_CLIENT_ID:}
+      client-secret: ${AUTH_DING_TALK_CLIENT_SECRET:}
+      default-message-type: TEXT
+
+  schedule:
+    job:
+      consecutive-failure-threshold: 5
+      success-enabled: false
+      bootstrap-delay-seconds: 30
