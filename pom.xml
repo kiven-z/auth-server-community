@@ -25,7 +25,7 @@
 
     <properties>
         <!-- CI-friendly 版本：发版改此处，或 -Drevision=1.0.0 -->
-        <revision>1.0.0-rc.2</revision>
+        <revision>1.0.0-rc.3</revision>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
