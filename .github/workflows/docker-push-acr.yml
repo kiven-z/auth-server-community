@@ -5,7 +5,7 @@
 #   ACR_USERNAME   镜像仓库登录名
 #   ACR_PASSWORD   镜像仓库登录密码 / 临时令牌
 #
-# 流程：同一 runner 内 Maven 只编一次 → 串行推三个 runtime 镜像（不上传 Actions Artifact）
+# 流程：同一 runner 内 Maven 只编一次 → 串行推四个 runtime 镜像
 #
 # 推送结果示例：
 #   registry.cn-hangzhou.aliyuncs.com/kiven-z-auth/service-auth:community-<sha>
@@ -38,7 +38,7 @@ jobs:
       - name: Package all services (once)
         run: |
           mvn -B \
-            -pl services/service-auth,services/service-system/service-system-bootstrap,auth-gateway \
+            -pl services/service-auth,services/service-system/service-system-bootstrap,services/service-example,auth-gateway \
             -am package -DskipTests
 
       - name: Stage jars
@@ -46,6 +46,7 @@ jobs:
           mkdir -p build/jars
           cp services/service-auth/target/service-auth-*.jar build/jars/service-auth.jar
           cp services/service-system/service-system-bootstrap/target/service-system.jar build/jars/service-system.jar
+          cp services/service-example/target/service-example-*.jar build/jars/service-example.jar
           cp auth-gateway/target/auth-gateway-*.jar build/jars/auth-gateway.jar
           ls -lh build/jars
 
@@ -113,3 +114,19 @@ jobs:
           tags: |
             ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/auth-gateway:${{ steps.meta.outputs.tag_sha }}
             ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/auth-gateway:${{ steps.meta.outputs.tag_latest }}
+
+      - name: Build and push service-example
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: docker/runtime/Dockerfile
+          push: true
+          pull: false
+          provenance: false
+          sbom: false
+          build-args: |
+            APP_JAR=build/jars/service-example.jar
+            SERVER_PORT=20009
+          tags: |
+            ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/service-example:${{ steps.meta.outputs.tag_sha }}
+            ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/service-example:${{ steps.meta.outputs.tag_latest }}

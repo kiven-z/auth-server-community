@@ -65,6 +65,23 @@ services:
     networks:
       - auth-network
 
+  service-example:
+    image: ${IMAGE_PREFIX:-auth}/service-example:${IMAGE_TAG:-local}
+    container_name: service-example
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      SPRING_CLOUD_NACOS_SERVER_ADDR: nacos:8848
+      JAVA_TOOL_OPTIONS: "-XX:MaxRAMPercentage=70.0 -XX:InitialRAMPercentage=40.0 -XX:+UseG1GC -XX:+ExitOnOutOfMemoryError -Djava.security.egd=file:/dev/urandom -Duser.timezone=UTC"
+    mem_limit: 1024m
+    mem_reservation: 256m
+    volumes:
+      - /opt/ipdb:/opt/ipdb:ro
+    ports:
+      - "20009:20009"
+    restart: unless-stopped
+    networks:
+      - auth-network
+
 networks:
   auth-network:
     external: true
