@@ -93,8 +93,8 @@ class CurrentUserPreferenceServiceImplTest {
 	void listMyPreferences_mapsWhitelistedItems() {
 		SysUserConfigEntity entity = new SysUserConfigEntity();
 		entity.setUserId(USER_ID);
-		entity.setConfigKey(UserPreferenceKeys.UI_LOCALE);
-		entity.setConfigValue("{\"locale\":\"zh\"}");
+		entity.setConfigKey(UserPreferenceKeys.UI_LAYOUT);
+		entity.setConfigValue("{\"layout\":\"mix\",\"sidebarStatus\":false}");
 		when(sysUserConfigMapper.selectListByUserIdAndConfigKeys(USER_ID, UserPreferenceKeys.ALLOWED_KEYS))
 			.thenReturn(List.of(entity));
 
@@ -102,8 +102,9 @@ class CurrentUserPreferenceServiceImplTest {
 
 		assertThat(result.getItems()).hasSize(1);
 		MeUserPreferenceItemVO item = result.getItems().get(0);
-		assertThat(item.getConfigKey()).isEqualTo(UserPreferenceKeys.UI_LOCALE);
-		assertThat(item.getConfigValue().get("locale").asText()).isEqualTo("zh");
+		assertThat(item.getConfigKey()).isEqualTo(UserPreferenceKeys.UI_LAYOUT);
+		assertThat(item.getConfigValue().get("layout").asText()).isEqualTo("mix");
+		assertThat(item.getConfigValue().get("sidebarStatus").asBoolean()).isFalse();
 	}
 
 	@Test
@@ -124,9 +125,9 @@ class CurrentUserPreferenceServiceImplTest {
 	@Test
 	@DisplayName("无记录时插入新偏好配置")
 	void upsertMyPreference_insertsWhenNotExists() throws Exception {
-		MeUserPreferenceUpsertForm form = preferenceForm(UserPreferenceKeys.UI_LOCALE, "{\"locale\":\"zh\"}");
+		MeUserPreferenceUpsertForm form = preferenceForm(UserPreferenceKeys.UI_LAYOUT, "{\"locale\":\"zh\"}");
 
-		when(sysUserConfigMapper.selectListByUserIdAndConfigKeys(USER_ID, Set.of(UserPreferenceKeys.UI_LOCALE)))
+		when(sysUserConfigMapper.selectListByUserIdAndConfigKeys(USER_ID, Set.of(UserPreferenceKeys.UI_LAYOUT)))
 			.thenReturn(List.of());
 		when(sysUserConfigMapper.insert(any(SysUserConfigEntity.class))).thenReturn(1);
 
@@ -134,6 +135,21 @@ class CurrentUserPreferenceServiceImplTest {
 
 		verify(sysUserConfigMapper).insert(any(SysUserConfigEntity.class));
 		verify(sysUserConfigMapper, never()).updateById(any(SysUserConfigEntity.class));
+	}
+
+	@Test
+	@DisplayName("按域拆分的 locale / theme / display 键均在白名单内可 upsert")
+	void upsertMyPreference_acceptsDomainSplitKeys() throws Exception {
+		when(sysUserConfigMapper.insert(any(SysUserConfigEntity.class))).thenReturn(1);
+
+		currentUserPreferenceService
+			.upsertMyPreference(preferenceForm(UserPreferenceKeys.UI_LOCALE, "{\"locale\":\"zh\"}"));
+		currentUserPreferenceService.upsertMyPreference(preferenceForm(UserPreferenceKeys.UI_THEME,
+				"{\"colorScheme\":\"dark\",\"navTheme\":\"default\",\"primaryColor\":\"#1b2a47\"}"));
+		currentUserPreferenceService
+			.upsertMyPreference(preferenceForm(UserPreferenceKeys.UI_DISPLAY, "{\"grey\":true,\"hideTabs\":true}"));
+
+		verify(sysUserConfigMapper, times(3)).insert(any(SysUserConfigEntity.class));
 	}
 
 	@Test
@@ -173,7 +189,7 @@ class CurrentUserPreferenceServiceImplTest {
 	@Test
 	@DisplayName("空 JSON 对象 upsert 时抛出业务异常")
 	void upsertMyPreference_rejectsEmptyObject() throws Exception {
-		MeUserPreferenceUpsertForm form = preferenceForm(UserPreferenceKeys.UI_LOCALE, "{}");
+		MeUserPreferenceUpsertForm form = preferenceForm(UserPreferenceKeys.UI_LAYOUT, "{}");
 
 		assertThatThrownBy(() -> currentUserPreferenceService.upsertMyPreference(form))
 			.isInstanceOf(SystemBusinessException.class)
@@ -204,7 +220,7 @@ class CurrentUserPreferenceServiceImplTest {
 	@Test
 	@DisplayName("JSON 数组 upsert 时抛出业务异常")
 	void upsertMyPreference_rejectsArray() throws Exception {
-		MeUserPreferenceUpsertForm form = preferenceForm(UserPreferenceKeys.UI_LOCALE, "[\"a\"]");
+		MeUserPreferenceUpsertForm form = preferenceForm(UserPreferenceKeys.UI_LAYOUT, "[\"a\"]");
 
 		assertThatThrownBy(() -> currentUserPreferenceService.upsertMyPreference(form))
 			.isInstanceOf(SystemBusinessException.class)

@@ -23,7 +23,7 @@ public class MeUserPreferenceUpsertForm implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	@Schema(title = "配置键", requiredMode = Schema.RequiredMode.REQUIRED, example = "ui.locale")
+	@Schema(title = "配置键", requiredMode = Schema.RequiredMode.REQUIRED, example = "ui.layout")
 	@NotBlank(message = "配置键不能为空")
 	private String configKey;
 
