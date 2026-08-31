@@ -20,43 +20,46 @@ public abstract class BaseExceptionResponseBuilder {
 	 * 构建响应
 	 * @param status 状态
 	 * @param code 代码
+	 * @param error 稳定错误标识
 	 * @param message 消息
 	 * @return 响应实体
 	 */
-	protected ResponseEntity<Result<Object>> respond(HttpStatus status, Integer code, String message) {
+	protected ResponseEntity<Result<Object>> respond(HttpStatus status, Integer code, String error, String message) {
 		int finalCode = Objects.requireNonNullElse(code, status.value());
 		String finalMessage = CharSequenceUtil.blankToDefault(message, status.getReasonPhrase());
-		return ResponseEntity.status(status).body(Result.error(null, finalCode, finalMessage));
+		return ResponseEntity.status(status).body(Result.error(finalCode, error, finalMessage));
 	}
 
 	/**
 	 * 构建警告响应
 	 * @param status 状态
 	 * @param code 代码
+	 * @param error 稳定错误标识
 	 * @param message 消息
 	 * @param exception 异常
 	 * @param logMessage 日志消息
 	 * @return 响应实体
 	 */
-	protected ResponseEntity<Result<Object>> warn(HttpStatus status, Integer code, String message, Throwable exception,
-			String logMessage) {
+	protected ResponseEntity<Result<Object>> warn(HttpStatus status, Integer code, String error, String message,
+			Throwable exception, String logMessage) {
 		log.warn("{}: {}", logMessage, exception.getMessage(), exception);
-		return respond(status, code, message);
+		return respond(status, code, error, message);
 	}
 
 	/**
 	 * 构建错误响应
 	 * @param status 状态
 	 * @param code 代码
+	 * @param error 稳定错误标识
 	 * @param message 消息
 	 * @param exception 异常
 	 * @param logMessage 日志消息
 	 * @return 响应实体
 	 */
-	protected ResponseEntity<Result<Object>> error(HttpStatus status, Integer code, String message, Throwable exception,
-			String logMessage) {
+	protected ResponseEntity<Result<Object>> error(HttpStatus status, Integer code, String error, String message,
+			Throwable exception, String logMessage) {
 		log.error("{}: {}", logMessage, exception.getMessage(), exception);
-		return respond(status, code, message);
+		return respond(status, code, error, message);
 	}
 
 }

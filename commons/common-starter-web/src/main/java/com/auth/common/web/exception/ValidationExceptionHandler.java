@@ -129,7 +129,8 @@ public class ValidationExceptionHandler extends BaseExceptionResponseBuilder {
 			default -> message = "Request body is not readable JSON.";
 		}
 
-		return warn(HttpStatus.BAD_REQUEST, 400, message, exception, "Unreadable HTTP message");
+		return warn(HttpStatus.BAD_REQUEST, 400, CommonWebErrorCodes.UNREADABLE_BODY, message, exception,
+				"Unreadable HTTP message");
 	}
 
 	/**
@@ -139,7 +140,8 @@ public class ValidationExceptionHandler extends BaseExceptionResponseBuilder {
 		// 校验失败响应前缀
 		String validationFailedPrefix = "Validation failed: ";
 
-		return warn(HttpStatus.BAD_REQUEST, 400, validationFailedPrefix + details, exception, "Validation error");
+		return warn(HttpStatus.BAD_REQUEST, 400, CommonWebErrorCodes.VALIDATION_FAILED,
+				validationFailedPrefix + details, exception, "Validation error");
 	}
 
 }

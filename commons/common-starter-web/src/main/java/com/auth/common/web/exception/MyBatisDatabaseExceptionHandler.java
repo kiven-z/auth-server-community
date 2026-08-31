@@ -65,7 +65,8 @@ public class MyBatisDatabaseExceptionHandler extends BaseExceptionResponseBuilde
 	protected ResponseEntity<Result<Object>> handleDatabaseThrowable(Throwable exception, String logTag) {
 		SQLException sqlException = ExceptionCauseUtil.firstSqlException(exception);
 		if (sqlException == null) {
-			return error(HttpStatus.INTERNAL_SERVER_ERROR, 500, "Database operation failed.", exception, logTag);
+			return error(HttpStatus.INTERNAL_SERVER_ERROR, 500, CommonWebErrorCodes.DATABASE_UNAVAILABLE,
+					"Database operation failed.", exception, logTag);
 		}
 		return handleSqlException(sqlException, exception, logTag);
 	}
@@ -85,17 +86,20 @@ public class MyBatisDatabaseExceptionHandler extends BaseExceptionResponseBuilde
 			Matcher tooLong = DATA_TOO_LONG_PATTERN.matcher(message);
 			if (tooLong.find()) {
 				String column = tooLong.group(1);
-				return warn(HttpStatus.PAYLOAD_TOO_LARGE, 413, "Value too long for column: " + column, wrapper, logTag);
+				return warn(HttpStatus.PAYLOAD_TOO_LARGE, 413, CommonWebErrorCodes.DATA_TOO_LONG,
+						"Value too long for column: " + column, wrapper, logTag);
 			}
 
 			Matcher dup = DUPLICATE_ENTRY_PATTERN.matcher(message);
 			if (dup.find()) {
 				String value = dup.group(1);
-				return warn(HttpStatus.CONFLICT, 409, "Duplicate value: [" + value + "].", wrapper, logTag);
+				return warn(HttpStatus.CONFLICT, 409, CommonWebErrorCodes.DUPLICATE_ENTRY,
+						"Duplicate value: [" + value + "].", wrapper, logTag);
 			}
 		}
 
-		return error(HttpStatus.INTERNAL_SERVER_ERROR, 500, "Database operation failed.", wrapper, logTag);
+		return error(HttpStatus.INTERNAL_SERVER_ERROR, 500, CommonWebErrorCodes.DATABASE_UNAVAILABLE,
+				"Database operation failed.", wrapper, logTag);
 	}
 
 }

@@ -41,8 +41,8 @@ public class FallbackExceptionHandler extends BaseExceptionResponseBuilder {
 		// 方法不支持异常
 		if (exception instanceof HttpRequestMethodNotSupportedException methodNotSupportedException) {
 			String method = methodNotSupportedException.getMethod();
-			return warn(HttpStatus.METHOD_NOT_ALLOWED, 405, "HTTP method not allowed" + ": " + method, exception,
-					"Method not supported");
+			return warn(HttpStatus.METHOD_NOT_ALLOWED, 405, CommonWebErrorCodes.METHOD_NOT_ALLOWED,
+					"HTTP method not allowed" + ": " + method, exception, "Method not supported");
 		}
 
 		// 消息不支持异常
@@ -51,11 +51,12 @@ public class FallbackExceptionHandler extends BaseExceptionResponseBuilder {
 		Matcher methodErrorMatcher = METHOD_NOT_SUPPORTED_PATTERN.matcher(message);
 		// 方法不支持异常
 		if (methodErrorMatcher.find()) {
-			return warn(HttpStatus.METHOD_NOT_ALLOWED, 405, "HTTP method not allowed: " + methodErrorMatcher.group(1),
-					exception, "Method not supported");
+			return warn(HttpStatus.METHOD_NOT_ALLOWED, 405, CommonWebErrorCodes.METHOD_NOT_ALLOWED,
+					"HTTP method not allowed: " + methodErrorMatcher.group(1), exception, "Method not supported");
 		}
 
-		return error(HttpStatus.INTERNAL_SERVER_ERROR, 500, "Internal server error.", exception, "Unhandled exception");
+		return error(HttpStatus.INTERNAL_SERVER_ERROR, 500, CommonWebErrorCodes.INTERNAL_ERROR,
+				"Internal server error.", exception, "Unhandled exception");
 	}
 
 }

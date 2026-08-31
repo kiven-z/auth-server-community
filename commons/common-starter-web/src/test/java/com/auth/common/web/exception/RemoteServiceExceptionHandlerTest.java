@@ -35,4 +35,19 @@ class RemoteServiceExceptionHandlerTest {
 		assertThat(response.getBody().getExt()).containsEntry("i18nKey", "data.invalid");
 	}
 
+	@Test
+	@DisplayName("远端 Result 为空时写入 UPSTREAM_UNAVAILABLE")
+	void handleRemoteServiceException_nullBody_returnsUpstreamUnavailable() {
+		RemoteServiceException exception = new RemoteServiceException(502, null);
+
+		ResponseEntity<Result<Object>> response = handler.handleRemoteService(exception);
+
+		assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_GATEWAY);
+		assertThat(response.getBody()).isNotNull();
+		assertThat(response.getBody().getCode()).isEqualTo(502);
+		assertThat(response.getBody().getError()).isEqualTo(CommonWebErrorCodes.UPSTREAM_UNAVAILABLE);
+		assertThat(response.getBody().getSubCode()).isEqualTo(CommonWebErrorCodes.UPSTREAM_UNAVAILABLE);
+		assertThat(response.getBody().getMessage()).isEqualTo("Remote service error");
+	}
+
 }
