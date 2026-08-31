@@ -24,7 +24,6 @@ public class RemoteServiceExceptionHandler {
 		body.setCode(result.getCode());
 		body.setMessage(result.getMessage());
 		body.setError(result.getError());
-		body.setSubCode(result.getSubCode());
 		body.setData(result.getData());
 		body.setExt(result.getExt());
 		body.setTimestamp(result.getTimestamp());

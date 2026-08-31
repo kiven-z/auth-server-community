@@ -11,7 +11,7 @@ import java.util.Objects;
  * <ul>
  * <li>HTTP 状态码保持语义性 (401/403/503...)</li>
  * <li>Result.code 使用稳定的业务代码</li>
- * <li>Result.error/subCode 使用本枚举 {@link #getError()} 的稳定字符串</li>
+ * <li>Result.error 使用本枚举 {@link #getError()} 的稳定字符串</li>
  * <li>Security 契约层不进行 i18n 翻译，仅提供英文 {@link #defaultMessage} 与 {@link #i18nKey}
  * 供集成层/前端</li>
  * </ul>

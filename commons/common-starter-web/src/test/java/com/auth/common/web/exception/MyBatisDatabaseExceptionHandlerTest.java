@@ -31,7 +31,6 @@ class MyBatisDatabaseExceptionHandlerTest {
 		assertThat(response.getBody()).isNotNull();
 		assertThat(response.getBody().getCode()).isEqualTo(500);
 		assertThat(response.getBody().getError()).isEqualTo(CommonWebErrorCodes.DATABASE_UNAVAILABLE);
-		assertThat(response.getBody().getSubCode()).isEqualTo(CommonWebErrorCodes.DATABASE_UNAVAILABLE);
 		assertThat(response.getBody().getMessage()).isEqualTo("Database operation failed.");
 		assertThat(response.getBody().getMessage()).doesNotContain("connection refused");
 	}

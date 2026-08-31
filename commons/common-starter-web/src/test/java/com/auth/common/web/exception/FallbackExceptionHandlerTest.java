@@ -26,7 +26,6 @@ class FallbackExceptionHandlerTest {
 		assertThat(response.getBody()).isNotNull();
 		assertThat(response.getBody().getCode()).isEqualTo(500);
 		assertThat(response.getBody().getError()).isEqualTo(CommonWebErrorCodes.INTERNAL_ERROR);
-		assertThat(response.getBody().getSubCode()).isEqualTo(CommonWebErrorCodes.INTERNAL_ERROR);
 		assertThat(response.getBody().getMessage()).isEqualTo("Internal server error.");
 		assertThat(response.getBody().getMessage()).doesNotContain("secret");
 	}

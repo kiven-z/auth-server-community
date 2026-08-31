@@ -3,7 +3,7 @@ package com.auth.common.web.exception;
 import lombok.experimental.UtilityClass;
 
 /**
- * common-starter-web 基础设施异常的稳定错误标识（写入 {@code Result.error} / {@code subCode}）
+ * common-starter-web 基础设施异常的稳定错误标识（写入 {@code Result.error}）
  *
  * @author Bunny
  */

@@ -143,7 +143,7 @@ public enum AuthResultCode {
 	private final Integer code;
 
 	/**
-	 * 稳定错误标识符（用于 Result.error/subCode）
+	 * 稳定错误标识符（用于 Result.error）
 	 */
 	private final String error;
 

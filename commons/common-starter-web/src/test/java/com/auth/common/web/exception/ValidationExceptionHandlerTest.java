@@ -42,7 +42,6 @@ class ValidationExceptionHandlerTest {
 		assertNotNull(response.getBody());
 		assertEquals(400, response.getBody().getCode());
 		assertEquals(CommonWebErrorCodes.VALIDATION_FAILED, response.getBody().getError());
-		assertEquals(CommonWebErrorCodes.VALIDATION_FAILED, response.getBody().getSubCode());
 		assertEquals("Validation failed: jobId: invalid value format", response.getBody().getMessage());
 	}
 

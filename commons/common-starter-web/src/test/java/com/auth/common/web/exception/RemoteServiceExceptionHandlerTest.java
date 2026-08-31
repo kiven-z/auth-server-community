@@ -46,7 +46,6 @@ class RemoteServiceExceptionHandlerTest {
 		assertThat(response.getBody()).isNotNull();
 		assertThat(response.getBody().getCode()).isEqualTo(502);
 		assertThat(response.getBody().getError()).isEqualTo(CommonWebErrorCodes.UPSTREAM_UNAVAILABLE);
-		assertThat(response.getBody().getSubCode()).isEqualTo(CommonWebErrorCodes.UPSTREAM_UNAVAILABLE);
 		assertThat(response.getBody().getMessage()).isEqualTo("Remote service error");
 	}
 

@@ -33,8 +33,7 @@ class ResultFeignErrorDecoderTest {
 	@Test
 	@DisplayName("422 body 为 Result 时转为 RemoteServiceException")
 	void decodeBusinessErrorAsRemoteServiceException() {
-		String json = "{\"code\":100312,\"message\":\"Data anomaly\",\"error\":\"DATA_INVALID\","
-				+ "\"subCode\":\"DATA_INVALID\",\"data\":null}";
+		String json = "{\"code\":100312,\"message\":\"Data anomaly\",\"error\":\"DATA_INVALID\",\"data\":null}";
 		Response response = response(422, json);
 
 		Exception exception = decoder.decode("TestClient#create", response);

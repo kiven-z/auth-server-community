@@ -45,11 +45,6 @@ public class Result<T> implements Serializable {
 	private String error;
 
 	/**
-	 * 稳定错误子代码，别名 {@link #error}
-	 */
-	private String subCode;
-
-	/**
 	 * 返回数据
 	 */
 	private transient T data;
@@ -158,7 +153,6 @@ public class Result<T> implements Serializable {
 	public static <T> Result<T> error(Integer code, String error, String message) {
 		Result<T> result = build(null, code, message);
 		result.setError(error);
-		result.setSubCode(error);
 		return result;
 	}
 
