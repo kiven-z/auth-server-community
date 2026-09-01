@@ -1,0 +1,20 @@
+---
+description: i18n 资源归属、I18nMessageProvider 与 Result 双轨字段
+globs: "**/messages*.properties,**/*Exception*.java,**/Result.java,**/*I18n*.java"
+alwaysApply: false
+---
+
+# 多语言与 Result
+
+## i18n
+
+1. **资源自治**：业务文案 (`messages.properties`) 严禁进 `common-*`；各 Service 私有语言包；公共模块运行时消息用英文。
+2. **契约**：需多语言的枚举/自定义异常实现 `I18nMessageProvider`（`messageKey`、`args`、`defaultMessage`）。
+3. **占位符**：严禁硬编码拼接；通过 `args` 传变量。
+4. **无状态**：服务端不维护 Locale；`common-*` 禁止 i18n（细则亦见 `exception-handling.mdc`）。
+
+## Result
+
+- 固定字段：`code`、`message`、`messageKey`、`args`、`data`。
+- `message` = 后端预翻译；`messageKey` = 原始键；`args` = 参数数组。
+- 不涉及多语言时，`messageKey` 必须为 `null`（禁止空字符串）。

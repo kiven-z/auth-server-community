@@ -1,0 +1,57 @@
+---
+description: 后端异常处理架构与顺序
+globs: **/*.java
+alwaysApply: false
+---
+
+# 异常处理规则（后端）
+
+## 禁止使用继承的 `@ExceptionHandler` 基类
+
+- **不要**在基类中放置 `@ExceptionHandler` 方法。
+- **不要**让 `@RestControllerAdvice` 继承任何包含 `@ExceptionHandler` 的类。
+- 基类只允许包含共享辅助方法（例如响应构建器），**不能**包含 `@ExceptionHandler`。
+
+## 一个 `@RestControllerAdvice` = 一个职责
+
+按类别拆分处理器：
+
+- 校验 / 请求体解析
+- 数据库
+- 业务（模块特定）
+- 技术 / 安全（模块特定）
+- 兜底（全局）
+
+## 必需的 `@Order` 基准顺序
+
+使用以下优先级值避免冲突：
+
+- `0`：校验 / 请求解析
+- `5`：数据库（Spring DAO / `DataAccessException`）
+- `6`：数据库（MyBatis `PersistenceException`，条件性生效）
+- `10`：模块业务异常
+- `20`：模块技术 / 安全异常
+- `Ordered.LOWEST_PRECEDENCE`：兜底
+
+规则：
+
+- 只有兜底处理器可以捕获 `Exception`。
+- 所有其他处理器必须仅声明明确的异常类型。
+
+## MyBatis 依赖解耦（commons 模块）
+
+在 `common-starter-web` 中：
+
+- 在常规的数据库通知（advice）中处理 `DataAccessException`。
+- 使用以下注解在**独立**的通知类中处理 MyBatis 的 `PersistenceException`：
+  - `@ConditionalOnClass(name = "org.apache.ibatis.exceptions.PersistenceException")`
+- `common-starter-web` 中任何与 MyBatis 相关的依赖都必须是 `optional`（仅编译支持，不传递）。
+
+## `common-*` 模块中的运行时消息必须使用英文
+
+- **不要**在 `common-*` 模块中使用国际化：
+  - 不使用 `MessageSource`
+  - 不使用 `LocaleContextHolder`
+  - 不使用 `SpringContextHolder.getMessage(...)`
+- `common-*` 模块中的所有运行时消息（`Result.message`、`log.warn/error`）必须是**英文字面量**。
+- 只有注释 / Javadoc 中允许使用中文。

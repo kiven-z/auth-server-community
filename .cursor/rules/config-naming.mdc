@@ -1,0 +1,13 @@
+---
+description: 自定义配置 auth. 三段式 kebab-case 命名
+globs: "**/application*.yml,**/application*.yaml,**/*Properties.java,**/*Configuration.java"
+alwaysApply: false
+---
+
+# 配置文件命名
+
+1. **统一前缀**：自定义配置必须以 `auth.` 开头；严禁用 `spring.` / `server.` 塞业务配置。
+2. **三段式**：`项目名.模块名.属性名`
+   - 公共 Starter：`auth.common.{module}.{property}`
+   - 业务模块：`auth.{service-name}.{property}`
+3. **风格**：kebab-case；严禁 camelCase。

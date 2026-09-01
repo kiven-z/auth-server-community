@@ -1,0 +1,47 @@
+---
+description: MapStruct / convert 对象映射策略与复杂度否决
+globs: "**/convert/**/*.java,**/*Converter.java"
+alwaysApply: false
+---
+
+# 对象映射（MapStruct / convert）
+
+**目标**：减少 Service 中散落的 setter；不是“凡转换必 MapStruct”。与 KISS 冲突时选更简单方案。
+
+## 默认策略
+
+- 稳定 Java 类型映射（Entity/PO/Form/VO/Response）放 `{module}/convert`，命名 `XxxConverter`，`INSTANCE = Mappers.getMapper(...)`。
+- `@Mapper` 必须 `config = AuthMapperConfig.class`（`common-mapstruct`）：未映射/类型失败在**编译期**报错。
+- 对称 DTO（如事件 payload）用 `AuthSymmetricMapperConfig`；Form 默认仅用 `AuthMapperConfig`。
+
+## 适用 MapStruct（应优先）
+
+同时满足：
+
+1. 源、目标均为编译期已知 Java 类型。
+2. 字段同名或少量 `@Mapping`，不依赖动态 `Map`/`Object` 键。
+3. 无或仅少量 `@Named`/`@AfterMapping`。
+4. 预计 MapStruct 生成逻辑 ≥ 50%。
+
+## 可不使用（Javadoc 一行说明原因）
+
+| 场景 | 推荐做法 |
+| ------ | ---------- |
+| ≤3 个简单同名字段 | 内联赋值 |
+| `Map` / Redis Hash | `*RedisCodec` 或 Repository 私有方法；基础设施层可用 hutool `BeanUtil`，类上注 `infrastructure: Map↔Bean` |
+| MD5、TTL、签名、多步编排 | Builder / 领域工厂 |
+| 规则频繁变化、强 if/else | 显式 Java |
+| `@Mapper` 内大量手写 `default` | 纯映射留 Converter，其余归 Codec/Builder |
+
+## 复杂度否决（强制）
+
+- 是否比手写 setter / 基础设施层 `BeanUtil` 更短、更清晰？
+- 新人能否一眼看出字段来源与去向？
+
+否 → 不用 MapStruct，Javadoc 或 PR 标注 **复杂度否决**。
+
+## 目录边界
+
+- `convert` 仅放应用/领域 ↔ 展现或持久模型。
+- 禁止：Redis/MQ/HTTP 编解码、动态 `Map` 互转、手写为主的巨型混合类。
+- Stream `map` 优先 `XxxConverter.INSTANCE`。

@@ -1,0 +1,76 @@
+---
+description: Entity / Form / VO / Query 的 Javadoc、Schema 与校验文案统一写法
+globs: **/model/**/*.java,**/model/request/**/*.java
+alwaysApply: false
+---
+# Model 注释与校验规范
+
+## 硬规则
+
+1. 类摘要、`@Schema(title/description)`、校验 `message` **末尾禁止** `。` `.` `！` `!` `？` `?`
+2. 业务 `service-*` 文案用中文；禁止 `is required`、字段英文名当主语（如 `file 不能为空`）
+3. 字段说明优先 `@Schema(title)`；与 title 重复的字段级 Javadoc 不写
+4. 类注释保留 `@author Bunny`
+5. **Bean Validation 只放 Form / Request**；Entity / VO 不写校验注解
+
+## 职责
+
+| 类型 | Javadoc | `@Schema` | Validation |
+| ------ | --------- | ----------- | ------------ |
+| Entity | 要 | 要 | 不要 |
+| Form / Request | 要 | 要 | 要 |
+| VO / Query / PO | 要 | 要 | 一般不要 |
+
+## 类注释
+
+一行说完；表名/约束放括号。
+
+| 类型 | 写法 | 示例 |
+| ------ | ------ | ------ |
+| Entity | `{业务对象}{表角色}` | `系统角色主表（物理删除）` |
+| Form | `{业务对象}{动作}表单` | `角色保存表单`、`角色授权对象按类型全量覆盖表单` |
+| VO | `{业务对象}{视图}` | `岗位分页行` |
+| Query | `{业务对象}查询` | `角色分页查询` |
+
+```java
+/**
+ * 系统角色主表（物理删除）
+ *
+ * @author Bunny
+ */
+@Schema(name = "SysRoleEntity", title = "系统角色")
+```
+
+## Schema
+
+```java
+@Schema(name = "SysRoleForm", title = "角色保存表单")
+@Schema(title = "启用状态（true=启用，false=停用）", requiredMode = Schema.RequiredMode.REQUIRED)
+```
+
+- 类级：`name` = Java 类名，`title` = 中文短名
+- 字段级：默认只写 `title`；写不下的约束再用 `description`
+- 必填字段：`requiredMode = REQUIRED` + 对应 `@NotNull` / `@NotBlank` / `@NotEmpty`
+
+## 校验 message
+
+统一「`{中文名}不能为空`」，与 Schema `title` 同源。
+
+| 注解 | 句式 | 示例 |
+| ------ | ------ | ------ |
+| `@NotNull` / `@NotBlank` / `@NotEmpty` | `{名}不能为空` | `主体类型不能为空` |
+| `@Size(max)` | `{名}长度不能超过{n}个字符` | `备注长度不能超过255个字符` |
+| `@Min` / `@Max` | `{名}不能小于{n}` / `不能大于{n}` | `状态值不能小于0` |
+| `@Pattern` | `{名}格式不符合约定`（细节放括号） | `角色编码格式不符合约定（全大写）` |
+
+```java
+@Schema(title = "主体类型（USER / DEPT / POST）", requiredMode = Schema.RequiredMode.REQUIRED)
+@NotNull(message = "主体类型不能为空")
+private GrantTableSubjectType subjectType;
+```
+
+## 禁止
+
+- `xxx is required`、`部门 ID 必填`（与「不能为空」混用）
+- `ids 不能为空`、`file 不能为空`（应用中文业务名）
+- Entity 上堆校验；`title` / `message` 末尾句号

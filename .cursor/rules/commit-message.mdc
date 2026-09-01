@@ -1,0 +1,66 @@
+---
+description: Git commit 消息格式（emoji + Conventional Commits + 编号列表）
+alwaysApply: true
+---
+
+# Commit Message 格式
+
+仅在用户明确要求提交 commit 时执行。消息必须严格按下列结构，**禁止**写成 1–2 句散文。
+
+## 结构
+
+```
+<emoji> <type>(<scope>): <中文摘要>
+
+1. <具体改动>
+2. <具体改动>
+...
+```
+
+- **第 1 行**：emoji + type + scope + 中文摘要（一行，≤ 72 字）
+- **空一行**
+- **正文**：编号列表 `1.` `2.` `3.` …，每条写「改了什么」，不用 `-` bullet
+- **不要**加 `Co-authored-by`、不要 `---` 分隔符（除非用户明确要求）
+
+## Emoji 与 type
+
+| type | emoji | 示例 scope |
+|------|-------|------------|
+| feat | `:sparkles:` | system, auth, overlay |
+| fix | `:bug:` | style, user, api |
+| refactor | （可省略 emoji） | overlay, system |
+| test | `:white_check_mark:` | — |
+| docs | `:memo:` | — |
+| chore | `:wrench:` | deps, ci |
+| release | `:bookmark:` | — |
+
+scope 用变更模块；多模块用逗号：`fix(auth,message)`。
+
+## 示例
+
+```
+:bug: fix(style): 修复侧栏子菜单下拉展开动画选择器失效
+
+1. 布局重构后类名改为 layout-menu__outer，原 outer-most 选择器未命中
+2. 子菜单展开 targeting ElCollapseTransition，替代 Element Plus 默认时长
+3. 抽取子菜单展开专用 motion token
+```
+
+## 提交命令
+
+用 HEREDOC，正文里的换行会保留：
+
+```bash
+git commit -m "$(cat <<'EOF'
+:bug: fix(style): 修复侧栏子菜单下拉展开动画选择器失效
+
+1. 布局重构后类名改为 layout-menu__outer，原 outer-most 选择器未命中
+2. 子菜单展开 targeting ElCollapseTransition
+3. 抽取子菜单展开专用 motion token
+EOF
+)"
+```
+
+## 与现有流程对齐
+
+执行 commit 前仍按 `<committing-changes-with-git>` 做 `git status` / `git diff` / `git log`；**仅消息格式以本规则为准**，不要用「1–2 句 why」替代编号列表。

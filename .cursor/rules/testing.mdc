@@ -1,0 +1,37 @@
+---
+description: 测试分层（必写/选写/可不写）与强制执行流程
+globs: "**/src/test/**/*.java"
+alwaysApply: false
+---
+
+# 测试规范
+
+## 分层
+
+**必写**（出错代价高或分支多）：
+
+- Service / Support 业务规则（唯一性、状态机、树/父子、权限影响范围）
+- 鉴权、JWT、会话、授权失效、网关过滤器等安全路径
+- 含计算、null 归零、占位、多步组装的 Converter / Assembler / MappingSupport
+
+**选写**：复杂工具类/解析规则；Architecture 包结构约束。
+
+**默认可不写**（禁止为凑覆盖率新增）：
+
+- 纯委托 Controller（`service.xxx` + `Result`）
+- 纯同名字段 MapStruct / 无分支字段拷贝
+- 枚举字面量断言、`Noop*` 的 `assertDoesNotThrow`
+
+## 强制流程
+
+1. 分析需求与风险层级。
+2. 对「必写」写/更新测试（正向 + 关键边界）；「可不写」不要新增。
+3. 实现业务代码（禁止魔术数字；类名 UpperCamelCase）。
+4. 跑相关模块测试（如 `./gradlew :module:test`）。
+5. 检查 Checkstyle/SonarLint，复杂度达标。
+
+## 禁止
+
+- 不带断言的测试。
+- 缺少 `@DisplayName`；复杂场景须在方法内简短注释意图。
+- 已有测试失败必须修到 `Test Passed`；不为覆盖率数字补样板测。

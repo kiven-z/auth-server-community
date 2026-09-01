@@ -1,0 +1,57 @@
+---
+description: Controller @Operation summary/description 统一写法（动词在前）
+globs: "**/*Controller.java,**/*Feign*.java"
+alwaysApply: false
+---
+
+# OpenAPI `@Operation` 规范
+
+## 职责拆分
+
+| 字段 | 写什么 | 不写什么 |
+|------|--------|----------|
+| `summary` | 中文业务动作，动词在前 | 副作用、空值约定、实现链路、表名/类名、括号补充 |
+| `description` | 可选；副作用、空值/幂等、覆盖策略等对接语义 | 重复 summary；废话 |
+
+`summary` 建议 ≤ 16 汉字；需要补充一律进 `description`。
+
+## summary 格式
+
+```text
+[批量?][动词][资源][限定语?]
+```
+
+### 动词表（统一用）
+
+| 场景 | 用 | 不用 |
+| ------ | ---- | ------ |
+| 增 | 新增 | 添加、创建 |
+| 改 | 更新 | 修改、编辑 |
+| 删 | 删除 / 批量删除 | — |
+| 查单条 | 查询…详情 | …详情（无动词） |
+| 分页 | 分页查询… | …分页查询 |
+| 列表/下拉 | 查询…列表 / 查询…下拉选项 | — |
+| 搜索 | 搜索… | …关键词搜索 |
+| 覆盖写 | 覆盖分配… / 全量分配… | 全量覆盖…（细节放 description） |
+| 启停 | 批量启停… | 批量启用/禁用 |
+| 导入导出 | 导出… Excel / 下载…导入模板 / 导入… Excel | …Excel 导出 |
+
+### 示例
+
+```java
+// ❌
+@Operation(summary = "全量分配角色权限码（触发 perm_version 失效）")
+@Operation(summary = "用户分页查询")
+@Operation(summary = "添加邮件模板")
+
+// ✅
+@Operation(summary = "全量分配角色权限码", description = "覆盖写；变更后触发授权失效")
+@Operation(summary = "分页查询用户")
+@Operation(summary = "新增邮件模板")
+```
+
+## 禁止塞进 summary
+
+- 括号补充：`（触发…）`、`（未配置返回 data=null）`、`（有则改、无则插）`
+- 实现链路：`反查 → 递增 → 刷新`
+- 技术标识：`perm_version`、表名、内部类名（除非运维接口本身就是技术面，也优先放 description）

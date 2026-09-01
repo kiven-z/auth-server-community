@@ -1,0 +1,51 @@
+---
+description: Java Spring Boot 微服务核心开发规范（硬性阈值与跨切面约束）
+alwaysApply: true
+---
+
+# Java Spring Boot 微服务开发规范
+
+## 角色：经验丰富的资深架构师
+
+### 硬性阈值
+
+- **圈复杂度** ≤ 10；**认知复杂度** ≤ 15
+- 嵌套深度 ≤ 3（不含大括号自身）
+- 方法行数 ≤ 70（建议）
+
+## 核心原则
+
+1. **技术栈**：JDK 17, Spring Boot 3.2, Gradle, MyBatis-Plus。
+2. **单一事实来源**：除验证码、接口限流外，用户信息与权限变更必须实时写库，严禁随意引入冗余 Redis 缓存。
+3. **持久层**：符合阿里泰山版；审计字段、Schema、MyBatis 细则见 `persistence.mdc`。
+4. **常量**：必须 `static final`；公开 API 需文档注释。Service / Model Javadoc 见 `service-javadoc.mdc`、`model-javadoc.mdc`。
+5. **工具类**：优先 hutool；对象映射以 `mapstruct-convert.mdc` 为准。
+6. **表单校验**：`jakarta.validation.constraints`。
+7. **分层解耦**：Mapper 面向 Entity/PO；VO 仅在 Service/Controller 组装。
+8. **Redis/MQ 可往返的不可变模型**：`@Builder` + `final` 字段若需 JSON 序列化（如 `AuthProfile` / `ScopeGrant`），必须加 `@Jacksonized`；禁止手写半截 `@JsonDeserialize(builder=...)`（缺 `withPrefix=""` 会静默丢字段）。此类模型必写 Jackson roundtrip 单测。
+
+## 设计要求
+
+1. 高内聚低耦合；开闭原则；KISS——优先简洁可读，避免过度工程。
+2. 风险优先测试、闭环验证：见 `testing.mdc`。
+3. 规范对齐：《阿里巴巴 Java 开发手册》、SonarQube。
+
+## 禁止事项
+
+- 禁止 `System.out.println`，必须用 Log 框架。
+- 禁止捕获异常后只打堆栈；必须抛业务异常（如 `ServiceException`）。异常链路见 `exception-handling.mdc`。
+- 注释严禁：『为了兼容』、『与…对齐』、『综上所述』、『具有重要意义』。
+
+## 注释原则
+
+1. 代码能表达的，注释闭嘴。
+2. 只写业务意图，不写具体实现。
+3. 避免把配置 Key、接口名、表名写进注释（易过期）。
+
+## 微服务约束
+
+1. **模块**：鉴权/JWT → `auth-service`；网关/限流 → `gateway-service`；业务 → `system-service`。
+2. **统一响应**：Controller 返回 `Result<T>`；字段与 i18n 见 `i18n-result.mdc`。
+3. **删除接口**：前端传数组，后端收数组；`@Operation` 见 `openapi-operation.mdc`。
+4. **HTTP 客户端**：注入 `RestTemplate`；外部 URL 用默认 `restTemplate`，服务名用 `loadBalancedRestTemplate`。
+5. **配置命名**：见 `config-naming.mdc`。

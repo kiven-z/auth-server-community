@@ -1,0 +1,28 @@
+---
+description: 审计字段、Schema 优先与 MyBatis-Plus 持久层规范
+globs: "**/mapper/**/*.java,**/model/entity/**/*.java,**/*Mapper.xml,**/db/**"
+alwaysApply: false
+---
+
+# 数据库与持久层
+
+## 审计字段
+
+- 表必须含：`created_at`、`updated_at`、`created_by`、`updated_by`、`version`、`remark`；逻辑删除加 `is_deleted`。
+- 分页查询返回须含：`created_at`、`updated_at`、`created_by`、`updated_by`（除非明确不需要）。
+
+## Schema 优先
+
+表结构不足或缺字段时：先在后端 `db` 目录输出 `ALTER TABLE` / `CREATE TABLE`（注释说明用途），**确认后再写 Java**。
+
+## MyBatis-Plus
+
+- 必须用 MyBatis-Plus；优先 `XML Mapper`，严禁 Service 层拼接原生 SQL 字符串。
+- Mapper 面向 Entity/PO；VO 不在 Mapper 层组装。
+- XML 标签头加注释，例如：
+
+```xml
+<!-- 分页查询日志 -->
+<select id="selectListByPage" resultType="...">
+</select>
+```
