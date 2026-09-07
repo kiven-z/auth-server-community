@@ -21,41 +21,41 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class UserConfigProperties {
 
-    /**
-     * 历史密码保留天数
-     */
-    @Max(365)
-    @Min(1)
-    @NotNull
-    private Integer passwordHistoryRetentionDays = 30;
+	/**
+	 * 历史密码保留天数
+	 */
+	@Max(365)
+	@Min(1)
+	@NotNull
+	private Integer passwordHistoryRetentionDays = 30;
 
-    /**
-     * 历史密码检查次数
-     */
-    @Max(20)
-    @Min(1)
-    @NotNull
-    private Integer passwordHistoryCheckCount = 5;
+	/**
+	 * 历史密码检查次数
+	 */
+	@Max(20)
+	@Min(1)
+	@NotNull
+	private Integer passwordHistoryCheckCount = 5;
 
-    /**
-     * 最大密码尝试次数
-     */
-    @Max(30)
-    @Min(3)
-    @NotNull
-    private Integer maxPasswordAttempts = 6;
+	/**
+	 * 最大密码尝试次数
+	 */
+	@Max(30)
+	@Min(3)
+	@NotNull
+	private Integer maxPasswordAttempts = 6;
 
-    /**
-     * 最大会话数
-     */
-    @Max(100)
-    @Min(1)
-    @NotNull
-    private Integer maxSessionCount = 3;
+	/**
+	 * 最大会话数
+	 */
+	@Max(100)
+	@Min(1)
+	@NotNull
+	private Integer maxSessionCount = 3;
 
-    /**
-     * 会话限制策略
-     */
-    private SessionLimitStrategy sessionLimitStrategy = SessionLimitStrategy.EVICT_OLDEST;
+	/**
+	 * 会话限制策略
+	 */
+	private SessionLimitStrategy sessionLimitStrategy = SessionLimitStrategy.EVICT_OLDEST;
 
 }
