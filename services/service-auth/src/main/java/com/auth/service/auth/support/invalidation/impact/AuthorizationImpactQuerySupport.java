@@ -2,7 +2,6 @@ package com.auth.service.auth.support.invalidation.impact;
 
 import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.constants.BatchSizes;
-import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
 import com.auth.module.security.contract.dto.invalidation.GrantSubjectKey;
 import com.auth.service.auth.mapper.AuthorizationImpactMapper;
 import com.auth.service.auth.util.BatchPartition;
@@ -44,23 +43,27 @@ public class AuthorizationImpactQuerySupport {
 	}
 
 	/**
-	 * 按 grant_table 授权主体反查受影响用户 ID（仅 USER）。
+	 * 按 grant_table 授权主体反查受影响用户 ID。
 	 * @param subjects 授权主体键列表
 	 * @return 去重后的用户 ID 集合
 	 */
 	public Set<Long> findUserIdsByGrantSubjects(Collection<GrantSubjectKey> subjects) {
-		List<Long> userSubjectIds = subjects.stream()
-			.filter(subject -> subject.subjectType() == GrantTableSubjectType.USER)
-			.map(GrantSubjectKey::subjectId)
-			.filter(Objects::nonNull)
-			.distinct()
-			.toList();
-		if (userSubjectIds.isEmpty()) {
-			return Set.of();
+		Set<Long> userIds = new HashSet<>();
+		List<Long> userSubjectIds = new ArrayList<>();
+		List<Long> deptSubjectIds = new ArrayList<>();
+		List<Long> postSubjectIds = new ArrayList<>();
+
+		for (GrantSubjectKey subject : subjects) {
+			switch (subject.subjectType()) {
+				case USER -> userSubjectIds.add(subject.subjectId());
+				case DEPT -> deptSubjectIds.add(subject.subjectId());
+				case POST -> postSubjectIds.add(subject.subjectId());
+			}
 		}
 
-		Set<Long> userIds = new HashSet<>();
 		queryLongKeysInBatches(userSubjectIds, authorizationImpactMapper::selectUserIdsByGrantUserSubjectIds, userIds);
+		queryLongKeysInBatches(deptSubjectIds, authorizationImpactMapper::selectUserIdsByGrantDeptSubjectIds, userIds);
+		queryLongKeysInBatches(postSubjectIds, authorizationImpactMapper::selectUserIdsByGrantPostSubjectIds, userIds);
 		return Set.copyOf(userIds);
 	}
 

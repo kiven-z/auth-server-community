@@ -5,10 +5,12 @@ import com.auth.common.core.constants.BatchSizes;
 import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.common.core.utils.FieldChangeSupport;
 import com.auth.common.data.model.PageResponse;
+import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.convert.admin.SysPostConverter;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
+import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.PostRelationQueryMapper;
 import com.auth.service.system.admin.model.entity.SysPostEntity;
 import com.auth.service.system.admin.model.form.post.SysPostForm;
@@ -58,6 +60,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 
 	private final PostRelationQueryMapper postRelationQueryMapper;
 
+	private final GrantBindingQueryMapper grantBindingQueryMapper;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -98,6 +102,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 		DeptReferencePO boundDept = baseMapper.selectBoundDeptByPostId(id);
 		detail.setBoundDept(ReferenceConverter.INSTANCE.toDeptReference(boundDept));
 		detail.setBoundUserCount(postRelationQueryMapper.countUsersByPostId(id, null));
+		detail.setBoundRoleCount(
+				grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.POST.name(), id, null));
 
 		auditUserDisplayService.enrichAuditUsernames(Collections.singletonList(detail), null, null);
 		return detail;

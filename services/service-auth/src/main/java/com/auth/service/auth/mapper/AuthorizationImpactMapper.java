@@ -28,6 +28,20 @@ public interface AuthorizationImpactMapper {
 	List<Long> selectUserIdsByGrantUserSubjectIds(@Param("subjectIds") List<Long> subjectIds);
 
 	/**
+	 * 按 grant_table DEPT 主体 ID 反查成员用户 ID（含子部门；不依赖 grant 行）
+	 * @param subjectIds DEPT 主体 ID 列表，非空
+	 * @return 用户 ID 列表
+	 */
+	List<Long> selectUserIdsByGrantDeptSubjectIds(@Param("subjectIds") List<Long> subjectIds);
+
+	/**
+	 * 按 grant_table POST 主体 ID 反查成员用户 ID（不依赖 grant 行）
+	 * @param subjectIds POST 主体 ID 列表，非空
+	 * @return 用户 ID 列表
+	 */
+	List<Long> selectUserIdsByGrantPostSubjectIds(@Param("subjectIds") List<Long> subjectIds);
+
+	/**
 	 * 按部门 ID 反查成员用户 ID（含子部门）。
 	 * @param deptIds 部门 ID 列表，非空
 	 * @return 用户 ID 列表

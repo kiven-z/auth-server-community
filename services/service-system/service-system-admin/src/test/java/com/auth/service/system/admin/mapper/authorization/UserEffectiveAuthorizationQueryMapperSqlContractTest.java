@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * SQL 契约：用户生效授权展开仅 USER 直授，不经视图/任职 UNION
+ * SQL 契约：用户生效授权展开走 v_user_grant_subjects，不在 Mapper 重复 UNION
  */
 @DisplayName("UserEffectiveAuthorizationQueryMapper SQL 契约")
 class UserEffectiveAuthorizationQueryMapperSqlContractTest {
@@ -33,12 +33,11 @@ class UserEffectiveAuthorizationQueryMapperSqlContractTest {
 	}
 
 	@Test
-	@DisplayName("生效角色/权限：grant_table USER 直授，不含任职 UNION / 闭包 / 视图")
-	void effectiveAuthorizationUsesUserDirectGrants() throws IOException {
+	@DisplayName("生效角色/权限：JOIN v_user_grant_subjects，不含任职 UNION / 闭包")
+	void effectiveAuthorizationJoinsGrantSubjectsView() throws IOException {
 		String xml = readClasspathText();
 
 		assertThat(xml).doesNotContain("userSubjectsForFunctionalGrantByUserId")
-			.doesNotContain("v_user_grant_subjects")
 			.doesNotContain("UNION ALL")
 			.doesNotContain("dept_closure")
 			.doesNotContain("da.status = 1")
@@ -46,18 +45,14 @@ class UserEffectiveAuthorizationQueryMapperSqlContractTest {
 
 		assertThat(selectBlock(xml, "countPostsByUserId")).contains("v_user_post_effective");
 		assertThat(selectBlock(xml, "countDeptsByUserId")).contains("v_user_dept_effective");
-		assertThat(selectBlock(xml, "countEffectiveRolesByUserId")).contains("grant_table gt")
-			.contains("subject_type = 'USER'")
-			.contains("gt.subject_id = #{userId}");
-		assertThat(selectBlock(xml, "selectEffectiveRolesByUserIdPage")).contains("grant_table gt")
-			.contains("subject_type = 'USER'")
-			.contains("gt.subject_id = #{userId}");
-		assertThat(selectBlock(xml, "countEffectivePermissionsByUserId")).contains("grant_table gt")
-			.contains("subject_type = 'USER'")
-			.contains("gt.subject_id = #{userId}");
-		assertThat(selectBlock(xml, "selectEffectivePermissionsByUserIdPage")).contains("grant_table gt")
-			.contains("subject_type = 'USER'")
-			.contains("gt.subject_id = #{userId}");
+		assertThat(selectBlock(xml, "countEffectiveRolesByUserId")).contains("v_user_grant_subjects")
+			.contains("us.user_id = #{userId}");
+		assertThat(selectBlock(xml, "selectEffectiveRolesByUserIdPage")).contains("v_user_grant_subjects")
+			.contains("us.user_id = #{userId}");
+		assertThat(selectBlock(xml, "countEffectivePermissionsByUserId")).contains("v_user_grant_subjects")
+			.contains("us.user_id = #{userId}");
+		assertThat(selectBlock(xml, "selectEffectivePermissionsByUserIdPage")).contains("v_user_grant_subjects")
+			.contains("us.user_id = #{userId}");
 	}
 
 }

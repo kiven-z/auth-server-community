@@ -3,8 +3,10 @@ package com.auth.service.system.admin.service.authorization.query;
 import com.auth.common.data.model.PageResponse;
 import com.auth.service.system.admin.model.query.authorization.DeptPostPageQuery;
 import com.auth.service.system.admin.model.query.authorization.DeptUserPageQuery;
+import com.auth.service.system.admin.model.query.authorization.SubjectRolePageQuery;
 import com.auth.service.system.admin.model.vo.authorization.DeptAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.PostReferenceVO;
+import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.ext.DeptBoundUserReferenceVO;
 
 /**
@@ -29,6 +31,14 @@ public interface DeptAuthorizationSurfaceService {
 	 * @return 分页数据
 	 */
 	PageResponse<PostReferenceVO> pagePosts(Long deptId, DeptPostPageQuery query);
+
+	/**
+	 * 分页查询部门已授角色
+	 * @param deptId 部门 ID
+	 * @param query 查询条件
+	 * @return 分页数据
+	 */
+	PageResponse<RoleReferenceVO> pageRoles(Long deptId, SubjectRolePageQuery query);
 
 	/**
 	 * 查询部门授权面摘要

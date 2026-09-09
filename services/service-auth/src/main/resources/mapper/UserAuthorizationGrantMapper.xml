@@ -2,37 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auth.service.auth.mapper.UserAuthorizationGrantMapper">
 
-    <!-- 批量查询用户角色码（仅 USER 直授） -->
+    <!-- 批量查询用户角色码 -->
     <select id="selectRoleRowsByUserIds"
             resultType="com.auth.service.auth.model.po.authorization.UserGrantCodeRowPO">
         SELECT DISTINCT
-            gt.subject_id AS userId,
+            us.user_id AS userId,
             r.role_code AS code
         FROM
-            grant_table gt
+            v_user_grant_subjects us
+            JOIN grant_table gt ON gt.subject_type = us.sub_type
+            AND gt.subject_id = us.sub_id
             JOIN sys_role r ON r.id = gt.role_id
         WHERE
-            gt.subject_type = 'USER'
-            AND gt.subject_id IN
+            us.user_id IN
         <foreach collection="userIds" item="userId" open="(" separator="," close=")">
             #{userId}
         </foreach>
         AND r.status = 1
     </select>
 
-    <!-- 批量查询用户权限码（仅 USER 直授） -->
+    <!-- 批量查询用户权限码 -->
     <select id="selectPermissionRowsByUserIds"
             resultType="com.auth.service.auth.model.po.authorization.UserGrantCodeRowPO">
         WITH all_role_ids AS (
         SELECT DISTINCT
-        gt.subject_id AS user_id,
+        us.user_id AS user_id,
         r.id AS role_id
         FROM
-        grant_table gt
+        v_user_grant_subjects us
+        JOIN grant_table gt ON gt.subject_type = us.sub_type
+        AND gt.subject_id = us.sub_id
         JOIN sys_role r ON r.id = gt.role_id
         WHERE
-        gt.subject_type = 'USER'
-        AND gt.subject_id IN
+        us.user_id IN
         <foreach collection="userIds" item="userId" open="(" separator="," close=")">
             #{userId}
         </foreach>

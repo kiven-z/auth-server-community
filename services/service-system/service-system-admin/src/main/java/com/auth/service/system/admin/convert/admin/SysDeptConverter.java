@@ -94,6 +94,7 @@ public interface SysDeptConverter {
 	@Mapping(target = "effective", ignore = true)
 	@Mapping(target = "boundUserCount", ignore = true)
 	@Mapping(target = "boundPostCount", ignore = true)
+	@Mapping(target = "boundRoleCount", ignore = true)
 	SysDeptDetailVO toDetailVo(SysDeptEntity entity);
 
 }

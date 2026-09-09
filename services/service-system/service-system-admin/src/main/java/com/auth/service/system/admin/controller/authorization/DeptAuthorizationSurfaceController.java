@@ -4,8 +4,10 @@ import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
 import com.auth.service.system.admin.model.query.authorization.DeptPostPageQuery;
 import com.auth.service.system.admin.model.query.authorization.DeptUserPageQuery;
+import com.auth.service.system.admin.model.query.authorization.SubjectRolePageQuery;
 import com.auth.service.system.admin.model.vo.authorization.DeptAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.PostReferenceVO;
+import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.ext.DeptBoundUserReferenceVO;
 import com.auth.service.system.admin.service.authorization.query.DeptAuthorizationSurfaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Bunny
  */
-@Tag(name = "部门授权面", description = "关联用户岗位分页与授权摘要")
+@Tag(name = "部门授权面", description = "关联用户岗位角色分页与授权摘要")
 @RequiredArgsConstructor
 @RequestMapping("/api/system/dept")
 @RestController
@@ -45,6 +47,15 @@ public class DeptAuthorizationSurfaceController {
 	public Result<PageResponse<PostReferenceVO>> pagePosts(@PathVariable("deptId") Long deptId,
 			DeptPostPageQuery query) {
 		PageResponse<PostReferenceVO> response = deptAuthorizationSurfaceService.pagePosts(deptId, query);
+		return Result.success(response);
+	}
+
+	@Operation(summary = "分页查询部门已授角色")
+	@PreAuthorize("@auth.decide('sys:dept:query')")
+	@GetMapping("/{deptId}/roles/page")
+	public Result<PageResponse<RoleReferenceVO>> pageRoles(@PathVariable("deptId") Long deptId,
+			SubjectRolePageQuery query) {
+		PageResponse<RoleReferenceVO> response = deptAuthorizationSurfaceService.pageRoles(deptId, query);
 		return Result.success(response);
 	}
 

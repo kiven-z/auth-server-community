@@ -22,15 +22,16 @@
             up.user_id = #{userId}
     </select>
 
-    <!-- 统计用户生效角色（仅 USER 直授 + 启用） -->
+    <!-- 统计用户生效角色（仅启用） -->
     <select id="countEffectiveRolesByUserId" resultType="long">
         SELECT COUNT(1)
         FROM (
         SELECT DISTINCT r.id
-        FROM grant_table gt
+        FROM v_user_grant_subjects us
+        JOIN grant_table gt ON gt.subject_type = us.sub_type
+        AND gt.subject_id = us.sub_id
         JOIN sys_role r ON r.id = gt.role_id
-        WHERE gt.subject_type = 'USER'
-        AND gt.subject_id = #{userId}
+        WHERE us.user_id = #{userId}
         AND r.status = 1
         <if test="query != null and query.roleCode != null and query.roleCode != ''">
             AND r.role_code LIKE CONCAT('%', #{query.roleCode}, '%')
@@ -41,7 +42,7 @@
         ) t
     </select>
 
-    <!-- 分页查询用户生效角色（仅 USER 直授 + 启用） -->
+    <!-- 分页查询用户生效角色（仅启用） -->
     <select id="selectEffectiveRolesByUserIdPage"
             resultType="com.auth.service.system.admin.model.po.reference.RoleReferencePO">
         SELECT DISTINCT
@@ -50,11 +51,12 @@
             r.role_name,
             r.status
         FROM
-            grant_table gt
+            v_user_grant_subjects us
+            JOIN grant_table gt ON gt.subject_type = us.sub_type
+            AND gt.subject_id = us.sub_id
             JOIN sys_role r ON r.id = gt.role_id
         WHERE
-            gt.subject_type = 'USER'
-            AND gt.subject_id = #{userId}
+            us.user_id = #{userId}
             AND r.status = 1
         <if test="query != null and query.roleCode != null and query.roleCode != ''">
             AND r.role_code LIKE CONCAT('%', #{query.roleCode}, '%')
@@ -66,14 +68,15 @@
             r.role_code
     </select>
 
-    <!-- 统计用户生效权限（仅 USER 直授 + 启用角色 + 启用权限） -->
+    <!-- 统计用户生效权限（仅启用角色 + 启用权限） -->
     <select id="countEffectivePermissionsByUserId" resultType="long">
         WITH all_role_ids AS (
         SELECT DISTINCT r.id AS role_id
-        FROM grant_table gt
+        FROM v_user_grant_subjects us
+        JOIN grant_table gt ON gt.subject_type = us.sub_type
+        AND gt.subject_id = us.sub_id
         JOIN sys_role r ON r.id = gt.role_id
-        WHERE gt.subject_type = 'USER'
-        AND gt.subject_id = #{userId}
+        WHERE us.user_id = #{userId}
         AND r.status = 1
         )
         SELECT COUNT(1)
@@ -92,7 +95,7 @@
         ) t
     </select>
 
-    <!-- 分页查询用户生效权限（仅 USER 直授 + 启用角色 + 启用权限） -->
+    <!-- 分页查询用户生效权限（仅启用角色 + 启用权限） -->
     <select id="selectEffectivePermissionsByUserIdPage"
             resultType="com.auth.service.system.admin.model.po.reference.PermissionReferencePO">
         WITH
@@ -100,11 +103,12 @@
                 SELECT DISTINCT
                     r.id AS role_id
                 FROM
-                    grant_table gt
+                    v_user_grant_subjects us
+                    JOIN grant_table gt ON gt.subject_type = us.sub_type
+                    AND gt.subject_id = us.sub_id
                     JOIN sys_role r ON r.id = gt.role_id
                 WHERE
-                    gt.subject_type = 'USER'
-                    AND gt.subject_id = #{userId}
+                    us.user_id = #{userId}
                     AND r.status = 1
             )
         SELECT DISTINCT

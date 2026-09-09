@@ -13,7 +13,17 @@ public enum GrantTableSubjectType {
 	/**
 	 * 用户
 	 */
-	USER("用户");
+	USER("用户"),
+
+	/**
+	 * 部门
+	 */
+	DEPT("部门"),
+
+	/**
+	 * 岗位
+	 */
+	POST("岗位"),;
 
 	private final String description;
 

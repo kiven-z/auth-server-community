@@ -48,4 +48,7 @@ public class SysDeptDetailVO extends BaseResponse {
 	@Schema(title = "下属岗位数")
 	private Long boundPostCount;
 
+	@Schema(title = "已授权角色数")
+	private Long boundRoleCount;
+
 }

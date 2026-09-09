@@ -57,7 +57,7 @@ class AuthorizationImpactQuerySupportTest {
 
 	@Test
 	@DisplayName("按 grant USER 主体反查用户")
-	void findUserIdsByGrantSubjects_shouldResolveUserSubjectsOnly() {
+	void findUserIdsByGrantSubjects_shouldResolveUserSubjects() {
 		when(authorizationImpactMapper.selectUserIdsByGrantUserSubjectIds(List.of(10L))).thenReturn(List.of(10L));
 
 		Set<Long> userIds = impactQuery
@@ -65,6 +65,21 @@ class AuthorizationImpactQuerySupportTest {
 
 		assertEquals(Set.of(10L), userIds);
 		verify(authorizationImpactMapper).selectUserIdsByGrantUserSubjectIds(List.of(10L));
+	}
+
+	@Test
+	@DisplayName("按 grant DEPT/POST 主体反查成员用户")
+	void findUserIdsByGrantSubjects_shouldResolveDeptAndPostSubjects() {
+		when(authorizationImpactMapper.selectUserIdsByGrantDeptSubjectIds(List.of(20L))).thenReturn(List.of(2L, 3L));
+		when(authorizationImpactMapper.selectUserIdsByGrantPostSubjectIds(List.of(30L))).thenReturn(List.of(3L, 4L));
+
+		Set<Long> userIds = impactQuery
+			.findUserIdsByGrantSubjects(List.of(new GrantSubjectKey(GrantTableSubjectType.DEPT, 20L),
+					new GrantSubjectKey(GrantTableSubjectType.POST, 30L)));
+
+		assertEquals(Set.of(2L, 3L, 4L), userIds);
+		verify(authorizationImpactMapper).selectUserIdsByGrantDeptSubjectIds(List.of(20L));
+		verify(authorizationImpactMapper).selectUserIdsByGrantPostSubjectIds(List.of(30L));
 	}
 
 	@Test

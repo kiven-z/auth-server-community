@@ -1,15 +1,20 @@
 package com.auth.service.system.admin.service.authorization.query.impl;
 
 import com.auth.common.data.model.PageResponse;
+import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.convert.authorization.AuthorizationSurfaceConverter;
 import com.auth.service.system.admin.mapper.authorization.DeptRelationQueryMapper;
+import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.model.po.dept.SysDeptBoundUserPO;
 import com.auth.service.system.admin.model.po.reference.PostReferencePO;
+import com.auth.service.system.admin.model.po.reference.RoleReferencePO;
 import com.auth.service.system.admin.model.query.authorization.DeptPostPageQuery;
 import com.auth.service.system.admin.model.query.authorization.DeptUserPageQuery;
+import com.auth.service.system.admin.model.query.authorization.SubjectRolePageQuery;
 import com.auth.service.system.admin.model.vo.authorization.DeptAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.PostReferenceVO;
+import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.ext.DeptBoundUserReferenceVO;
 import com.auth.service.system.admin.service.authorization.query.DeptAuthorizationSurfaceService;
 import com.auth.service.system.admin.support.dept.DeptReferenceChecker;
@@ -32,6 +37,8 @@ public class DeptAuthorizationSurfaceServiceImpl implements DeptAuthorizationSur
 	private final DeptReferenceChecker deptReferenceChecker;
 
 	private final DeptRelationQueryMapper deptRelationQueryMapper;
+
+	private final GrantBindingQueryMapper grantBindingQueryMapper;
 
 	/**
 	 * {@inheritDoc}
@@ -68,12 +75,30 @@ public class DeptAuthorizationSurfaceServiceImpl implements DeptAuthorizationSur
 	 * {@inheritDoc}
 	 */
 	@Override
+	public PageResponse<RoleReferenceVO> pageRoles(Long deptId, SubjectRolePageQuery query) {
+		deptReferenceChecker.getExistingActive(deptId);
+		long total = grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.DEPT.name(), deptId, query);
+
+		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		IPage<RoleReferencePO> page = grantBindingQueryMapper.selectBoundRolesBySubjectPage(pageParams,
+				GrantTableSubjectType.DEPT.name(), deptId, query);
+
+		IPage<RoleReferenceVO> convert = page.convert(ReferenceConverter.INSTANCE::toRoleReference);
+		return PageResponse.of(convert);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public DeptAuthorizationSummaryVO getAuthorizationSummary(Long deptId) {
 		deptReferenceChecker.getExistingActive(deptId);
 
 		DeptAuthorizationSummaryVO summary = new DeptAuthorizationSummaryVO();
 		summary.setBoundUserCount(deptRelationQueryMapper.countUsersByDeptId(deptId, null));
 		summary.setBoundPostCount(deptRelationQueryMapper.countPostsByDeptId(deptId, null));
+		summary.setBoundRoleCount(
+				grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.DEPT.name(), deptId, null));
 		return summary;
 	}
 

@@ -1,11 +1,17 @@
 package com.auth.service.system.admin.service.authorization.query.impl;
 
 import com.auth.common.data.model.PageResponse;
+import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
+import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.convert.authorization.AuthorizationSurfaceConverter;
+import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.PostRelationQueryMapper;
 import com.auth.service.system.admin.model.po.post.SysPostBoundUserPO;
+import com.auth.service.system.admin.model.po.reference.RoleReferencePO;
 import com.auth.service.system.admin.model.query.authorization.PostUserPageQuery;
+import com.auth.service.system.admin.model.query.authorization.SubjectRolePageQuery;
 import com.auth.service.system.admin.model.vo.authorization.PostAuthorizationSummaryVO;
+import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.ext.PostBoundUserReferenceVO;
 import com.auth.service.system.admin.service.authorization.query.PostAuthorizationSurfaceService;
 import com.auth.service.system.admin.support.post.PostReferenceChecker;
@@ -29,6 +35,8 @@ public class PostAuthorizationSurfaceServiceImpl implements PostAuthorizationSur
 
 	private final PostRelationQueryMapper postRelationQueryMapper;
 
+	private final GrantBindingQueryMapper grantBindingQueryMapper;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -49,11 +57,29 @@ public class PostAuthorizationSurfaceServiceImpl implements PostAuthorizationSur
 	 * {@inheritDoc}
 	 */
 	@Override
+	public PageResponse<RoleReferenceVO> pageRoles(Long postId, SubjectRolePageQuery query) {
+		postReferenceChecker.getExistingActive(postId);
+		long total = grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.POST.name(), postId, query);
+
+		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		IPage<RoleReferencePO> page = grantBindingQueryMapper.selectBoundRolesBySubjectPage(pageParams,
+				GrantTableSubjectType.POST.name(), postId, query);
+
+		IPage<RoleReferenceVO> convert = page.convert(ReferenceConverter.INSTANCE::toRoleReference);
+		return PageResponse.of(convert);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public PostAuthorizationSummaryVO getAuthorizationSummary(Long postId) {
 		postReferenceChecker.getExistingActive(postId);
 
 		PostAuthorizationSummaryVO summary = new PostAuthorizationSummaryVO();
 		summary.setBoundUserCount(postRelationQueryMapper.countUsersByPostId(postId, null));
+		summary.setBoundRoleCount(
+				grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.POST.name(), postId, null));
 		return summary;
 	}
 

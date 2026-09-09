@@ -3,7 +3,9 @@ package com.auth.service.system.admin.service.admin.impl;
 import com.auth.common.core.constants.BatchSizes;
 import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
+import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
+import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.PostRelationQueryMapper;
 import com.auth.service.system.admin.model.entity.SysPostEntity;
 import com.auth.service.system.admin.model.form.post.SysPostForm;
@@ -54,6 +56,9 @@ class SysPostServiceImplTest {
 	@Mock
 	private PostRelationQueryMapper postRelationQueryMapper;
 
+	@Mock
+	private GrantBindingQueryMapper grantBindingQueryMapper;
+
 	private SysPostServiceImpl sysPostService;
 
 	private static SysPostForm minimalForm(Long deptId, String postCode, String postName) {
@@ -85,7 +90,7 @@ class SysPostServiceImplTest {
 	void setUp() throws Exception {
 		PostReferenceChecker postReferenceChecker = new PostReferenceChecker(sysPostMapper);
 		sysPostService = spy(new SysPostServiceImpl(auditUserDisplayService, postInvalidationTrigger,
-				postReferenceChecker, postRelationQueryMapper));
+				postReferenceChecker, postRelationQueryMapper, grantBindingQueryMapper));
 		Field baseMapperField = CrudRepository.class.getDeclaredField("baseMapper");
 		baseMapperField.setAccessible(true);
 		baseMapperField.set(sysPostService, sysPostMapper);
@@ -138,6 +143,7 @@ class SysPostServiceImplTest {
 			.isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
 
 		verifyNoInteractions(postRelationQueryMapper);
+		verifyNoInteractions(grantBindingQueryMapper);
 		verify(auditUserDisplayService, never()).enrichAuditUsernames(anyList(), isNull(), isNull());
 	}
 
@@ -160,6 +166,8 @@ class SysPostServiceImplTest {
 		when(sysPostMapper.countEffectiveById(postId)).thenReturn(1L);
 		when(sysPostMapper.selectBoundDeptByPostId(postId)).thenReturn(boundDept);
 		when(postRelationQueryMapper.countUsersByPostId(postId, null)).thenReturn(1L);
+		when(grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.POST.name(), postId, null))
+			.thenReturn(1L);
 
 		SysPostDetailVO detail = sysPostService.getDetail(postId);
 
@@ -170,9 +178,11 @@ class SysPostServiceImplTest {
 		assertThat(detail.getBoundDept()).isNotNull();
 		assertThat(detail.getBoundDept().getDeptName()).isEqualTo("研发部");
 		assertThat(detail.getBoundUserCount()).isEqualTo(1L);
+		assertThat(detail.getBoundRoleCount()).isEqualTo(1L);
 		verify(sysPostMapper).countEffectiveById(postId);
 		verify(sysPostMapper).selectBoundDeptByPostId(postId);
 		verify(postRelationQueryMapper).countUsersByPostId(postId, null);
+		verify(grantBindingQueryMapper).countBoundRolesBySubject(GrantTableSubjectType.POST.name(), postId, null);
 		verify(auditUserDisplayService).enrichAuditUsernames(anyList(), isNull(), isNull());
 	}
 

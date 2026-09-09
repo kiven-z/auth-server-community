@@ -1,6 +1,7 @@
 package com.auth.service.system.admin.service.admin;
 
 import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
+import com.auth.service.system.admin.model.form.granttable.GrantTableAssignRoleForm;
 import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 
 import java.util.List;
@@ -27,6 +28,14 @@ public interface GrantTableService {
 	 * @return 已绑定角色回显列表
 	 */
 	List<RoleReferenceVO> listBoundRoles(GrantTableSubjectType subjectType, Long subjectId);
+
+	/**
+	 * 全量覆盖组织主体角色授权
+	 * @param subjectType 主体类型（DEPT/POST）
+	 * @param subjectId 主体 ID
+	 * @param form 角色 ID 列表
+	 */
+	void replaceOrgSubjectRoles(GrantTableSubjectType subjectType, Long subjectId, GrantTableAssignRoleForm form);
 
 	/**
 	 * 全量覆盖主体角色授权

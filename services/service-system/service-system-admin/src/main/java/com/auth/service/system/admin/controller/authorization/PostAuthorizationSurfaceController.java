@@ -3,7 +3,9 @@ package com.auth.service.system.admin.controller.authorization;
 import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
 import com.auth.service.system.admin.model.query.authorization.PostUserPageQuery;
+import com.auth.service.system.admin.model.query.authorization.SubjectRolePageQuery;
 import com.auth.service.system.admin.model.vo.authorization.PostAuthorizationSummaryVO;
+import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.ext.PostBoundUserReferenceVO;
 import com.auth.service.system.admin.service.authorization.query.PostAuthorizationSurfaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Bunny
  */
-@Tag(name = "岗位授权面", description = "关联用户分页与授权摘要")
+@Tag(name = "岗位授权面", description = "关联用户角色分页与授权摘要")
 @RequiredArgsConstructor
 @RequestMapping("/api/system/post")
 @RestController
@@ -34,6 +36,15 @@ public class PostAuthorizationSurfaceController {
 	public Result<PageResponse<PostBoundUserReferenceVO>> pageUsers(@PathVariable("postId") Long postId,
 			PostUserPageQuery query) {
 		PageResponse<PostBoundUserReferenceVO> response = postAuthorizationSurfaceService.pageUsers(postId, query);
+		return Result.success(response);
+	}
+
+	@Operation(summary = "分页查询岗位已授角色")
+	@PreAuthorize("@auth.decide('sys:post:query')")
+	@GetMapping("/{postId}/roles/page")
+	public Result<PageResponse<RoleReferenceVO>> pageRoles(@PathVariable("postId") Long postId,
+			SubjectRolePageQuery query) {
+		PageResponse<RoleReferenceVO> response = postAuthorizationSurfaceService.pageRoles(postId, query);
 		return Result.success(response);
 	}
 

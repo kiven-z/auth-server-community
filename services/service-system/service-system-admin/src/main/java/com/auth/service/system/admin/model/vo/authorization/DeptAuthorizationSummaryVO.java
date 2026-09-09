@@ -22,4 +22,7 @@ public class DeptAuthorizationSummaryVO {
 	@Schema(title = "下属岗位数")
 	private Long boundPostCount;
 
+	@Schema(title = "已授角色数")
+	private Long boundRoleCount;
+
 }

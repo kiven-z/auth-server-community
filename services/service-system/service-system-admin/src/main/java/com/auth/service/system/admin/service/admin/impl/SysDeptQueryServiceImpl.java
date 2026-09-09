@@ -1,9 +1,11 @@
 package com.auth.service.system.admin.service.admin.impl;
 
 import com.auth.common.data.model.PageResponse;
+import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.SysDeptConverter;
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.authorization.DeptRelationQueryMapper;
+import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.model.entity.SysDeptEntity;
 import com.auth.service.system.admin.model.po.dept.SysDeptPageRowPO;
 import com.auth.service.system.admin.model.query.dept.SysDeptListQuery;
@@ -38,6 +40,8 @@ public class SysDeptQueryServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptE
 	private final DeptReferenceChecker deptReferenceChecker;
 
 	private final DeptRelationQueryMapper deptRelationQueryMapper;
+
+	private final GrantBindingQueryMapper grantBindingQueryMapper;
 
 	/**
 	 * {@inheritDoc}
@@ -75,6 +79,8 @@ public class SysDeptQueryServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptE
 		detail.setEffective(baseMapper.countEffectiveById(id) > 0);
 		detail.setBoundUserCount(deptRelationQueryMapper.countUsersByDeptId(id, null));
 		detail.setBoundPostCount(deptRelationQueryMapper.countPostsByDeptId(id, null));
+		detail.setBoundRoleCount(
+				grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.DEPT.name(), id, null));
 
 		auditUserDisplayService.enrichAuditUsernames(Collections.singletonList(detail), null, null);
 		return detail;

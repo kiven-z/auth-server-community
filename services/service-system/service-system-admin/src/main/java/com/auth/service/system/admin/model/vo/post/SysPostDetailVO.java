@@ -49,4 +49,7 @@ public class SysPostDetailVO extends BaseResponse {
 	@Schema(title = "绑定用户数", description = "含岗位已停用")
 	private Long boundUserCount;
 
+	@Schema(title = "已授权角色数")
+	private Long boundRoleCount;
+
 }

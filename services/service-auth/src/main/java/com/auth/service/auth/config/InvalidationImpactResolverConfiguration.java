@@ -42,7 +42,7 @@ public class InvalidationImpactResolverConfiguration {
 	}
 
 	/**
-	 * 按 grant_table 授权主体反查受影响用户 ID（P2）。
+	 * 按 grant_table 授权主体反查受影响用户 ID（USER/DEPT/POST）。
 	 * @param impactQuery 授权影响面查询
 	 * @return 授权主体影响面解析器
 	 */
