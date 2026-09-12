@@ -19,7 +19,6 @@ import com.auth.service.system.admin.model.form.user.SysUserForm;
 import com.auth.service.system.admin.model.query.user.SysUserPageQuery;
 import com.auth.service.system.admin.model.vo.user.SysUserDetailVO;
 import com.auth.service.system.admin.model.vo.user.SysUserPageVO;
-import com.auth.service.system.admin.model.vo.user.SysUserProfileVO;
 import com.auth.service.system.admin.model.vo.user.SysUserSearchItemVO;
 import com.auth.service.system.admin.service.admin.SysUserQueryService;
 import com.auth.service.system.admin.service.admin.SysUserService;
@@ -73,15 +72,7 @@ public class SysUserController {
 		return Result.success(response);
 	}
 
-	@AuthenticatedApi
-	@Operation(summary = "查询用户档案")
-	@GetMapping("/{userId}/profile")
-	public Result<SysUserProfileVO> profile(@PathVariable("userId") Long userId) {
-		SysUserProfileVO profile = sysUserQueryService.getProfile(userId);
-		return Result.success(profile);
-	}
-
-	@Operation(summary = "查询用户详情")
+	@Operation(summary = "查询用户详情", description = "需 sys:user:query；载荷与 /me/profile 相同")
 	@PreAuthorize("@auth.decide('sys:user:query')")
 	@GetMapping("/{userId}/detail")
 	public Result<SysUserDetailVO> detail(@PathVariable("userId") Long userId) {

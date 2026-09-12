@@ -3,23 +3,17 @@ package com.auth.service.system.admin.service.admin.impl;
 import cn.hutool.core.text.CharSequenceUtil;
 import com.auth.common.data.model.PageResponse;
 import com.auth.module.platform.persistence.model.UserEntity;
-import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.user.SysUserConverter;
 import com.auth.service.system.admin.mapper.admin.user.SysUserMapper;
-import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
-import com.auth.service.system.admin.mapper.authorization.UserEffectiveAuthorizationQueryMapper;
 import com.auth.service.system.admin.model.po.user.SysUserPageRowPO;
 import com.auth.service.system.admin.model.po.user.UserSearchItemPO;
 import com.auth.service.system.admin.model.query.user.SysUserPageQuery;
 import com.auth.service.system.admin.model.vo.user.SysUserDetailVO;
 import com.auth.service.system.admin.model.vo.user.SysUserPageVO;
-import com.auth.service.system.admin.model.vo.user.SysUserProfileVO;
 import com.auth.service.system.admin.model.vo.user.SysUserSearchItemVO;
 import com.auth.service.system.admin.service.admin.SysUserQueryService;
 import com.auth.service.system.admin.support.sqlbuild.SysUserPageOrderSqlBuilder;
-import com.auth.service.system.admin.support.user.UserReferenceChecker;
-import com.auth.service.system.common.exception.SystemBusinessException;
-import com.auth.service.system.common.exception.code.SystemCommonResultCode;
+import com.auth.service.system.admin.support.user.UserDetailSupport;
 import com.auth.service.system.common.service.AuditUserDisplayService;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -44,11 +38,7 @@ public class SysUserQueryServiceImpl extends ServiceImpl<SysUserMapper, UserEnti
 
 	private final AuditUserDisplayService auditUserDisplayService;
 
-	private final UserReferenceChecker userReferenceChecker;
-
-	private final UserEffectiveAuthorizationQueryMapper userEffectiveAuthorizationQueryMapper;
-
-	private final GrantBindingQueryMapper grantBindingQueryMapper;
+	private final UserDetailSupport userDetailSupport;
 
 	/**
 	 * {@inheritDoc}
@@ -68,32 +58,8 @@ public class SysUserQueryServiceImpl extends ServiceImpl<SysUserMapper, UserEnti
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SysUserProfileVO getProfile(Long userId) {
-		if (userId == null) {
-			throw new SystemBusinessException(SystemCommonResultCode.PARAM_REQUIRED, "userId");
-		}
-		UserEntity user = userReferenceChecker.getExistingActive(userId);
-		SysUserProfileVO response = SysUserConverter.INSTANCE.toProfileVo(user);
-		response.setDeptCount(userEffectiveAuthorizationQueryMapper.countDeptsByUserId(userId));
-		response.setPostCount(userEffectiveAuthorizationQueryMapper.countPostsByUserId(userId));
-		return response;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public SysUserDetailVO getDetail(Long userId) {
-		SysUserProfileVO profile = getProfile(userId);
-		SysUserDetailVO detail = SysUserConverter.INSTANCE.fromProfile(profile);
-		detail.setDirectRoleCount(
-				grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.USER.name(), userId, null));
-		detail.setEffectiveRoleCount(userEffectiveAuthorizationQueryMapper.countEffectiveRolesByUserId(userId, null));
-		detail.setEffectivePermissionCount(
-				userEffectiveAuthorizationQueryMapper.countEffectivePermissionsByUserId(userId, null));
-
-		auditUserDisplayService.enrichAuditUsernames(Collections.singletonList(detail), null, null);
-		return detail;
+		return userDetailSupport.getDetail(userId);
 	}
 
 	/**

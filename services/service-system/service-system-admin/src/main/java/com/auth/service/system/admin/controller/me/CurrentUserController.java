@@ -14,8 +14,8 @@ import com.auth.service.system.admin.model.form.user.SysUserChangePasswordForm;
 import com.auth.service.system.admin.model.query.me.MeLoginLogPageQuery;
 import com.auth.service.system.admin.model.vo.me.MeLoginLogPageVO;
 import com.auth.service.system.admin.model.vo.me.MeOrgBindingsVO;
-import com.auth.service.system.admin.model.vo.me.MeProfileVO;
 import com.auth.service.system.admin.model.vo.me.MeUserSessionVO;
+import com.auth.service.system.admin.model.vo.user.SysUserDetailVO;
 import com.auth.service.system.admin.service.me.MeProfileService;
 import com.auth.service.system.admin.service.me.MeSecurityService;
 import com.auth.service.system.admin.support.user.UserPasswordService;
@@ -52,11 +52,11 @@ public class CurrentUserController {
 
 	@OperationLog(targetType = "USER", serviceDomain = AuditServiceDomain.SYSTEM, bizModule = PlatformBizCodes.SYS_USER,
 			operation = OperationLogKind.QUERY)
-	@Operation(summary = "查询当前用户展示资料")
+	@Operation(summary = "查询当前用户资料", description = "登录即可；载荷与管理端用户详情相同")
 	@GetMapping("/profile")
-	public Result<MeProfileVO> getMyProfile() {
-		MeProfileVO data = meProfileService.getMyProfile();
-		return Result.success(data);
+	public Result<SysUserDetailVO> getMyProfile() {
+		SysUserDetailVO detail = meProfileService.getMyProfile();
+		return Result.success(detail);
 	}
 
 	@OperationLog(targetType = "USER", serviceDomain = AuditServiceDomain.SYSTEM, bizModule = PlatformBizCodes.SYS_USER,

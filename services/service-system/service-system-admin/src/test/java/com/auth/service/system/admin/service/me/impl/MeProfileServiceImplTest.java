@@ -3,14 +3,11 @@ package com.auth.service.system.admin.service.me.impl;
 import com.auth.module.platform.persistence.model.UserEntity;
 import com.auth.module.security.contract.api.authorization.AuthProfile;
 import com.auth.service.system.admin.mapper.admin.user.SysUserMapper;
-import com.auth.service.system.admin.mapper.admin.user.UserDeptMapper;
 import com.auth.service.system.admin.model.form.me.MeAvatarUpdateForm;
 import com.auth.service.system.admin.model.form.me.MeProfileUpdateForm;
 import com.auth.service.system.admin.model.po.user.UserDeptProfilePO;
 import com.auth.service.system.admin.model.po.user.UserPostProfilePO;
-import com.auth.service.system.admin.model.po.user.UserPrimaryDeptPO;
 import com.auth.service.system.admin.model.vo.me.MeOrgBindingsVO;
-import com.auth.service.system.admin.model.vo.me.MeProfileVO;
 import com.auth.service.system.admin.support.user.UserAvatarUpdateSupport;
 import com.auth.service.system.admin.support.user.UserReferenceChecker;
 import com.auth.service.system.authorization.dispatch.trigger.UserSessionRevocationTrigger;
@@ -57,9 +54,6 @@ class MeProfileServiceImplTest {
 
 	@Mock
 	private UserAvatarUpdateSupport userAvatarUpdateSupport;
-
-	@Mock
-	private UserDeptMapper userDeptMapper;
 
 	@InjectMocks
 	private MeProfileServiceImpl meProfileService;
@@ -200,42 +194,6 @@ class MeProfileServiceImplTest {
 		meProfileService.updateMyProfile(form);
 
 		verify(userSessionRevocationTrigger, never()).revokeAllSessionsAfterCommit(any());
-	}
-
-	@Test
-	@DisplayName("getMyProfile：返回展示字段与主部门")
-	void getMyProfile_returnsDisplayFieldsAndPrimaryDept() {
-		UserEntity existing = existingUser();
-		existing.setUsername("tester");
-		existing.setAvatar("https://cdn.example.com/a.png");
-		UserPrimaryDeptPO primaryDept = new UserPrimaryDeptPO();
-		primaryDept.setDeptId(20L);
-		primaryDept.setDeptName("研发部");
-
-		when(userReferenceChecker.getExistingActive(USER_ID)).thenReturn(existing);
-		when(userDeptMapper.selectPrimaryDeptByUserId(USER_ID)).thenReturn(primaryDept);
-
-		MeProfileVO profile = meProfileService.getMyProfile();
-
-		assertThat(profile.getUsername()).isEqualTo("tester");
-		assertThat(profile.getNickname()).isEqualTo("Old Nick");
-		assertThat(profile.getAvatar()).isEqualTo("https://cdn.example.com/a.png");
-		assertThat(profile.getPrimaryDeptId()).isEqualTo(20L);
-		assertThat(profile.getPrimaryDeptName()).isEqualTo("研发部");
-	}
-
-	@Test
-	@DisplayName("getMyProfile：无主部门时部门字段为空")
-	void getMyProfile_returnsNullPrimaryDeptWhenAbsent() {
-		UserEntity existing = existingUser();
-		existing.setUsername("tester");
-		when(userReferenceChecker.getExistingActive(USER_ID)).thenReturn(existing);
-		when(userDeptMapper.selectPrimaryDeptByUserId(USER_ID)).thenReturn(null);
-
-		MeProfileVO profile = meProfileService.getMyProfile();
-
-		assertThat(profile.getPrimaryDeptId()).isNull();
-		assertThat(profile.getPrimaryDeptName()).isNull();
 	}
 
 	@Test

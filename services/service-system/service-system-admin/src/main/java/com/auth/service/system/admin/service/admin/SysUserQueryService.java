@@ -5,7 +5,6 @@ import com.auth.module.platform.persistence.model.UserEntity;
 import com.auth.service.system.admin.model.query.user.SysUserPageQuery;
 import com.auth.service.system.admin.model.vo.user.SysUserDetailVO;
 import com.auth.service.system.admin.model.vo.user.SysUserPageVO;
-import com.auth.service.system.admin.model.vo.user.SysUserProfileVO;
 import com.auth.service.system.admin.model.vo.user.SysUserSearchItemVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -26,14 +25,7 @@ public interface SysUserQueryService extends IService<UserEntity> {
 	PageResponse<SysUserPageVO> getPage(SysUserPageQuery query);
 
 	/**
-	 * 获取用户档案（标量 + 部门/岗位关联数）
-	 * @param userId 用户ID
-	 * @return 用户档案
-	 */
-	SysUserProfileVO getProfile(Long userId);
-
-	/**
-	 * 获取用户详情（档案 + 授权关系计数）
+	 * 获取用户详情（身份标量、主组织与授权关系计数）
 	 * @param userId 用户ID
 	 * @return 用户详情
 	 */
