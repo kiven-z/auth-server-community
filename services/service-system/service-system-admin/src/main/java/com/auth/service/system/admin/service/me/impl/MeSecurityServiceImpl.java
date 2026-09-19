@@ -105,6 +105,7 @@ public class MeSecurityServiceImpl implements MeSecurityService {
 
 		List<MeLoginLogPageVO> meList = adminPage.getList().stream().map(adminVo -> {
 			MeLoginLogPageVO vo = new MeLoginLogPageVO();
+			vo.setId(adminVo.getId());
 			vo.setLoginTime(adminVo.getLoginTime());
 			vo.setLoginRegion(adminVo.getLoginRegion());
 			vo.setLoginResult(adminVo.getLoginResult());

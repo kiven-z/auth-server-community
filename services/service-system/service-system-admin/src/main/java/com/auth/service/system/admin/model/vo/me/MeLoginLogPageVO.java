@@ -1,5 +1,6 @@
 package com.auth.service.system.admin.model.vo.me;
 
+import com.auth.common.core.annotation.JsonStringFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,6 +17,10 @@ import java.time.Instant;
 @Setter
 @ToString
 public class MeLoginLogPageVO {
+
+	@JsonStringFormat
+	@Schema(title = "日志ID")
+	private Long id;
 
 	@Schema(title = "登录时间")
 	private Instant loginTime;
