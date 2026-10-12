@@ -13,7 +13,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <bouncycastle.version>1.84</bouncycastle.version>
     </properties>
 
     <dependencies>
@@ -49,16 +48,13 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- jdk18on 需要版本一致 ！！！ -->
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk18on</artifactId>
-            <version>${bouncycastle.version}</version>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcprov-jdk18on</artifactId>
-            <version>${bouncycastle.version}</version>
         </dependency>
 
         <dependency>
