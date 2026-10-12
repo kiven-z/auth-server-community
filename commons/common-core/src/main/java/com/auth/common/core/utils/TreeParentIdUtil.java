@@ -11,7 +11,7 @@ import lombok.experimental.UtilityClass;
 public class TreeParentIdUtil {
 
 	/**
-	 * 顶级节点 parent_id（与 sys_dept、sys_menu 等表约定一致）。
+	 * 顶级节点
 	 */
 	public static final long ROOT_PARENT_ID = 0L;
 

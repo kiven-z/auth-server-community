@@ -5,10 +5,6 @@ import lombok.Getter;
 /**
  * 网关基础设施错误码，模块前缀为 00
  *
- * <p>
- * 鉴权/会话/权限语义由下游 auth-service 返回，网关仅保留自身故障与轻量鉴权拒绝类错误码
- * </p>
- *
  * @author Bunny
  */
 @Getter
@@ -17,12 +13,7 @@ public enum GatewayResultCodeEnum {
 	/**
 	 * 网关内部错误
 	 */
-	INTERNAL_ERROR(500, 199, "GATEWAY_INTERNAL_ERROR", "Gateway internal error."),
-
-	/**
-	 * 严格路径下缺少或无法解析访问令牌（网关轻量校验拒绝）
-	 */
-	UNAUTHORIZED(401, 202, "GATEWAY_UNAUTHORIZED", "Unauthorized.");
+	INTERNAL_ERROR(500, 199, "GATEWAY_INTERNAL_ERROR", "Gateway internal error.");
 
 	/**
 	 * HTTP状态码
