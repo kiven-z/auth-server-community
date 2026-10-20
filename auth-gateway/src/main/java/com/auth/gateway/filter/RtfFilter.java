@@ -55,10 +55,6 @@ public class RtfFilter implements GlobalFilter, Ordered {
 		});
 	}
 
-	/**
-	 * 执行顺序
-	 * @return 顺序
-	 */
 	@Override
 	public int getOrder() {
 		return Ordered.HIGHEST_PRECEDENCE + 1;

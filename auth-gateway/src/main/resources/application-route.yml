@@ -3,16 +3,6 @@ spring:
     gateway:
       server:
         webflux:
-          # 全局跨域
-          # globalcors:
-          #   cors-configurations:
-          #     '[/**]':
-          #       allowed-headers:
-          #         - "*"
-          #       allowed-origin-patterns:
-          #         - "*"
-          #       allowed-methods:
-          #         - "*"
 
           # 默认过滤器
           default-filters:
@@ -44,11 +34,3 @@ spring:
               uri: lb://service-example
               predicates:
                 - Path=/api/example/**
-
-            # - id: ollama-route
-            #   uri: lb://service-ollama
-            #   predicates:
-            #     - name: Path
-            #       args:
-            #         patterns: /api/ollama/**
-            #         matchTrailingSlash: true

@@ -13,12 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class UserAgentAnalyzerConfiguration {
 
-	/**
-	 * 网关内共享的 Yauaa 供规范化层与各过滤器复用
-	 * @return 网关内共享的 Yauaa
-	 */
 	@Bean
 	public UserAgentAnalyzer gatewayUserAgentAnalyzer() {
+		// 网关内共享的 Yauaa 供规范化层与各过滤器复用
 		return UserAgentAnalyzer.newBuilder()
 			.withCache(10000)
 			.withField(YauaaUserAgentFields.DEVICE_CLASS)

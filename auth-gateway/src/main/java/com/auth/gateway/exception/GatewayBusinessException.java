@@ -11,9 +11,6 @@ import lombok.ToString;
 @ToString(of = { "resultCode" })
 public class GatewayBusinessException extends RuntimeException {
 
-	/**
-	 * 网关结果代码
-	 */
 	@Getter
 	private final GatewayResultCodeEnum resultCode;
 
@@ -25,26 +22,14 @@ public class GatewayBusinessException extends RuntimeException {
 		this.resultCode = rc;
 	}
 
-	/**
-	 * HTTP 状态码
-	 * @return HTTP 状态码
-	 */
 	public int getHttpStatus() {
 		return resultCode.getHttpStatus();
 	}
 
-	/**
-	 * 完整业务码
-	 * @return 业务码
-	 */
 	public int getBizCode() {
 		return resultCode.fullBizCode();
 	}
 
-	/**
-	 * 稳定错误标识
-	 * @return 错误标识
-	 */
 	public String getError() {
 		return resultCode.getError();
 	}
