@@ -33,21 +33,12 @@ public class KeyStoreGeneratorUtil {
 		}
 	}
 
-	/**
-	 * 生成到文件
-	 * @param path 路径
-	 * @param password 密码
-	 * @param alias 别名
-	 * @throws JwtKeyLoadException 异常
-	 */
 	public static void generateToFile(String path, String password, String alias) {
 		try {
-			// 生成 KeyPair
 			KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", BouncyCastleProvider.PROVIDER_NAME);
 			kpg.initialize(RSA_BITS, new SecureRandom());
 			KeyPair keyPair = kpg.generateKeyPair();
 
-			// 生成证书
 			long now = System.currentTimeMillis();
 			Date notBefore = new Date(now);
 			Date notAfter = new Date(now + DEFAULT_VALIDITY_DAYS * 86_400_000L);
@@ -61,7 +52,6 @@ public class KeyStoreGeneratorUtil {
 			X509Certificate cert = new JcaX509CertificateConverter().setProvider(BouncyCastleProvider.PROVIDER_NAME)
 				.getCertificate(certBuilder.build(signer));
 
-			// 生成 KeyStore
 			KeyStore keyStore = KeyStore.getInstance("PKCS12");
 			keyStore.load(null, null);
 			keyStore.setKeyEntry(alias, keyPair.getPrivate(), password.toCharArray(),

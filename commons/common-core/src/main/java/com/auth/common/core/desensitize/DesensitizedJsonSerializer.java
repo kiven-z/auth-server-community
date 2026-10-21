@@ -76,29 +76,17 @@ public class DesensitizedJsonSerializer extends JsonSerializer<String> implement
 	 */
 	private String mask(String value) {
 		return switch (config.value()) {
-			// 中文姓名
 			case CHINESE_NAME -> DesensitizedUtil.chineseName(value);
-			// 身份证号
 			case ID_CARD -> DesensitizedUtil.idCardNum(value, ID_CARD_PREFIX_KEEP, ID_CARD_SUFFIX_KEEP);
-			// 手机号
 			case MOBILE_PHONE -> DesensitizedUtil.mobilePhone(value);
-			// 邮箱
 			case EMAIL -> DesensitizedUtil.email(value);
-			// 银行卡号
 			case BANK_CARD -> DesensitizedUtil.bankCard(value);
-			// IP地址
 			case IP_ADDRESS -> maskIpAddress(value);
-			// 车牌号
 			case CAR_LICENSE -> DesensitizedUtil.carLicense(value);
-			// 地址
 			case ADDRESS -> DesensitizedUtil.address(CharSequenceUtil.trim(value), config.addressSensitiveSize());
-			// 密码
 			case PASSWORD -> UNKNOWN_MASK;
-			// 信用代码
 			case CREDIT_CODE -> DesensitizedUtil.creditCode(value);
-			// 金额小数
 			case MONEY_DECIMAL -> DesensitizedStrings.maskDecimalDisplay(value);
-			// 自定义
 			case CUSTOM -> DesensitizedStrings.custom(value, config.prefixLen(), config.suffixLen(), config.symbol());
 		};
 	}

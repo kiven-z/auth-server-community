@@ -9,7 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * 文件系统 PKCS12 流打开 从文件系统路径打开 PKCS12 输入流
+ * 从文件系统打开 PKCS12 输入流
  *
  * @author Bunny
  */

@@ -16,7 +16,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 最低优先级处理异常 此建议必须不能在任何更高优先级的处理程序中过于广泛，以避免吞噬特定异常
+ * 最低优先级的兜底异常处理
  *
  * @author Bunny
  */
@@ -25,17 +25,9 @@ import java.util.regex.Pattern;
 @RestControllerAdvice
 public class FallbackExceptionHandler extends BaseExceptionResponseBuilder {
 
-	/**
-	 * 方法不支持异常模式
-	 */
 	private static final Pattern METHOD_NOT_SUPPORTED_PATTERN = Pattern
 		.compile("Request method '(.*?)' is not supported");
 
-	/**
-	 * 处理任何异常
-	 * @param exception 异常
-	 * @return 响应实体
-	 */
 	@ExceptionHandler({ ServletException.class, Exception.class })
 	public ResponseEntity<Result<Object>> handleAny(Exception exception) {
 		// 方法不支持异常

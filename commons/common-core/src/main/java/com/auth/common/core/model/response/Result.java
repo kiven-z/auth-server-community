@@ -29,14 +29,8 @@ public class Result<T> implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * 状态码
-	 */
 	private Integer code;
 
-	/**
-	 * 返回消息
-	 */
 	private String message;
 
 	/**
@@ -44,26 +38,15 @@ public class Result<T> implements Serializable {
 	 */
 	private String error;
 
-	/**
-	 * 返回数据
-	 */
 	private transient T data;
 
 	/**
-	 * 扩展负载用于额外的元数据（例如 i18n 消息键/参数）
+	 * 扩展负载，用于额外元数据（例如 i18n 消息键和参数）
 	 */
 	private transient Map<String, Object> ext;
 
-	/**
-	 * 系统时间戳
-	 */
 	private long timestamp = System.currentTimeMillis();
 
-	/**
-	 * 自定义返回体
-	 * @param data 返回体
-	 * @return 返回体
-	 */
 	protected static <T> Result<T> build(T data) {
 		Result<T> result = new Result<>();
 		result.setData(data);
@@ -71,10 +54,10 @@ public class Result<T> implements Serializable {
 	}
 
 	/**
-	 * 自定义返回体
-	 * @param body 返回体
-	 * @param code 返回状态码
-	 * @param message 返回消息
+	 * 组装返回体
+	 * @param body 数据
+	 * @param code 状态码
+	 * @param message 消息
 	 * @return 返回体
 	 */
 	public static <T> Result<T> build(T body, Integer code, String message) {
@@ -86,8 +69,8 @@ public class Result<T> implements Serializable {
 	}
 
 	/**
-	 * 操作失败-自定义返回数据和状态码
-	 * @param data 返回体
+	 * 业务成功，携带数据
+	 * @param data 数据
 	 */
 	public static <T> Result<T> success(T data) {
 		return build(data, SUCCESS_CODE, "success");
@@ -110,45 +93,45 @@ public class Result<T> implements Serializable {
 	}
 
 	/**
-	 * 操作失败
+	 * 失败，不设置状态码和消息
 	 */
 	public static <T> Result<T> error() {
 		return Result.build(null);
 	}
 
 	/**
-	 * 操作失败-自定义返回数据和状态码
-	 * @param data 返回体
+	 * 失败，自定义数据、状态码和消息
+	 * @param data 数据
 	 * @param code 状态码
-	 * @param message 错误信息
+	 * @param message 消息
 	 */
 	public static <T> Result<T> error(T data, Integer code, String message) {
 		return build(data, code, message);
 	}
 
 	/**
-	 * 操作失败-自定义返回数据和状态码
-	 * @param data 返回体
-	 * @param message 错误信息
+	 * 失败，自定义数据和消息（状态码 500）
+	 * @param data 数据
+	 * @param message 消息
 	 */
 	public static <T> Result<T> error(T data, String message) {
 		return build(data, 500, message);
 	}
 
 	/**
-	 * 操作失败-自定义返回数据和状态码
+	 * 失败，自定义状态码和消息
 	 * @param code 状态码
-	 * @param message 错误信息
+	 * @param message 消息
 	 */
 	public static <T> Result<T> error(Integer code, String message) {
 		return build(null, code, message);
 	}
 
 	/**
-	 * Error response with stable error identifier.
-	 * @param code business/http status code
-	 * @param error stable error identifier
-	 * @param message english message for humans
+	 * 失败，携带稳定错误标识
+	 * @param code 状态码
+	 * @param error 稳定错误标识
+	 * @param message 消息
 	 */
 	public static <T> Result<T> error(Integer code, String error, String message) {
 		Result<T> result = build(null, code, message);
@@ -157,8 +140,8 @@ public class Result<T> implements Serializable {
 	}
 
 	/**
-	 * 操作失败-自定义返回数据和状态码
-	 * @param message 错误信息
+	 * 失败，自定义消息（状态码 500）
+	 * @param message 消息
 	 */
 	public static <T> Result<T> error(String message) {
 		return build(null, 500, message);

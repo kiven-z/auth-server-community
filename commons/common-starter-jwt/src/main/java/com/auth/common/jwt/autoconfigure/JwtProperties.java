@@ -13,7 +13,7 @@ import static com.auth.common.jwt.model.SignatureAlgorithm.HS256;
 import static com.auth.common.jwt.model.SignatureAlgorithm.RS256;
 
 /**
- * auth.common.jwt.* 配置
+ * JWT 配置
  *
  * @author Bunny
  */

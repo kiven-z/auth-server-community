@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 /**
- * 从单个头解析客户端IP
+ * 从单个请求头解析客户端 IP，逗号分隔时取第一段非 unknown
  *
  * @author Bunny
  */

@@ -5,15 +5,15 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 
 /**
- * JWT 契约：调用方只应依赖本接口；算法实现由自动配置切换 定义 JWT 操作的契约：生成、验证、解析、获取剩余时间等调用方只依赖此接口
+ * JWT 契约：调用方只依赖本接口，算法实现由自动配置切换
  *
  * @author Bunny
  */
 public interface JwtTokenProvider {
 
 	/**
-	 * 签名算法
-	 * @param builder 构建器
+	 * 签发 Token
+	 * @param builder 已填声明的构建器
 	 * @return Token
 	 */
 	String generatorJwtToken(JwtBuilder builder);

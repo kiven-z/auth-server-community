@@ -137,7 +137,6 @@ public class ValidationExceptionHandler extends BaseExceptionResponseBuilder {
 	 * 构建 400 校验失败响应
 	 */
 	private ResponseEntity<Result<Object>> validationFailed(String details, Throwable exception) {
-		// 校验失败响应前缀
 		String validationFailedPrefix = "Validation failed: ";
 
 		return warn(HttpStatus.BAD_REQUEST, 400, CommonWebErrorCodes.VALIDATION_FAILED,

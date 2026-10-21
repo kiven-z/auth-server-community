@@ -16,7 +16,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.util.Optional;
 
 /**
- * IpAddressService 实现
+ * IP 地址服务实现
  *
  * @author Bunny
  */
@@ -44,10 +44,6 @@ public class DefaultIpAddressServiceImpl implements IpAddressService {
 		this.regionFormatter = regionFormatter;
 	}
 
-	/**
-	 * 获取当前请求
-	 * @return 请求
-	 */
 	private static Optional<HttpServletRequest> getCurrentRequest() {
 		try {
 			RequestAttributes attributes = RequestContextHolder.currentRequestAttributes();
@@ -62,29 +58,21 @@ public class DefaultIpAddressServiceImpl implements IpAddressService {
 		}
 	}
 
-	/**
-	 * 空IP信息
-	 * @return IP信息
-	 */
 	private static IpInfo emptyIpInfo() {
 		return IpInfo.builder().ipAddr(CharSequenceUtil.EMPTY).ipRegion(CharSequenceUtil.EMPTY).build();
 	}
 
 	/**
-	 * 解析当前请求的IP信息
-	 * @return IP信息
+	 * {@inheritDoc}
 	 */
 	@Override
 	public IpInfo resolveCurrentRequestIpInfo() {
-		// 获取当前请求
 		HttpServletRequest request = getCurrentRequest().orElse(null);
 		return resolveIpInfo(request);
 	}
 
 	/**
-	 * 解析请求的IP信息
-	 * @param request 请求
-	 * @return IP信息
+	 * {@inheritDoc}
 	 */
 	@Override
 	public IpInfo resolveIpInfo(@Nullable HttpServletRequest request) {
@@ -92,7 +80,6 @@ public class DefaultIpAddressServiceImpl implements IpAddressService {
 			return emptyIpInfo();
 		}
 
-		// 解析原始客户端IP字符串
 		Optional<String> rawIp = clientIpResolver.resolve(request);
 		if (rawIp.isEmpty()) {
 			return emptyIpInfo();
@@ -102,9 +89,7 @@ public class DefaultIpAddressServiceImpl implements IpAddressService {
 	}
 
 	/**
-	 * 解析IP信息
-	 * @param ip IP
-	 * @return IP信息
+	 * {@inheritDoc}
 	 */
 	@Override
 	public IpInfo resolveIpInfo(@Nullable String ip) {

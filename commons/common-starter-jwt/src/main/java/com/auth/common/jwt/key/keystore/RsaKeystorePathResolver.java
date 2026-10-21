@@ -20,7 +20,6 @@ public class RsaKeystorePathResolver {
 	 * @return 路径
 	 */
 	public static Path resolveFilesystem(String location) {
-		// 如果位置以 file: 开头，则返回 URI 创建的路径
 		String prefix = "file:";
 		if (location.startsWith(prefix)) {
 			return Paths.get(URI.create(location));

@@ -10,7 +10,7 @@ import java.io.File;
 import java.nio.file.Path;
 
 /**
- * 开发联调：在目标文件不存在时生成 PKCS12 开发联调时，如果 autoGenerate=true 且 keystore 文件不存在，则自动生成新的 PKCS12
+ * 开发联调：keystore 文件不存在且允许自动生成时写入 PKCS12
  *
  * @author Bunny
  */

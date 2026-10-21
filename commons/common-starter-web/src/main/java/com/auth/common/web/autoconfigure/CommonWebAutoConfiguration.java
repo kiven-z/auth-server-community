@@ -26,10 +26,8 @@ import org.springframework.context.annotation.Import;
 @Slf4j
 @AutoConfiguration(before = { WebMvcAutoConfiguration.class })
 @EnableConfigurationProperties()
-@Import({ ControllerStringParamTrimConfig.class, WebConfig.class,
-		// 导入异常处理器
-		ValidationExceptionHandler.class, RemoteServiceExceptionHandler.class, FallbackExceptionHandler.class,
-		MyBatisDatabaseExceptionHandler.class })
+@Import({ ControllerStringParamTrimConfig.class, WebConfig.class, ValidationExceptionHandler.class,
+		RemoteServiceExceptionHandler.class, FallbackExceptionHandler.class, MyBatisDatabaseExceptionHandler.class })
 public class CommonWebAutoConfiguration implements ApplicationRunner {
 
 	/**

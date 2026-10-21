@@ -17,12 +17,10 @@ public class Ipv4InnerIpChecker implements InnerIpChecker {
 	 */
 	@Override
 	public boolean isInner(String ip) {
-		// 如果IP不是IPv4地址，则返回false
 		if (!Validator.isIpv4(ip)) {
 			return false;
 		}
 
-		// 如果IP是内部/私有IP，则返回true
 		return NetUtil.isInnerIP(ip);
 	}
 

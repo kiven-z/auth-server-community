@@ -8,7 +8,7 @@ import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 
 /**
- * HS256 密钥派生 从 UTF-8 字符串派生符合 HS256 要求的 SecretKey（长度 ≥ 32 字节）
+ * 从 UTF-8 字符串派生 HS256 密钥（长度须 ≥ 32 字节）
  *
  * @author Bunny
  */
