@@ -14,7 +14,10 @@ import com.auth.common.ip.region.Ip2RegionSearcherRegionResolver;
 import com.auth.common.ip.region.NoopRegionResolver;
 import com.auth.common.ip.region.RegionResolver;
 import com.auth.common.ip.region.RoutingRegionResolver;
-import com.auth.common.ip.resolver.*;
+import com.auth.common.ip.resolver.ClientIpResolver;
+import com.auth.common.ip.resolver.CompositeClientIpResolver;
+import com.auth.common.ip.resolver.HeaderClientIpResolver;
+import com.auth.common.ip.resolver.RemoteAddrResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.LongByteArray;
 import org.lionsoul.ip2region.xdb.Searcher;
@@ -110,9 +113,12 @@ public class IpToolAutoConfiguration {
 	@ConditionalOnMissingBean
 	@Bean
 	public ClientIpResolver clientIpResolver() {
-		return new CompositeClientIpResolver(List.of(new XForwardedForResolver(), new ProxyClientIpResolver(),
-				new WLProxyClientIpResolver(), new HttpClientIpResolver(), new HttpXForwardedForResolver(),
-				new XRealIpResolver(), new RemoteAddrResolver()));
+		return new CompositeClientIpResolver(List.of(new HeaderClientIpResolver("X-Forwarded-For", true),
+				new HeaderClientIpResolver("Proxy-Client-IP", false),
+				new HeaderClientIpResolver("WL-Proxy-Client-IP", false),
+				new HeaderClientIpResolver("HTTP_CLIENT_IP", false),
+				new HeaderClientIpResolver("HTTP_X_FORWARDED_FOR", true),
+				new HeaderClientIpResolver("X-Real-IP", false), new RemoteAddrResolver()));
 	}
 
 	/**

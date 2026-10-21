@@ -24,7 +24,7 @@ class CompositeClientIpResolverTest {
 		request.addHeader("X-Forwarded-For", "unknown, 1.2.3.4, 5.6.7.8");
 
 		ClientIpResolver resolver = new CompositeClientIpResolver(
-				List.of(new XForwardedForResolver(), new RemoteAddrResolver()));
+				List.of(new HeaderClientIpResolver("X-Forwarded-For", true), new RemoteAddrResolver()));
 
 		// Act
 		var ip = resolver.resolve(request);
@@ -42,7 +42,8 @@ class CompositeClientIpResolverTest {
 		request.setRemoteAddr("10.0.0.1");
 
 		ClientIpResolver resolver = new CompositeClientIpResolver(
-				List.of(new XForwardedForResolver(), new XRealIpResolver(), new RemoteAddrResolver()));
+				List.of(new HeaderClientIpResolver("X-Forwarded-For", true),
+						new HeaderClientIpResolver("X-Real-IP", false), new RemoteAddrResolver()));
 
 		// Act
 		var ip = resolver.resolve(request);
