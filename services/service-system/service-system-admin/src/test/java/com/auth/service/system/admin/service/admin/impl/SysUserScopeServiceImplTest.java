@@ -187,7 +187,7 @@ class SysUserScopeServiceImplTest {
 	void upsertWhenScopeTypeInvalidShouldThrow() {
 		when(userReferenceChecker.getExistingActive(1L)).thenReturn(new UserEntity());
 
-		SysDataScopeForm form = form("FROM_PROFILE", null, null);
+		SysDataScopeForm form = form("UNKNOWN", null, null);
 		assertThatThrownBy(() -> sysUserScopeService.upsert(1L, form)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.DATA_INVALID);

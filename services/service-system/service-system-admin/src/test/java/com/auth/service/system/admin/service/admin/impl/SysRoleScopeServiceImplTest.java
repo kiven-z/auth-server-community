@@ -202,7 +202,7 @@ class SysRoleScopeServiceImplTest {
 	void upsertWhenScopeTypeInvalidShouldThrow() {
 		when(rbacReferenceChecker.getExisting(1L)).thenReturn(role(1L, "ADMIN"));
 
-		SysDataScopeForm form = form("FROM_PROFILE", null, null);
+		SysDataScopeForm form = form("UNKNOWN", null, null);
 		assertThatThrownBy(() -> sysRoleScopeService.upsert(1L, form)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.DATA_INVALID);

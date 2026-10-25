@@ -23,7 +23,7 @@ public class SysDataScopeForm implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	@Schema(title = "范围类型：ALL/SELF/DEPT/DEPT_AND_CHILD", requiredMode = Schema.RequiredMode.REQUIRED)
+	@Schema(title = "范围类型", requiredMode = Schema.RequiredMode.REQUIRED)
 	@NotBlank(message = "范围类型不能为空")
 	private String scopeType;
 

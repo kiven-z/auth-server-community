@@ -35,6 +35,11 @@ class DefaultDataScopeHandlerTest {
 		// fixture: annotation carrier only; never invoked
 	}
 
+	@DataScope(alias = "d", scope = { DataScopeStorageType.DEPT, DataScopeStorageType.SELF })
+	void annotatedMultipleScopes() {
+		// fixture: annotation carrier only; never invoked
+	}
+
 	@Test
 	@DisplayName("SELF 范围使用 userColumn 并拼接别名")
 	void self_shouldUseUserColumn() throws Exception {
@@ -113,8 +118,8 @@ class DefaultDataScopeHandlerTest {
 	}
 
 	@Test
-	@DisplayName("FROM_PROFILE 默认按画像范围裁决")
-	void fromProfile_shouldUseProfileDeptScope() throws Exception {
+	@DisplayName("未指定 scope 时按画像范围裁决")
+	void unspecifiedScope_shouldUseProfileDeptScope() throws Exception {
 		AuthProfile profile = AuthProfile.builder()
 			.userId(10L)
 			.deptScope(ScopeGrant.builder().scopeType(DataScopeStorageType.DEPT).values(List.of(7L, 8L)).build())
@@ -147,6 +152,19 @@ class DefaultDataScopeHandlerTest {
 			.build();
 		String cond = new DefaultDataScopeHandler().buildCondition(profile, annotation);
 		assertEquals("d.created_by = 10", cond);
+	}
+
+	@Test
+	@DisplayName("注解写了多项 scope 时 fail-close")
+	void multipleScopes_shouldFailClosed() throws Exception {
+		Method method = DefaultDataScopeHandlerTest.class.getDeclaredMethod("annotatedMultipleScopes");
+		DataScope annotation = method.getAnnotation(DataScope.class);
+		AuthProfile profile = AuthProfile.builder()
+			.userId(10L)
+			.deptScope(ScopeGrant.builder().scopeType(DataScopeStorageType.ALL).build())
+			.build();
+		String cond = new DefaultDataScopeHandler().buildCondition(profile, annotation);
+		assertEquals("1 = 0", cond);
 	}
 
 }

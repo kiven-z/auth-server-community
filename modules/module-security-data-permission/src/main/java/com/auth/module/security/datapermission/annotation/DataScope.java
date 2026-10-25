@@ -32,12 +32,9 @@ public @interface DataScope {
 	String alias();
 
 	/**
-	 * 数据范围类型
-	 * <p>
-	 * 默认 FROM_PROFILE 表示按登录画像裁决
-	 * </p>
+	 * 数据范围类型 强制数据范围。未写时按登录画像裁决；至多一项。
 	 */
-	DataScopeStorageType scope() default DataScopeStorageType.FROM_PROFILE;
+	DataScopeStorageType[] scope() default {};
 
 	/**
 	 * SQL 处理器

@@ -41,11 +41,16 @@ public class DefaultDataScopeHandler implements DataScopeHandler {
 			return FAIL_CLOSE_CONDITION;
 		}
 
+		DataScopeStorageType[] annotatedScope = dataScope.scope();
+		if (annotatedScope != null && annotatedScope.length > 1) {
+			return FAIL_CLOSE_CONDITION;
+		}
+
 		ScopeGrant grant = profile.getDeptScope();
-		DataScopeStorageType scopeType = resolveEffectiveScopeType(dataScope.scope(), grant);
+		DataScopeStorageType scopeType = resolveEffectiveScopeType(annotatedScope, grant);
 		return switch (scopeType) {
 			case ALL -> null;
-			case SELF, FROM_PROFILE -> safeUserColumn + " = " + profile.getUserId();
+			case SELF -> safeUserColumn + " = " + profile.getUserId();
 			case DEPT, DEPT_AND_CHILD -> {
 				List<Long> grantValues = grant == null ? List.of() : grant.getValues();
 				List<Long> normalizeValues = Objects.requireNonNullElse(grantValues, List.<Long>of())
@@ -59,14 +64,13 @@ public class DefaultDataScopeHandler implements DataScopeHandler {
 	}
 
 	/**
-	 * 裁决最终生效范围：注解强制优先，其次画像，最后 SELF 兜底。
+	 * 裁决最终生效范围：注解指定一项时优先，否则用画像；画像缺失时为 SELF。
 	 */
-	private DataScopeStorageType resolveEffectiveScopeType(DataScopeStorageType annotatedScope, ScopeGrant grant) {
-		if (annotatedScope != null && annotatedScope != DataScopeStorageType.FROM_PROFILE) {
-			return annotatedScope;
+	private DataScopeStorageType resolveEffectiveScopeType(DataScopeStorageType[] annotatedScope, ScopeGrant grant) {
+		if (annotatedScope != null && annotatedScope.length == 1) {
+			return annotatedScope[0];
 		}
-		if (grant == null || grant.getScopeType() == null
-				|| grant.getScopeType() == DataScopeStorageType.FROM_PROFILE) {
+		if (grant == null || grant.getScopeType() == null) {
 			return DataScopeStorageType.SELF;
 		}
 		return grant.getScopeType();
