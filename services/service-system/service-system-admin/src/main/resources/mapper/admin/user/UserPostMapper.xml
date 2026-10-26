@@ -57,4 +57,14 @@
           AND user_id = #{userId}
     </select>
 
+    <!-- 岗位任职用户 -->
+    <select id="selectUserIdsByPostIds" resultType="java.lang.Long">
+        SELECT DISTINCT up.user_id
+        FROM user_post up
+        WHERE up.post_id IN
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+    </select>
+
 </mapper>

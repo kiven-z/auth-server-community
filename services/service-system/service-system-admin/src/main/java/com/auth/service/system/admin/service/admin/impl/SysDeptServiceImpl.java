@@ -149,8 +149,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 	 * @param operation 操作动词，如 move、delete
 	 */
 	private void refreshDeptMembers(Long deptId, String operation) {
-		List<Long> deptIds = userDeptMapper.selectUserIdsByAncestorDeptIds(List.of(deptId));
-		List<Long> userIds = CollUtil.emptyIfNull(deptIds);
+		List<Long> userIds = CollUtil.emptyIfNull(userDeptMapper.selectUserIdsByAncestorDeptIds(List.of(deptId)));
 		if (CollUtil.isEmpty(userIds)) {
 			return;
 		}

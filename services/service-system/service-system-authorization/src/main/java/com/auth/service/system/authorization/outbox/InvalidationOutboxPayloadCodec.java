@@ -45,7 +45,6 @@ public class InvalidationOutboxPayloadCodec {
 				case ROLE -> objectMapper.readValue(json, RoleInvalidatePayload.class);
 				case PERMISSION -> objectMapper.readValue(json, PermissionInvalidatePayload.class);
 				case GRANT -> objectMapper.readValue(json, GrantInvalidatePayload.class);
-				case USER_POST -> objectMapper.readValue(json, UserPostInvalidatePayload.class);
 				case USER -> objectMapper.readValue(json, UserInvalidatePayload.class);
 			};
 		}

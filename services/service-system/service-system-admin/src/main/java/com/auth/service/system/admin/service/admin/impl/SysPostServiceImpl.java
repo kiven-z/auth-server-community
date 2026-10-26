@@ -9,6 +9,7 @@ import com.auth.service.system.admin.convert.admin.SysPostConverter;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
+import com.auth.service.system.admin.mapper.admin.user.UserPostMapper;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.PostRelationQueryMapper;
 import com.auth.service.system.admin.model.entity.SysPostEntity;
@@ -25,7 +26,7 @@ import com.auth.service.system.admin.support.dept.DeptReferenceChecker;
 import com.auth.service.system.admin.support.post.PostReferenceChecker;
 import com.auth.service.system.admin.support.post.PostWriteGuard;
 import com.auth.service.system.admin.support.sqlbuild.SysPostPageOrderSqlBuilder;
-import com.auth.service.system.authorization.dispatch.trigger.PostAuthorizationInvalidationTrigger;
+import com.auth.service.system.authorization.dispatch.trigger.UserAuthorizationInvalidationTrigger;
 import com.auth.service.system.common.exception.SystemBusinessException;
 import com.auth.service.system.common.exception.code.SystemCommonResultCode;
 import com.auth.service.system.common.service.AuditUserDisplayService;
@@ -54,7 +55,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 
 	private final AuditUserDisplayService auditUserDisplayService;
 
-	private final PostAuthorizationInvalidationTrigger postInvalidationTrigger;
+	private final UserPostMapper userPostMapper;
+
+	private final UserAuthorizationInvalidationTrigger userAuthorizationInvalidationTrigger;
 
 	private final PostReferenceChecker postReferenceChecker;
 
@@ -169,8 +172,22 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 			throw new SystemBusinessException(SystemCommonResultCode.DATA_IN_USE);
 		}
 
-		postInvalidationTrigger.submitByPostIds(List.of(id), "delete");
+		refreshPostMembers(id, "delete");
 		super.removeById(id);
+	}
+
+	/**
+	 * 按岗位任职用户提交画像刷新。无成员时不提交
+	 * @param postId 岗位 ID
+	 * @param operation 操作动词，如 delete
+	 */
+	private void refreshPostMembers(Long postId, String operation) {
+		List<Long> ids = userPostMapper.selectUserIdsByPostIds(List.of(postId));
+		List<Long> userIds = CollUtil.emptyIfNull(ids);
+		if (CollUtil.isEmpty(userIds)) {
+			return;
+		}
+		userAuthorizationInvalidationTrigger.submitByUserIds(userIds, operation);
 	}
 
 }

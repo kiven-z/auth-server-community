@@ -1,7 +1,6 @@
 package com.auth.service.auth.config;
 
 import com.auth.module.security.contract.invalidation.*;
-import com.auth.service.auth.mapper.AuthorizationImpactMapper;
 import com.auth.service.auth.support.invalidation.impact.AuthorizationImpactQuerySupport;
 import com.auth.service.auth.support.invalidation.impact.ImpactResolver;
 import com.auth.service.auth.support.invalidation.impact.PortBackedImpactResolver;
@@ -49,19 +48,6 @@ public class InvalidationImpactResolverConfiguration {
 	ImpactResolver<GrantInvalidatePayload> grantSubjectImpactResolver(AuthorizationImpactQuerySupport impactQuery) {
 		return new PortBackedImpactResolver<>(AuthorizationChangeKind.GRANT, GrantInvalidatePayload.class,
 				payload -> impactQuery.findUserIdsByGrantSubjects(payload.subjects()));
-	}
-
-	/**
-	 * 按岗位 ID 反查成员用户 ID（P3）。
-	 * @param impactQuery 授权影响面查询
-	 * @return 岗位成员影响面解析器
-	 */
-	@Bean
-	ImpactResolver<UserPostInvalidatePayload> userPostImpactResolver(AuthorizationImpactQuerySupport impactQuery,
-			AuthorizationImpactMapper authorizationImpactMapper) {
-		return new PortBackedImpactResolver<>(AuthorizationChangeKind.USER_POST, UserPostInvalidatePayload.class,
-				payload -> impactQuery.findUserIdsByLongKeys(payload.postIds(),
-						authorizationImpactMapper::selectUserIdsByPostIds));
 	}
 
 	/**

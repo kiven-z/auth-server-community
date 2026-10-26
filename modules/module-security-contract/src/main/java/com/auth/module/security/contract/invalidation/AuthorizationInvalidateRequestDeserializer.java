@@ -28,7 +28,6 @@ public class AuthorizationInvalidateRequestDeserializer extends JsonDeserializer
 			case ROLE -> context.readTreeAsValue(payloadNode, RoleInvalidatePayload.class);
 			case PERMISSION -> context.readTreeAsValue(payloadNode, PermissionInvalidatePayload.class);
 			case GRANT -> context.readTreeAsValue(payloadNode, GrantInvalidatePayload.class);
-			case USER_POST -> context.readTreeAsValue(payloadNode, UserPostInvalidatePayload.class);
 			case USER -> context.readTreeAsValue(payloadNode, UserInvalidatePayload.class);
 		};
 	}

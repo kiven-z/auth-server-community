@@ -23,11 +23,6 @@ public enum AuthorizationChangeKind {
 	GRANT,
 
 	/**
-	 * 用户-岗位关系
-	 */
-	USER_POST,
-
-	/**
 	 * 用户直连失效
 	 * <p>
 	 * 主档、数据范围等按 userId 刷画像

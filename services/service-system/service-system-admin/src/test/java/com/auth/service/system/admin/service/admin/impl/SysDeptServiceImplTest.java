@@ -225,7 +225,6 @@ class SysDeptServiceImplTest {
 	@Test
 	@DisplayName("移动部门：父级变更且无成员时不提交失效")
 	void moveUpdatesParentWhenChanged() {
-		// 变更父级后写库并触发授权失效
 		Long deptId = 7L;
 		SysDeptEntity existing = activeDept(deptId, "D007");
 		when(deptReferenceChecker.getExistingActive(deptId)).thenReturn(existing);

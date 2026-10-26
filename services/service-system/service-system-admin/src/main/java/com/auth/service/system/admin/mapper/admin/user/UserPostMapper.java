@@ -8,6 +8,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * 用户岗位关联 Mapper
  *
@@ -57,5 +60,12 @@ public interface UserPostMapper extends BaseMapper<UserPostEntity> {
 	 */
 	@Delete("DELETE FROM user_post WHERE user_id = #{userId}")
 	int deleteByUserId(@Param("userId") Long userId);
+
+	/**
+	 * 按岗位查询任职用户 ID
+	 * @param postIds 岗位 ID
+	 * @return 去重后的用户 ID，无成员时为空列表
+	 */
+	List<Long> selectUserIdsByPostIds(@Param("postIds") Collection<Long> postIds);
 
 }
