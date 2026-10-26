@@ -1,6 +1,5 @@
 package com.auth.service.system.admin.service.admin.impl;
 
-import com.auth.common.core.constants.BatchSizes;
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.authorization.DeptRelationQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
@@ -99,68 +98,41 @@ class SysDeptServiceImplTest {
 		baseMapperField.set(sysDeptService, sysDeptMapper);
 		baseMapperField.set(sysDeptQueryService, sysDeptMapper);
 		lenient().doAnswer(invocation -> {
-			List<SysDeptEntity> entities = invocation.getArgument(0);
-			long id = 1L;
-			for (SysDeptEntity entity : entities) {
-				entity.setId(id++);
-			}
+			SysDeptEntity entity = invocation.getArgument(0);
+			entity.setId(1L);
 			return true;
-		}).when(sysDeptService).saveBatch(anyList(), anyInt());
+		}).when(sysDeptService).save(any(SysDeptEntity.class));
 	}
 
 	@Test
-	@DisplayName("批量新增部门：空列表直接返回")
-	void createBatchFromImportSkipsWhenEmpty() {
-		sysDeptService.createBatchFromImport(List.of());
-
-		verify(sysDeptMapper, never()).selectActiveByDeptCodes(anyList());
-		verify(sysDeptService, never()).saveBatch(anyList(), anyInt());
-	}
-
-	@Test
-	@DisplayName("批量新增部门：校验通过后批量落库并维护闭包")
-	void createBatchFromImportPersistsEntitiesAndInsertsClosure() {
+	@DisplayName("新增部门：校验通过后落库并维护闭包")
+	void createPersistsEntityAndInsertsClosure() {
 		SysDeptForm form = minimalForm(null, 0L, "RD", "研发部");
-		when(sysDeptMapper.selectActiveByDeptCodes(List.of("RD"))).thenReturn(List.of());
+		when(sysDeptMapper.selectCount(any())).thenReturn(0L);
 
-		sysDeptService.createBatchFromImport(List.of(form));
+		sysDeptService.create(form);
 
-		verify(sysDeptMapper).selectActiveByDeptCodes(List.of("RD"));
+		verify(sysDeptMapper).selectCount(any());
 		verify(sysDeptMapper, never()).countById(anyLong());
-		verify(sysDeptService).saveBatch(anyList(), eq(BatchSizes.SIZE_500));
-		verify(deptClosureMaintainer)
-			.insertNodes(argThat(nodes -> nodes.size() == 1 && nodes.get(0).getParentId() == 0L));
+		verify(sysDeptService).save(argThat((SysDeptEntity entity) -> "RD".equals(entity.getDeptCode())
+				&& Long.valueOf(0L).equals(entity.getParentId())));
+		verify(deptClosureMaintainer).insertNodes(argThat(
+				nodes -> nodes.size() == 1 && nodes.get(0).getDeptId() == 1L && nodes.get(0).getParentId() == 0L));
 	}
 
 	@Test
-	@DisplayName("批量新增部门：编码已存在时抛出 DATA_CODE_DUPLICATE")
-	void createBatchFromImportThrowsWhenDeptCodeExists() {
+	@DisplayName("新增部门：编码已存在时抛出 DATA_CODE_DUPLICATE")
+	void createThrowsWhenDeptCodeExists() {
 		SysDeptForm form = minimalForm(null, 0L, "RD", "研发部");
-		SysDeptEntity existing = activeDept(1L, "RD");
-		when(sysDeptMapper.selectActiveByDeptCodes(List.of("RD"))).thenReturn(List.of(existing));
+		when(sysDeptMapper.selectCount(any())).thenReturn(1L);
 
-		ThrowingCallable executable = () -> sysDeptService.createBatchFromImport(List.of(form));
+		ThrowingCallable executable = () -> sysDeptService.create(form);
 		assertThatThrownBy(executable).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.DATA_CODE_DUPLICATE);
 
-		verify(sysDeptService, never()).saveBatch(anyList(), anyInt());
+		verify(sysDeptService, never()).save(any(SysDeptEntity.class));
 		verify(deptClosureMaintainer, never()).insertNodes(anyList());
-	}
-
-	@Test
-	@DisplayName("批量新增部门：请求内编码重复时抛出 DATA_CODE_DUPLICATE")
-	void createBatchFromImportThrowsWhenDeptCodesDuplicatedInRequest() {
-		SysDeptForm first = minimalForm(null, 0L, "RD", "研发部");
-		SysDeptForm second = minimalForm(null, 0L, "RD", "另一研发");
-
-		ThrowingCallable executable = () -> sysDeptService.createBatchFromImport(List.of(first, second));
-		assertThatThrownBy(executable).isInstanceOf(SystemBusinessException.class)
-			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
-			.isEqualTo(SystemCommonResultCode.DATA_CODE_DUPLICATE);
-
-		verify(sysDeptMapper, never()).selectActiveByDeptCodes(any());
-		verify(sysDeptService, never()).saveBatch(anyList(), anyInt());
 	}
 
 	@Test

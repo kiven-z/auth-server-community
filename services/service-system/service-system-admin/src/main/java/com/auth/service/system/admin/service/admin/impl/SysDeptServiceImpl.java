@@ -1,7 +1,5 @@
 package com.auth.service.system.admin.service.admin.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import com.auth.common.core.constants.BatchSizes;
 import com.auth.common.core.utils.FieldChangeSupport;
 import com.auth.common.core.utils.TreeParentIdUtil;
 import com.auth.common.core.utils.TreeRelationUtil;
@@ -48,26 +46,18 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createBatchFromImport(List<SysDeptForm> forms) {
-		if (CollUtil.isEmpty(forms)) {
-			return;
-		}
+	public void create(SysDeptForm form) {
+		String deptCode = form.getDeptCode();
+		BusinessKeyAssert.requireAbsent(baseMapper,
+				Wrappers.<SysDeptEntity>lambdaQuery().eq(SysDeptEntity::getDeptCode, deptCode),
+				() -> new SystemBusinessException(SystemCommonResultCode.DATA_CODE_DUPLICATE, deptCode));
 
-		List<String> deptCodes = forms.stream().map(SysDeptForm::getDeptCode).toList();
-		requireAbsentDeptCodes(deptCodes);
+		long parentId = normalizeAndRequireExistingParent(form.getParentId());
+		SysDeptEntity entity = SysDeptConverter.INSTANCE.toEntity(form);
+		entity.setParentId(parentId);
+		save(entity);
 
-		List<SysDeptEntity> entities = forms.stream().map(form -> {
-			Long parentId = normalizeAndRequireExistingParent(form.getParentId());
-			SysDeptEntity entity = SysDeptConverter.INSTANCE.toEntity(form);
-			entity.setParentId(parentId);
-			return entity;
-		}).toList();
-		super.saveBatch(entities, BatchSizes.SIZE_500);
-
-		List<DeptClosureNodePO> deptClosureNodes = entities.stream()
-			.map(entity -> new DeptClosureNodePO(entity.getId(), entity.getParentId()))
-			.toList();
-		deptClosureMaintainer.insertNodes(deptClosureNodes);
+		deptClosureMaintainer.insertNodes(List.of(new DeptClosureNodePO(entity.getId(), entity.getParentId())));
 	}
 
 	/**
@@ -161,24 +151,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 			throw new SystemBusinessException(SystemCommonResultCode.TREE_PARENT_UNAVAILABLE);
 		}
 		return parentId;
-	}
-
-	/**
-	 * 批量写入前校验部门编码在请求内及库内均唯一
-	 * @param deptCodes 待写入部门编码
-	 */
-	private void requireAbsentDeptCodes(List<String> deptCodes) {
-		List<String> distinctCodes = BusinessKeyAssert.requireDistinct(deptCodes,
-				code -> new SystemBusinessException(SystemCommonResultCode.DATA_CODE_DUPLICATE, code));
-		if (CollUtil.isEmpty(distinctCodes)) {
-			return;
-		}
-
-		List<SysDeptEntity> existing = baseMapper.selectActiveByDeptCodes(distinctCodes);
-		if (CollUtil.isNotEmpty(existing)) {
-			throw new SystemBusinessException(SystemCommonResultCode.DATA_CODE_DUPLICATE,
-					existing.get(0).getDeptCode());
-		}
 	}
 
 }

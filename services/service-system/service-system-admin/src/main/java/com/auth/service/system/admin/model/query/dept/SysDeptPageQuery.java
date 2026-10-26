@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 部门分页 / 导出查询
+ * 部门分页查询
  *
  * @author Bunny
  */

@@ -4,20 +4,10 @@ import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
 import com.auth.common.web.valid.group.CreateGroup;
 import com.auth.common.web.valid.group.UpdateGroup;
-import com.auth.module.file.api.model.dto.ExportPreCheckResult;
-import com.auth.module.file.api.model.dto.FileExportTaskCreateResult;
-import com.auth.module.file.api.model.request.ExportPreCheckRequest;
-import com.auth.module.file.api.model.request.FileExportTaskCreateRequest;
-import com.auth.module.file.api.port.FileExportTaskOperations;
-import com.auth.module.file.export.definition.ExportColumns;
-import com.auth.module.file.importer.model.SpreadsheetImportResult;
-import com.auth.module.security.autoconfigure.web.SecurityUserUtils;
 import com.auth.module.security.contract.annotation.OperationLog;
 import com.auth.module.security.contract.api.audit.AuditServiceDomain;
 import com.auth.module.security.contract.api.audit.OperationLogKind;
 import com.auth.module.security.contract.api.audit.PlatformBizCodes;
-import com.auth.service.system.admin.excel.dept.SysDeptSpreadsheetRow;
-import com.auth.service.system.admin.excel.dept.SysDeptSpreadsheetService;
 import com.auth.service.system.admin.model.form.dept.SysDeptForm;
 import com.auth.service.system.admin.model.form.dept.SysDeptMoveForm;
 import com.auth.service.system.admin.model.query.dept.SysDeptListQuery;
@@ -26,20 +16,14 @@ import com.auth.service.system.admin.model.vo.dept.SysDeptDetailVO;
 import com.auth.service.system.admin.model.vo.dept.SysDeptListVO;
 import com.auth.service.system.admin.service.admin.SysDeptQueryService;
 import com.auth.service.system.admin.service.admin.SysDeptService;
-import com.auth.service.system.admin.support.export.AdminFileExportTaskCreateRequests;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -56,47 +40,6 @@ public class SysDeptController {
 	private final SysDeptQueryService sysDeptQueryService;
 
 	private final SysDeptService sysDeptService;
-
-	private final SysDeptSpreadsheetService sysDeptSpreadsheetService;
-
-	private final FileExportTaskOperations fileExportTaskOperations;
-
-	@Operation(summary = "导出部门前置检查", description = "按筛选条件估算行数并返回导出方式")
-	@PreAuthorize("@auth.decide('sys:dept:export')")
-	@PostMapping("/export/pre-check")
-	public Result<ExportPreCheckResult> exportPreCheck(@Validated @RequestBody SysDeptPageQuery query) {
-		ExportPreCheckRequest request = AdminFileExportTaskCreateRequests.preCheck(PlatformBizCodes.SYS_DEPT, query);
-		ExportPreCheckResult result = fileExportTaskOperations.preCheck(request);
-		return Result.success(result);
-	}
-
-	@Operation(summary = "导出部门 Excel", description = "按筛选条件提交异步导出任务")
-	@PreAuthorize("@auth.decide('sys:dept:export')")
-	@PostMapping("/export/async")
-	public Result<FileExportTaskCreateResult> exportAsync(@Validated @RequestBody SysDeptPageQuery query,
-			@Parameter(description = "幂等请求ID") @RequestParam(required = false) String requestId) {
-		FileExportTaskCreateRequest xlsx = AdminFileExportTaskCreateRequests.xlsx(PlatformBizCodes.SYS_DEPT, query,
-				requestId, SecurityUserUtils.getUserId(),
-				ExportColumns.fromExcelProperties(SysDeptSpreadsheetRow.class));
-
-		FileExportTaskCreateResult result = fileExportTaskOperations.createTask(xlsx);
-		return Result.success(result);
-	}
-
-	@Operation(summary = "下载部门导入模板")
-	@PreAuthorize("@auth.decide('sys:dept:import')")
-	@GetMapping("/import/template")
-	public ResponseEntity<byte[]> importTemplate() throws IOException {
-		return sysDeptSpreadsheetService.downloadImportTemplate();
-	}
-
-	@Operation(summary = "导入部门 Excel")
-	@PreAuthorize("@auth.decide('sys:dept:import')")
-	@PostMapping(value = "/import", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public Result<SpreadsheetImportResult> importExcel(@RequestPart("file") MultipartFile file) throws IOException {
-		SpreadsheetImportResult data = sysDeptSpreadsheetService.importExcel(file);
-		return Result.success(data);
-	}
 
 	@OperationLog(targetType = "DEPT_LIST", serviceDomain = AuditServiceDomain.SYSTEM,
 			bizModule = PlatformBizCodes.SYS_DEPT, operation = OperationLogKind.QUERY)
@@ -130,7 +73,7 @@ public class SysDeptController {
 	@PreAuthorize("@auth.decide('sys:dept:create')")
 	@PostMapping
 	public Result<Void> create(@Validated(CreateGroup.class) @RequestBody SysDeptForm form) {
-		sysDeptService.createBatchFromImport(List.of(form));
+		sysDeptService.create(form);
 		return Result.success();
 	}
 

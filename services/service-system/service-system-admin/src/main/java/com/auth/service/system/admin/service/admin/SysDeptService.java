@@ -5,8 +5,6 @@ import com.auth.service.system.admin.model.form.dept.SysDeptForm;
 import com.auth.service.system.admin.model.form.dept.SysDeptMoveForm;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import java.util.List;
-
 /**
  * 部门写服务
  *
@@ -15,10 +13,10 @@ import java.util.List;
 public interface SysDeptService extends IService<SysDeptEntity> {
 
 	/**
-	 * 批量新增部门（单条创建与 Excel 导入共用）
-	 * @param forms 新增表单列表
+	 * 新增部门
+	 * @param form 新增表单
 	 */
-	void createBatchFromImport(List<SysDeptForm> forms);
+	void create(SysDeptForm form);
 
 	/**
 	 * 更新部门元数据
