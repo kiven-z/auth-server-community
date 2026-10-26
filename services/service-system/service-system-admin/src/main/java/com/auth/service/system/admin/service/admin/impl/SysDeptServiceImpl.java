@@ -137,7 +137,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 			log.warn("department in use: id={}", deptId);
 			throw new SystemBusinessException(SystemCommonResultCode.DATA_IN_USE);
 		}
-		refreshDeptMembers(deptId, "delete");
 		deptClosureMaintainer.removeClosurePaths(deptId);
 
 		removeById(deptId);
@@ -146,7 +145,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 	/**
 	 * 按闭包展开本部门及下级成员并提交用户画像刷新。无成员时不提交
 	 * @param deptId 部门 ID
-	 * @param operation 操作动词，如 move、delete
+	 * @param operation 操作动词，如 move
 	 */
 	private void refreshDeptMembers(Long deptId, String operation) {
 		List<Long> userIds = CollUtil.emptyIfNull(userDeptMapper.selectUserIdsByAncestorDeptIds(List.of(deptId)));

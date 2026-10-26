@@ -263,21 +263,20 @@ class SysDeptServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("删除部门：无引用时先展开成员，空集不提交失效")
-	void deleteQueriesMembersThenRemovesWhenUnreferenced() {
+	@DisplayName("删除部门：无引用时删除闭包并物理删除，不展开成员")
+	void deleteRemovesClosureThenEntityWhenUnreferenced() {
 		Long deptId = 4L;
 		when(deptReferenceChecker.getExistingActive(deptId)).thenReturn(activeDept(deptId, "D004"));
 		when(sysDeptMapper.countActiveDirectChildren(deptId)).thenReturn(0);
 		when(sysDeptMapper.existsSubtreeReference(deptId)).thenReturn(false);
-		when(userDeptMapper.selectUserIdsByAncestorDeptIds(List.of(deptId))).thenReturn(List.of());
 		when(sysDeptMapper.deleteById(deptId)).thenReturn(1);
 
 		sysDeptService.deleteById(deptId);
 
-		var inOrder = inOrder(userDeptMapper, deptClosureMaintainer, sysDeptMapper);
-		inOrder.verify(userDeptMapper).selectUserIdsByAncestorDeptIds(List.of(deptId));
+		var inOrder = inOrder(deptClosureMaintainer, sysDeptMapper);
 		inOrder.verify(deptClosureMaintainer).removeClosurePaths(deptId);
 		inOrder.verify(sysDeptMapper).deleteById(deptId);
+		verify(userDeptMapper, never()).selectUserIdsByAncestorDeptIds(any());
 		verify(userAuthorizationInvalidationTrigger, never()).submitByUserIds(any(), any());
 	}
 

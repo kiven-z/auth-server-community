@@ -5,7 +5,6 @@ import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
-import com.auth.service.system.admin.mapper.admin.user.UserPostMapper;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.PostRelationQueryMapper;
 import com.auth.service.system.admin.model.entity.SysDeptEntity;
@@ -16,7 +15,6 @@ import com.auth.service.system.admin.model.po.reference.DeptReferencePO;
 import com.auth.service.system.admin.model.vo.post.SysPostDetailVO;
 import com.auth.service.system.admin.support.dept.DeptReferenceChecker;
 import com.auth.service.system.admin.support.post.PostReferenceChecker;
-import com.auth.service.system.authorization.dispatch.trigger.UserAuthorizationInvalidationTrigger;
 import com.auth.service.system.common.exception.SystemBusinessException;
 import com.auth.service.system.common.exception.code.SystemCommonResultCode;
 import com.auth.service.system.common.service.AuditUserDisplayService;
@@ -52,12 +50,6 @@ class SysPostServiceImplTest {
 
 	@Mock
 	private AuditUserDisplayService auditUserDisplayService;
-
-	@Mock
-	private UserPostMapper userPostMapper;
-
-	@Mock
-	private UserAuthorizationInvalidationTrigger userAuthorizationInvalidationTrigger;
 
 	@Mock
 	private PostRelationQueryMapper postRelationQueryMapper;
@@ -105,9 +97,8 @@ class SysPostServiceImplTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		PostReferenceChecker postReferenceChecker = new PostReferenceChecker(sysPostMapper);
-		sysPostService = spy(new SysPostServiceImpl(auditUserDisplayService, userPostMapper,
-				userAuthorizationInvalidationTrigger, postReferenceChecker, deptReferenceChecker, sysDeptMapper,
-				postRelationQueryMapper, grantBindingQueryMapper));
+		sysPostService = spy(new SysPostServiceImpl(auditUserDisplayService, postReferenceChecker, deptReferenceChecker,
+				sysDeptMapper, postRelationQueryMapper, grantBindingQueryMapper));
 		Field baseMapperField = CrudRepository.class.getDeclaredField("baseMapper");
 		baseMapperField.setAccessible(true);
 		baseMapperField.set(sysPostService, sysPostMapper);
@@ -267,8 +258,8 @@ class SysPostServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("更新：编制部门未变时不校验部门存在性且不提交授权失效")
-	void updateWithoutDeptChangeSkipsDeptCheckAndInvalidation() {
+	@DisplayName("更新：编制部门未变时不校验部门存在性")
+	void updateWithoutDeptChangeSkipsDeptCheck() {
 		Long postId = 10L;
 		SysPostEntity existing = activePost(postId, 1L, "DEV");
 		when(sysPostMapper.selectById(postId)).thenReturn(existing);
@@ -281,12 +272,11 @@ class SysPostServiceImplTest {
 
 		verify(deptReferenceChecker, never()).getExistingActive(any());
 		verify(sysPostMapper).updateById(argThat((SysPostEntity e) -> "研发岗".equals(e.getPostName())));
-		verify(userAuthorizationInvalidationTrigger, never()).submitByUserIds(any(), any());
 	}
 
 	@Test
-	@DisplayName("更新：改挂编制部门时校验目标部门存在且不提交授权失效")
-	void updateDeptChangeSkipsInvalidation() {
+	@DisplayName("更新：改挂编制部门时校验目标部门存在")
+	void updateDeptChangeRequiresExistingDept() {
 		Long postId = 12L;
 		SysPostEntity existing = activePost(postId, 1L, "DEV");
 		when(sysPostMapper.selectById(postId)).thenReturn(existing);
@@ -300,7 +290,6 @@ class SysPostServiceImplTest {
 
 		verify(deptReferenceChecker).getExistingActive(5L);
 		verify(sysPostMapper).updateById(argThat((SysPostEntity e) -> Long.valueOf(5L).equals(e.getDeptId())));
-		verify(userAuthorizationInvalidationTrigger, never()).submitByUserIds(any(), any());
 	}
 
 	@Test
@@ -319,7 +308,6 @@ class SysPostServiceImplTest {
 			.isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
 
 		verify(sysPostMapper, never()).updateById(any(SysPostEntity.class));
-		verify(userAuthorizationInvalidationTrigger, never()).submitByUserIds(any(), any());
 	}
 
 	@Test
@@ -330,8 +318,6 @@ class SysPostServiceImplTest {
 		assertThatThrownBy(() -> sysPostService.deleteById(9L)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
-
-		verifyNoInteractions(userAuthorizationInvalidationTrigger);
 	}
 
 	@Test
@@ -346,7 +332,6 @@ class SysPostServiceImplTest {
 			.isEqualTo(SystemCommonResultCode.DATA_IN_USE);
 
 		verify(sysPostMapper, never()).deleteById(any());
-		verifyNoInteractions(userAuthorizationInvalidationTrigger);
 	}
 
 	@Test
@@ -362,39 +347,19 @@ class SysPostServiceImplTest {
 			.isEqualTo(SystemCommonResultCode.DATA_IN_USE);
 
 		verify(sysPostMapper, never()).deleteById(any());
-		verifyNoInteractions(userAuthorizationInvalidationTrigger);
 	}
 
 	@Test
-	@DisplayName("删除：无引用且无成员时不提交失效并物理删除")
-	void deleteShouldRemoveWithoutInvalidationWhenNoMembers() {
+	@DisplayName("删除：无引用时物理删除")
+	void deleteRemovesWhenUnreferenced() {
 		Long postId = 22L;
 		when(sysPostMapper.selectById(postId)).thenReturn(activePost(postId, 1L, "OK"));
 		when(sysPostMapper.countUserPostByPostId(postId)).thenReturn(0L);
 		when(sysPostMapper.countGrantPostSubjectByPostId(postId)).thenReturn(0L);
-		when(userPostMapper.selectUserIdsByPostIds(List.of(postId))).thenReturn(List.of());
 		when(sysPostMapper.deleteById(postId)).thenReturn(1);
 
 		sysPostService.deleteById(postId);
 
-		verify(userPostMapper).selectUserIdsByPostIds(List.of(postId));
-		verify(userAuthorizationInvalidationTrigger, never()).submitByUserIds(any(), any());
-		verify(sysPostMapper).deleteById(postId);
-	}
-
-	@Test
-	@DisplayName("删除：展开到任职用户时按 USER 提交失效并物理删除")
-	void deleteShouldSubmitUserInvalidationWhenMembersExist() {
-		Long postId = 23L;
-		when(sysPostMapper.selectById(postId)).thenReturn(activePost(postId, 1L, "OK"));
-		when(sysPostMapper.countUserPostByPostId(postId)).thenReturn(0L);
-		when(sysPostMapper.countGrantPostSubjectByPostId(postId)).thenReturn(0L);
-		when(userPostMapper.selectUserIdsByPostIds(List.of(postId))).thenReturn(List.of(101L, 102L));
-		when(sysPostMapper.deleteById(postId)).thenReturn(1);
-
-		sysPostService.deleteById(postId);
-
-		verify(userAuthorizationInvalidationTrigger).submitByUserIds(List.of(101L, 102L), "delete");
 		verify(sysPostMapper).deleteById(postId);
 	}
 
