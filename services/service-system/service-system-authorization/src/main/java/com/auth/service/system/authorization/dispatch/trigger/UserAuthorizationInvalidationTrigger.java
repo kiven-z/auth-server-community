@@ -38,7 +38,7 @@ public class UserAuthorizationInvalidationTrigger {
 		}
 
 		String sourceBizId = AuthorizationInvalidationSourceBizIds.of(operation);
-		String eventId = AuthorizationChangeKind.USER.eventIdPrefix() + ":" + IdWorker.getId();
+		String eventId = AuthorizationChangeKind.USER.name() + ":" + IdWorker.getId();
 		var payload = new UserInvalidatePayload(ids);
 		var request = new AuthorizationInvalidateRequest(eventId, AuthorizationChangeKind.USER, payload);
 

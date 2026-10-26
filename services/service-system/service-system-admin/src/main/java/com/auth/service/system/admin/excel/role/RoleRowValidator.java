@@ -5,7 +5,7 @@ import com.auth.module.file.importer.model.ImportErrors;
 import com.auth.module.file.importer.model.ImportRowError;
 import com.auth.module.file.importer.rule.RowRule;
 import com.auth.module.file.importer.rule.RowRules;
-import com.auth.module.security.contract.convention.AuthCodeConvention;
+import com.auth.module.security.contract.constants.AuthCodeConvention;
 import com.auth.service.system.admin.excel.EnableStatus;
 import com.auth.service.system.admin.excel.EnableStatusLabels;
 import lombok.experimental.UtilityClass;

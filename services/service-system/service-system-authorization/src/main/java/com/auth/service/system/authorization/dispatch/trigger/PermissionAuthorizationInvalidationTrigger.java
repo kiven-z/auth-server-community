@@ -37,7 +37,7 @@ public class PermissionAuthorizationInvalidationTrigger {
 		}
 
 		String sourceBizId = AuthorizationInvalidationSourceBizIds.of(operation);
-		String eventId = AuthorizationChangeKind.PERMISSION.eventIdPrefix() + ":" + IdWorker.getId();
+		String eventId = AuthorizationChangeKind.PERMISSION.name() + ":" + IdWorker.getId();
 		var payload = new PermissionInvalidatePayload(codes);
 		var request = new AuthorizationInvalidateRequest(eventId, AuthorizationChangeKind.PERMISSION, payload);
 

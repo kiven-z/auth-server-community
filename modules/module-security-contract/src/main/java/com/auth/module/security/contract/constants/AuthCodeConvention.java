@@ -1,20 +1,11 @@
-package com.auth.module.security.contract.convention;
+package com.auth.module.security.contract.constants;
 
 import lombok.experimental.UtilityClass;
 
 import java.util.regex.Pattern;
 
 /**
- * 权限码、角色码等安全侧编码格式约定（供 system 等模块在写入前校验；不包含业务状态判断）。
- *
- * <p>
- * 权限码：全小写语义段；结构为 1～4 段，以 : 分隔。每段为通配 * 或小写标识 [a-z][a-z0-9]*。合法示例：*、*:*、*:*:*、*:*:*:*、
- * sys、sys:dept、sys:dept:query、sys:file:recycle:query。
- * </p>
- *
- * <p>
- * 角色码：全大写；仅允许大写字母与下划线；首字符须为字母。合法示例：ADMIN、SYS_ADMIN。
- * </p>
+ * 权限码、角色码等安全侧编码格式约定
  *
  * @author Bunny
  */
@@ -22,12 +13,15 @@ import java.util.regex.Pattern;
 public class AuthCodeConvention {
 
 	/**
-	 * 权限码单段：通配 * 或小写段 [a-z][a-z0-9]*
+	 * 权限码单段
 	 */
 	public static final String PERMISSION_CODE_SEGMENT_REGEX = "(?:\\*|[a-z][a-z0-9]*)";
 
 	/**
-	 * 权限码整体：1～4 段，段间 :，与 {@link #PERMISSION_CODE_SEGMENT_REGEX} 一致
+	 * 权限码整体：1～4 段
+	 * <p>
+	 * 示例：*、*:*、*:*:*、*:*:*:*、sys、sys:dept、sys:dept:query、sys:file:recycle:query
+	 * </p>
 	 */
 	public static final String PERMISSION_CODE_REGEX = "^" + PERMISSION_CODE_SEGMENT_REGEX + "(?::"
 			+ PERMISSION_CODE_SEGMENT_REGEX + "){0,3}$";
@@ -36,13 +30,16 @@ public class AuthCodeConvention {
 
 	/**
 	 * 角色码：大写字母与下划线，且首字符为大写字母
+	 * <p>
+	 * 示例：ADMIN、SYS_ADMIN
+	 * </p>
 	 */
 	public static final String ROLE_CODE_REGEX = "^[A-Z][A-Z_]*$";
 
 	private static final Pattern ROLE_CODE_PATTERN = Pattern.compile(ROLE_CODE_REGEX);
 
 	/**
-	 * 是否为约定内的权限码格式（已 trim 后调用；空串为 false）
+	 * 是否为约定内的权限码格式
 	 * @param permissionCode 权限码
 	 * @return 是否符合
 	 */
@@ -52,7 +49,7 @@ public class AuthCodeConvention {
 	}
 
 	/**
-	 * 是否为约定内的角色码格式（已 trim 后调用；空串为 false）
+	 * 是否为约定内的角色码格式
 	 * @param roleCode 角色码
 	 * @return 是否符合
 	 */

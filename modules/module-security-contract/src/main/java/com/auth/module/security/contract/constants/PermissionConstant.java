@@ -7,12 +7,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 权限相关常量（契约层） 敏感操作 bypass 语义必须由代码定义（不得远程配置）
- *
- * <p>
- * 业务权限码、通配符的字符级语法见
- * {@link com.auth.module.security.contract.convention.AuthCodeConvention}。
- * </p>
+ * 权限配置特殊常量
  *
  * @author Bunny
  */
@@ -20,17 +15,17 @@ import java.util.Set;
 public class PermissionConstant {
 
 	/**
-	 * 内置超级用户 ID,不得远程注入
+	 * 内置超级用户 ID
 	 */
 	public static final Set<Long> SUPER_ADMIN_USER_IDS = Set.of(1L);
 
 	/**
-	 * 管理员角色码，规定必须是大写，在前端传递和后端传入时全部转成大写 存储时全部大写，返回时全部大写
+	 * 管理员角色码（大写）,指定哪些角色码为超管
 	 */
 	public static final List<String> ADMIN_ROLES = List.of("ADMIN");
 
 	/**
-	 * 管理员通配权限集合（命中任意一个即视为拥有所有权限） 权限码忽略大小写，存储时全部小写，返回时也是小写
+	 * 管理员通配权限集合（权限码忽略大小写）
 	 */
 	public static final List<String> ADMIN_WILDCARD_PERMISSIONS = List.of("*", "*:*", "*:*:*", "*:*:*:*");
 

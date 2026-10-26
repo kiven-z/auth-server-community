@@ -10,11 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 用户授权画像（契约层，缓存/JWT 下游可消费的稳定模型）
- *
- * <p>
- * 注意：该模型不绑定 Redis/Spring/MyBatis 等基础设施，序列化应保持稳定可演进
- * </p>
+ * 用户授权画像
  *
  * @author Bunny
  */
@@ -37,12 +33,18 @@ public class AuthProfile implements Serializable {
 	private final List<String> permissions = Collections.emptyList();
 
 	/**
-	 * 部门维数据范围（登录解析：user_scope 优先，否则 role_scope 合并）
+	 * 部门维数据范围
+	 * <p>
+	 * 用户可覆盖角色范围，优先级：user_scope > role_scope
+	 * </p>
 	 */
 	private final ScopeGrant deptScope;
 
 	/**
-	 * 权限/画像版本号（用于与 Redis 中的 permVersion 对比）
+	 * 权限/画像版本号
+	 * <p>
+	 * 用于与 Redis 中的 permVersion 对比
+	 * </p>
 	 */
 	private final Long permVersion;
 

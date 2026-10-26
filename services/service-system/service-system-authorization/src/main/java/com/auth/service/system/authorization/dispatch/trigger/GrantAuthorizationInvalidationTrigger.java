@@ -38,7 +38,7 @@ public class GrantAuthorizationInvalidationTrigger {
 		}
 
 		String sourceBizId = AuthorizationInvalidationSourceBizIds.of(operation);
-		String eventId = AuthorizationChangeKind.GRANT.eventIdPrefix() + ":" + IdWorker.getId();
+		String eventId = AuthorizationChangeKind.GRANT.name() + ":" + IdWorker.getId();
 		var payload = new GrantInvalidatePayload(keys);
 		var request = new AuthorizationInvalidateRequest(eventId, AuthorizationChangeKind.GRANT, payload);
 

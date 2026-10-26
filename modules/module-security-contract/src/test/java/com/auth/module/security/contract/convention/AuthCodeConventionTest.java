@@ -1,5 +1,6 @@
 package com.auth.module.security.contract.convention;
 
+import com.auth.module.security.contract.constants.AuthCodeConvention;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

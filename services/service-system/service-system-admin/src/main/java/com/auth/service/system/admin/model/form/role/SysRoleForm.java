@@ -1,7 +1,7 @@
 package com.auth.service.system.admin.model.form.role;
 
 import com.auth.common.web.valid.group.UpdateGroup;
-import com.auth.module.security.contract.convention.AuthCodeConvention;
+import com.auth.module.security.contract.constants.AuthCodeConvention;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

@@ -37,7 +37,7 @@ public class RoleAuthorizationInvalidationTrigger {
 		}
 
 		String sourceBizId = AuthorizationInvalidationSourceBizIds.of(operation);
-		String eventId = AuthorizationChangeKind.ROLE.eventIdPrefix() + ":" + IdWorker.getId();
+		String eventId = AuthorizationChangeKind.ROLE.name() + ":" + IdWorker.getId();
 		var payload = new RoleInvalidatePayload(codes);
 		var request = new AuthorizationInvalidateRequest(eventId, AuthorizationChangeKind.ROLE, payload);
 
