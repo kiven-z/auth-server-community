@@ -2,7 +2,7 @@ package com.auth.service.system.admin.service.admin.impl;
 
 import com.auth.common.core.constants.BatchSizes;
 import com.auth.module.platform.persistence.model.UserEntity;
-import com.auth.module.security.contract.api.GrantTableSubjectType;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.service.system.admin.mapper.admin.role.GrantTableMapper;
 import com.auth.service.system.admin.mapper.admin.user.SysUserMapper;
 import com.auth.service.system.admin.model.form.user.SysUserBatchStatusForm;

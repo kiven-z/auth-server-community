@@ -1,6 +1,6 @@
 package com.auth.service.system.admin.support.grant;
 
-import com.auth.module.security.contract.api.GrantTableSubjectType;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
 
 import java.util.function.LongConsumer;
 

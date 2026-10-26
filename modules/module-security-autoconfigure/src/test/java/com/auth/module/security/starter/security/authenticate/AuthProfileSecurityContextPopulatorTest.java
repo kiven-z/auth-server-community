@@ -1,7 +1,7 @@
 package com.auth.module.security.starter.security.authenticate;
 
 import com.auth.module.security.autoconfigure.pipeline.authenticate.AuthProfileSecurityContextPopulator;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

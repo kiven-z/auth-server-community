@@ -2,9 +2,9 @@ package com.auth.module.security.autoconfigure.service;
 
 import com.auth.common.core.model.response.Result;
 import com.auth.module.security.autoconfigure.feign.SystemSecurityIngestFeignClient;
-import com.auth.module.security.contract.dto.OperationLogIngestRequest;
-import com.auth.module.security.contract.event.OperationLogPayloadEvent;
-import com.auth.module.security.contract.spi.OperationLogHandler;
+import com.auth.module.security.contract.audit.operationlog.OperationLogHandler;
+import com.auth.module.security.contract.audit.operationlog.OperationLogIngestRequest;
+import com.auth.module.security.contract.audit.operationlog.OperationLogPayloadEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 

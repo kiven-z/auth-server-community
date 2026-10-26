@@ -1,7 +1,7 @@
 package com.auth.service.system.admin.ingest;
 
-import com.auth.module.security.contract.event.SecurityAuthorizationAuditPayloadEvent;
-import com.auth.module.security.contract.spi.AuthorizationAuditHandler;
+import com.auth.module.security.contract.audit.decision.AuthorizationAuditHandler;
+import com.auth.module.security.contract.audit.decision.SecurityAuthorizationAuditPayloadEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

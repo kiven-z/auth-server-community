@@ -1,7 +1,7 @@
 package com.auth.module.security.autoconfigure.service;
 
-import com.auth.module.security.contract.event.OperationLogPayloadEvent;
-import com.auth.module.security.contract.spi.OperationLogHandler;
+import com.auth.module.security.contract.audit.operationlog.OperationLogHandler;
+import com.auth.module.security.contract.audit.operationlog.OperationLogPayloadEvent;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 

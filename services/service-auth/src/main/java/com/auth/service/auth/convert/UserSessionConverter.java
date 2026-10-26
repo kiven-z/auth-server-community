@@ -1,7 +1,7 @@
 package com.auth.service.auth.convert;
 
 import com.auth.common.mapstruct.config.AuthMapperConfig;
-import com.auth.module.security.contract.api.UserSessionIndex;
+import com.auth.module.security.contract.session.UserSessionIndex;
 import com.auth.service.auth.model.vo.UserSessionVO;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

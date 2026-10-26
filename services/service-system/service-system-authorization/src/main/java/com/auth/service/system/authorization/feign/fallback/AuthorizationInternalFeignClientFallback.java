@@ -2,8 +2,8 @@ package com.auth.service.system.authorization.feign.fallback;
 
 import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateResponse;
 import com.auth.service.system.authorization.feign.AuthorizationInternalFeignClient;
 import com.auth.service.system.authorization.feign.dto.*;
 import lombok.extern.slf4j.Slf4j;

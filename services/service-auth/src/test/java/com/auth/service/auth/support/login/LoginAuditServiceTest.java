@@ -1,7 +1,7 @@
 package com.auth.service.auth.support.login;
 
 import com.auth.module.platform.persistence.model.UserEntity;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.service.auth.TestConstants;
 import com.auth.service.auth.mapper.UserMapper;
 import com.auth.service.auth.model.enums.AuthLoginLogResult;

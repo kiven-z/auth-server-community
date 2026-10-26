@@ -2,7 +2,7 @@ package com.auth.service.system.admin.support.menu;
 
 import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.utils.TreeNodeProcessorUtil;
-import com.auth.module.security.contract.constants.PermissionConstant;
+import com.auth.module.security.contract.permission.PermissionConstant;
 import com.auth.service.system.admin.convert.admin.menu.MenuConvertContext;
 import com.auth.service.system.admin.convert.admin.menu.MenuRouteMetaConverter;
 import com.auth.service.system.admin.convert.admin.menu.MenuRouteTreeNode;

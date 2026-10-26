@@ -1,7 +1,7 @@
 package com.auth.service.system.admin.ingest;
 
-import com.auth.module.security.contract.event.OperationLogPayloadEvent;
-import com.auth.module.security.contract.event.SecurityAuthorizationAuditPayloadEvent;
+import com.auth.module.security.contract.audit.decision.SecurityAuthorizationAuditPayloadEvent;
+import com.auth.module.security.contract.audit.operationlog.OperationLogPayloadEvent;
 import com.auth.service.system.admin.convert.ingest.SecurityIngestEntityAssembler;
 import com.auth.service.system.admin.mapper.admin.log.LogAuthorizationAuditMapper;
 import com.auth.service.system.admin.mapper.admin.log.LogOperationMapper;

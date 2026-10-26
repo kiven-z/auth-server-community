@@ -1,8 +1,8 @@
 package com.auth.service.system.admin.service.admin.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.auth.module.security.contract.api.GrantTableSubjectType;
-import com.auth.module.security.contract.dto.invalidation.GrantSubjectKey;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
+import com.auth.module.security.contract.invalidation.GrantSubjectKey;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.mapper.admin.role.GrantTableMapper;
 import com.auth.service.system.admin.model.entity.GrantTableEntity;

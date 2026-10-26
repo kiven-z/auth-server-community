@@ -1,8 +1,8 @@
 package com.auth.service.system.authorization.dispatch;
 
-import com.auth.module.security.contract.api.AuthorizationChangeKind;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.dto.invalidation.RoleInvalidatePayload;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
+import com.auth.module.security.contract.invalidation.RoleInvalidatePayload;
 import com.auth.service.system.authorization.config.AuthorizationInvalidationProperties;
 import com.auth.service.system.authorization.outbox.AuthorizationInvalidationPublisher;
 import org.junit.jupiter.api.DisplayName;

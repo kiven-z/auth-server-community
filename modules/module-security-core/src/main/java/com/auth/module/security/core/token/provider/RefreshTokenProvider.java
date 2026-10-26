@@ -3,7 +3,7 @@ package com.auth.module.security.core.token.provider;
 import com.auth.common.jwt.api.JwtTokenProvider;
 import com.auth.common.jwt.autoconfigure.JwtProperties;
 import com.auth.common.jwt.model.JwtUserToken;
-import com.auth.module.security.contract.constants.SecurityTokenKind;
+import com.auth.module.security.contract.token.SecurityTokenKind;
 import com.auth.module.security.core.token.model.SecurityTokenResult;
 import com.auth.module.security.core.token.model.SecurityTokenResult.SecurityTokenResultBuilder;
 import io.jsonwebtoken.JwtBuilder;
@@ -13,7 +13,7 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Objects;
 
-import static com.auth.module.security.contract.constants.SecurityExternalTokenConstants.TOKEN_TYPE;
+import static com.auth.module.security.contract.token.SecurityExternalTokenConstants.TOKEN_TYPE;
 
 /**
  * 刷新令牌

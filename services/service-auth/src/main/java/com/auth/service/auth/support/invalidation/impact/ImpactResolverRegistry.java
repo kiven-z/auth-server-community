@@ -1,7 +1,7 @@
 package com.auth.service.auth.support.invalidation.impact;
 
-import com.auth.module.security.contract.api.AuthorizationChangeKind;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidatePayload;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;

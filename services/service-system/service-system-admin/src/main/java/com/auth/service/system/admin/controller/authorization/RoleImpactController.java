@@ -2,10 +2,10 @@ package com.auth.service.system.admin.controller.authorization;
 
 import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.annotation.OperationLog;
-import com.auth.module.security.contract.api.audit.AuditServiceDomain;
-import com.auth.module.security.contract.api.audit.OperationLogKind;
-import com.auth.module.security.contract.api.audit.PlatformBizCodes;
+import com.auth.module.security.contract.audit.operationlog.AuditServiceDomain;
+import com.auth.module.security.contract.audit.operationlog.OperationLog;
+import com.auth.module.security.contract.audit.operationlog.OperationLogKind;
+import com.auth.module.security.contract.bizcode.PlatformBizCodes;
 import com.auth.service.system.admin.model.query.authorization.RoleImpactUserPageQuery;
 import com.auth.service.system.admin.model.vo.authorization.RoleImpactRefreshResultVO;
 import com.auth.service.system.admin.model.vo.authorization.RoleImpactSummaryVO;

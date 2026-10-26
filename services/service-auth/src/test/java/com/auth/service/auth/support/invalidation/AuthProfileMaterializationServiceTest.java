@@ -1,7 +1,7 @@
 package com.auth.service.auth.support.invalidation;
 
 import com.auth.common.core.constants.BatchSizes;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.service.auth.support.authorization.AuthProfileRepository;
 import com.auth.service.auth.support.redis.AuthProfileRedisCache;
 import org.junit.jupiter.api.DisplayName;

@@ -1,6 +1,6 @@
 package com.auth.service.system.admin.config;
 
-import com.auth.module.security.contract.api.GrantTableSubjectType;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.service.system.admin.support.dept.DeptReferenceChecker;
 import com.auth.service.system.admin.support.grant.GrantTableActiveSubjectChecker;
 import com.auth.service.system.admin.support.grant.TypedGrantTableActiveSubjectChecker;

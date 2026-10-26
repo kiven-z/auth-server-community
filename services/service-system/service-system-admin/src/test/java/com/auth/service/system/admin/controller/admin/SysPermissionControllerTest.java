@@ -4,7 +4,7 @@ import com.auth.common.core.model.response.Result;
 import com.auth.module.file.api.model.dto.FileExportTaskCreateResult;
 import com.auth.module.file.api.model.request.FileExportTaskCreateRequest;
 import com.auth.module.file.api.port.FileExportTaskOperations;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.service.system.admin.excel.permission.SysPermissionSpreadsheetService;
 import com.auth.service.system.admin.model.query.permission.SysPermissionQuery;
 import com.auth.service.system.admin.service.admin.SysPermissionService;

@@ -1,7 +1,7 @@
 package com.auth.module.security.core.token.model;
 
 import com.auth.common.jwt.model.JwtUserToken;
-import com.auth.module.security.contract.constants.SecurityTokenKind;
+import com.auth.module.security.contract.token.SecurityTokenKind;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

@@ -2,10 +2,10 @@ package com.auth.service.system.authorization.dispatch;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import com.auth.common.core.model.response.Result;
-import com.auth.module.security.contract.api.AuthorizationChangeKind;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidatePayload;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateResponse;
 import com.auth.service.system.authorization.config.AuthorizationInvalidationProperties;
 import com.auth.service.system.authorization.feign.AuthorizationInternalFeignClient;
 import com.auth.service.system.authorization.mapper.SysAuthorizationInvalidationOutboxMapper;

@@ -6,7 +6,7 @@ import com.auth.common.core.utils.JsonSupport;
 import com.auth.module.file.api.model.dto.ExportPageDataDTO;
 import com.auth.module.file.export.scope.FileExportScopeSnapshots;
 import com.auth.module.security.autoconfigure.pipeline.authenticate.AuthProfileSecurityContextPopulator;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.service.system.admin.export.fetcher.ExportPageFetcher;
 import com.auth.service.system.admin.export.fetcher.ExportPageFetcherRegistry;
 import com.auth.service.system.admin.model.request.InternalExportPageRequest;

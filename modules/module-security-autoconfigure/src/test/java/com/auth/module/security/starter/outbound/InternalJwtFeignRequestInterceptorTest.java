@@ -2,8 +2,8 @@ package com.auth.module.security.starter.outbound;
 
 import com.auth.module.security.autoconfigure.outbound.InternalJwtFeignRequestInterceptor;
 import com.auth.module.security.autoconfigure.outbound.OutboundInternalJwtIssuer;
-import com.auth.module.security.contract.api.AuthProfile;
-import com.auth.module.security.contract.constants.SecurityInternalTokenConstants;
+import com.auth.module.security.contract.profile.AuthProfile;
+import com.auth.module.security.contract.token.SecurityInternalTokenConstants;
 import com.auth.module.security.core.token.provider.InternalTokenProvider;
 import feign.RequestTemplate;
 import org.junit.jupiter.api.AfterEach;

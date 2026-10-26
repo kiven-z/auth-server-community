@@ -1,6 +1,6 @@
 package com.auth.module.security.datapermission.handler;
 
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.module.security.datapermission.annotation.DataScope;
 
 /**

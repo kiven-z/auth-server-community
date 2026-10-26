@@ -1,9 +1,9 @@
 package com.auth.service.system.authorization.dispatch.trigger;
 
-import com.auth.module.security.contract.api.AuthorizationChangeKind;
-import com.auth.module.security.contract.api.audit.PlatformBizCodes;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.dto.invalidation.UserInvalidatePayload;
+import com.auth.module.security.contract.bizcode.PlatformBizCodes;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
+import com.auth.module.security.contract.invalidation.UserInvalidatePayload;
 import com.auth.service.system.authorization.dispatch.AuthorizationInvalidationCoordinator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

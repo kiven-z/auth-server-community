@@ -6,7 +6,7 @@ import com.auth.module.security.autoconfigure.audit.operationlog.OperationLogPay
 import com.auth.module.security.autoconfigure.feign.SystemSecurityIngestFeignClient;
 import com.auth.module.security.autoconfigure.service.FeignRemoteOperationLogHandler;
 import com.auth.module.security.autoconfigure.service.NoopOperationLogHandler;
-import com.auth.module.security.contract.spi.OperationLogHandler;
+import com.auth.module.security.contract.audit.operationlog.OperationLogHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;

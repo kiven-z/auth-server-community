@@ -1,6 +1,6 @@
 package com.auth.service.auth.service;
 
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.service.auth.model.vo.authorization.EffectiveCodesVO;
 import com.auth.service.auth.service.impl.AdminAuthorizationServiceImpl;
 import com.auth.service.auth.support.authorization.AuthProfileRepository;

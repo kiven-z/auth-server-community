@@ -1,7 +1,7 @@
 package com.auth.service.example.listener;
 
-import com.auth.module.security.contract.event.SecurityAuthorizationAuditPayloadEvent;
-import com.auth.module.security.contract.spi.AuthorizationAuditHandler;
+import com.auth.module.security.contract.audit.decision.AuthorizationAuditHandler;
+import com.auth.module.security.contract.audit.decision.SecurityAuthorizationAuditPayloadEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;

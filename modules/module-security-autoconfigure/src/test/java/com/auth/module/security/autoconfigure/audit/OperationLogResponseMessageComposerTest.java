@@ -2,7 +2,7 @@ package com.auth.module.security.autoconfigure.audit;
 
 import com.auth.common.core.model.response.Result;
 import com.auth.module.security.autoconfigure.audit.operationlog.OperationLogResponseMessageComposer;
-import com.auth.module.security.contract.annotation.OperationLog;
+import com.auth.module.security.contract.audit.operationlog.OperationLog;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

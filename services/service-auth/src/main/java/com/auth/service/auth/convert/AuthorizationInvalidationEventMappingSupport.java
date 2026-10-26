@@ -1,7 +1,7 @@
 package com.auth.service.auth.convert;
 
-import com.auth.module.security.contract.api.AuthorizationChangeKind;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateResponse;
 import com.auth.service.auth.model.po.invalidation.AuthorizationInvalidationEventPO;
 import com.auth.service.auth.support.invalidation.InvalidationProcessingMarker;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;

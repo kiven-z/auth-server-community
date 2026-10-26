@@ -3,7 +3,7 @@ package com.auth.service.system.admin.service.authorization.impact.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.constants.BatchSizes;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.api.GrantTableSubjectType;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.RoleImpactQueryMapper;

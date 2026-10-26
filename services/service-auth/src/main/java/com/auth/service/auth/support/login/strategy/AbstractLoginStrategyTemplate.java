@@ -1,7 +1,7 @@
 package com.auth.service.auth.support.login.strategy;
 
 import com.auth.common.data.model.enums.UserStatus;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.service.auth.exception.AuthBadCredentialsException;
 import com.auth.service.auth.exception.AuthBusinessException;
 import com.auth.service.auth.exception.AuthResultCode;

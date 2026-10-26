@@ -1,7 +1,7 @@
 package com.auth.module.security.datapermission.context;
 
 import com.auth.module.security.autoconfigure.web.SecurityUserUtils;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import lombok.extern.slf4j.Slf4j;
 
 /**

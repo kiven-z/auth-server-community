@@ -1,7 +1,7 @@
 package com.auth.module.security.datapermission.handler;
 
 import cn.hutool.core.text.CharSequenceUtil;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.module.security.datapermission.annotation.DataScope;
 import com.auth.module.security.datapermission.context.LoginUserProvider;
 import com.auth.module.security.datapermission.support.DataScopeAnnotationResolver;

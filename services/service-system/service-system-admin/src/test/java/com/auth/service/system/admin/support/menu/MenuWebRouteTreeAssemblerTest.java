@@ -1,6 +1,6 @@
 package com.auth.service.system.admin.support.menu;
 
-import com.auth.module.security.contract.constants.PermissionConstant;
+import com.auth.module.security.contract.permission.PermissionConstant;
 import com.auth.service.system.admin.mapper.admin.menu.SysMenuRoleMapper;
 import com.auth.service.system.admin.model.entity.SysMenuEntity;
 import com.auth.service.system.admin.model.po.menu.SysMenuRoleLinkRowPO;

@@ -1,9 +1,9 @@
 package com.auth.module.security.starter.service;
 
 import com.auth.module.security.autoconfigure.service.AuthProfileCacheService;
-import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.module.security.contract.exception.SecurityResultCodeEnum;
 import com.auth.module.security.contract.exception.SecurityTokenException;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

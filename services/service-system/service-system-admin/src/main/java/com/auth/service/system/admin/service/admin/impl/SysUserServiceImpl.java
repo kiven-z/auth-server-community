@@ -7,7 +7,7 @@ import com.auth.common.core.utils.FieldChangeSupport;
 import com.auth.common.data.model.enums.UserStatus;
 import com.auth.module.platform.persistence.model.UserEntity;
 import com.auth.module.security.autoconfigure.web.SecurityUserUtils;
-import com.auth.module.security.contract.api.GrantTableSubjectType;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.user.SysUserConverter;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
 import com.auth.service.system.admin.mapper.admin.role.GrantTableMapper;

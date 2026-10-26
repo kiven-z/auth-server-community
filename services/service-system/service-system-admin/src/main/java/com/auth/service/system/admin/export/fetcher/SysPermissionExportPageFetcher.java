@@ -1,6 +1,6 @@
 package com.auth.service.system.admin.export.fetcher;
 
-import com.auth.module.security.contract.api.audit.PlatformBizCodes;
+import com.auth.module.security.contract.bizcode.PlatformBizCodes;
 import com.auth.service.system.admin.convert.spreadsheet.SysPermissionSpreadsheetConverter;
 import com.auth.service.system.admin.excel.permission.SysPermissionSpreadsheetRow;
 import com.auth.service.system.admin.mapper.admin.permission.SysPermissionMapper;

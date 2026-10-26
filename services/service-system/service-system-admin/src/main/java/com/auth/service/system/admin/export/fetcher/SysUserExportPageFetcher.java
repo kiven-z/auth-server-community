@@ -1,7 +1,7 @@
 package com.auth.service.system.admin.export.fetcher;
 
 import com.auth.module.platform.persistence.model.UserEntity;
-import com.auth.module.security.contract.api.audit.PlatformBizCodes;
+import com.auth.module.security.contract.bizcode.PlatformBizCodes;
 import com.auth.service.system.admin.convert.spreadsheet.SysUserSpreadsheetConverter;
 import com.auth.service.system.admin.excel.user.SysUserSpreadsheetRow;
 import com.auth.service.system.admin.mapper.admin.user.SysUserMapper;

@@ -4,7 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.common.core.utils.TreeParentIdUtil;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.constants.PermissionConstant;
+import com.auth.module.security.contract.permission.PermissionConstant;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.convert.admin.menu.SysMenuConverter;
 import com.auth.service.system.admin.mapper.admin.menu.SysMenuMapper;

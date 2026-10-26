@@ -4,17 +4,17 @@ import com.auth.common.jwt.autoconfigure.JwtProperties;
 import com.auth.common.jwt.key.HmacSecretKeys;
 import com.auth.common.jwt.model.SignatureAlgorithm;
 import com.auth.common.jwt.provider.HmacJwtTokenProvider;
-import com.auth.module.security.contract.constants.SecurityInternalTokenConstants;
-import com.auth.module.security.contract.constants.SecurityTokenKind;
+import com.auth.module.security.contract.token.SecurityInternalTokenConstants;
+import com.auth.module.security.contract.token.SecurityTokenKind;
 import com.auth.module.security.core.token.model.SecurityTokenResult;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Date;
 
-import static com.auth.module.security.contract.constants.SecurityExternalTokenConstants.TOKEN_TYPE;
-import static com.auth.module.security.contract.constants.SecurityInternalTokenConstants.PRINCIPAL_TYPE;
-import static com.auth.module.security.contract.constants.SecurityInternalTokenConstants.PRINCIPAL_TYPE_USER;
+import static com.auth.module.security.contract.token.SecurityExternalTokenConstants.TOKEN_TYPE;
+import static com.auth.module.security.contract.token.SecurityInternalTokenConstants.PRINCIPAL_TYPE;
+import static com.auth.module.security.contract.token.SecurityInternalTokenConstants.PRINCIPAL_TYPE_USER;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InternalTokenProviderTest {

@@ -1,7 +1,7 @@
 package com.auth.service.system.admin.support.scope;
 
 import cn.hutool.core.collection.CollUtil;
-import com.auth.module.security.contract.api.datascope.DataScopeStorageType;
+import com.auth.module.security.contract.profile.datascope.DataScopeStorageType;
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.model.entity.SysDeptEntity;
 import com.auth.service.system.admin.model.form.scope.SysDataScopeForm;

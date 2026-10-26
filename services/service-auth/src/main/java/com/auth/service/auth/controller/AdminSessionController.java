@@ -2,10 +2,10 @@ package com.auth.service.auth.controller;
 
 import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.annotation.OperationLog;
-import com.auth.module.security.contract.api.audit.AuditServiceDomain;
-import com.auth.module.security.contract.api.audit.OperationLogKind;
-import com.auth.module.security.contract.context.OperationLogContext;
+import com.auth.module.security.contract.audit.operationlog.AuditServiceDomain;
+import com.auth.module.security.contract.audit.operationlog.OperationLog;
+import com.auth.module.security.contract.audit.operationlog.OperationLogContext;
+import com.auth.module.security.contract.audit.operationlog.OperationLogKind;
 import com.auth.service.auth.model.constants.AuthAuditBizModule;
 import com.auth.service.auth.model.query.OnlineUserPageQuery;
 import com.auth.service.auth.model.vo.OnlineUserPageVO;

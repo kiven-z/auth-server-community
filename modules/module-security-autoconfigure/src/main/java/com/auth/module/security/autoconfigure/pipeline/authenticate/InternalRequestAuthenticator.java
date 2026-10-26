@@ -2,10 +2,10 @@ package com.auth.module.security.autoconfigure.pipeline.authenticate;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import com.auth.module.security.autoconfigure.service.AuthProfileCacheService;
-import com.auth.module.security.contract.api.AuthProfile;
-import com.auth.module.security.contract.constants.SecurityInternalTokenConstants;
 import com.auth.module.security.contract.exception.SecurityResultCodeEnum;
 import com.auth.module.security.contract.exception.SecurityTokenException;
+import com.auth.module.security.contract.profile.AuthProfile;
+import com.auth.module.security.contract.token.SecurityInternalTokenConstants;
 import com.auth.module.security.core.token.model.SecurityTokenResult;
 import com.auth.module.security.core.token.provider.InternalTokenProvider;
 import jakarta.servlet.http.HttpServletRequest;

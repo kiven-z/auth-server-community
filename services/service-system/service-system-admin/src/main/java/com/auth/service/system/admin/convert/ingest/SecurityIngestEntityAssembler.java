@@ -2,9 +2,9 @@ package com.auth.service.system.admin.convert.ingest;
 
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.text.CharSequenceUtil;
-import com.auth.module.security.contract.event.OperationLogPayloadEvent;
-import com.auth.module.security.contract.event.SecurityAuthorizationAuditPayloadEvent;
-import com.auth.module.security.contract.event.SecurityEventType;
+import com.auth.module.security.contract.audit.decision.SecurityAuthorizationAuditPayloadEvent;
+import com.auth.module.security.contract.audit.decision.SecurityEventType;
+import com.auth.module.security.contract.audit.operationlog.OperationLogPayloadEvent;
 import com.auth.service.system.admin.model.entity.LogAuthorizationAuditEntity;
 import com.auth.service.system.admin.model.entity.LogOperationEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;

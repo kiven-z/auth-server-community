@@ -1,7 +1,6 @@
 package com.auth.service.auth.config;
 
-import com.auth.module.security.contract.api.AuthorizationChangeKind;
-import com.auth.module.security.contract.dto.invalidation.*;
+import com.auth.module.security.contract.invalidation.*;
 import com.auth.service.auth.mapper.AuthorizationImpactMapper;
 import com.auth.service.auth.support.invalidation.impact.AuthorizationImpactQuerySupport;
 import com.auth.service.auth.support.invalidation.impact.ImpactResolver;

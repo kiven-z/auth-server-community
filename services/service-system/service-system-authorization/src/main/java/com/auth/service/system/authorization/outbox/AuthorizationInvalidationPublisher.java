@@ -1,6 +1,6 @@
 package com.auth.service.system.authorization.outbox;
 
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
 import com.auth.service.system.authorization.mapper.SysAuthorizationInvalidationOutboxMapper;
 import com.auth.service.system.authorization.model.entity.SysAuthorizationInvalidationOutboxEntity;
 import com.auth.service.system.authorization.model.enums.AuthorizationInvalidationOutboxStatus;

@@ -9,7 +9,7 @@ import org.springframework.http.client.ClientHttpResponse;
 
 import java.io.IOException;
 
-import static com.auth.module.security.contract.constants.SecurityInternalTokenConstants.INTERNAL_HEADER;
+import static com.auth.module.security.contract.token.SecurityInternalTokenConstants.INTERNAL_HEADER;
 
 /**
  * 负载均衡 {@link org.springframework.web.client.RestTemplate} 出站拦截器：自动附加 X-Internal-JWT

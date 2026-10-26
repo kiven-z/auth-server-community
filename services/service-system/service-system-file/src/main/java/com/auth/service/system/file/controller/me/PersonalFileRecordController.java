@@ -7,8 +7,8 @@ import com.auth.module.file.export.delivery.FileDelivery;
 import com.auth.module.file.export.delivery.FileDownloadNames;
 import com.auth.module.security.autoconfigure.annotation.AuthenticatedApi;
 import com.auth.module.security.autoconfigure.web.SecurityUserUtils;
-import com.auth.module.security.contract.annotation.OperationLog;
-import com.auth.module.security.contract.api.audit.OperationLogKind;
+import com.auth.module.security.contract.audit.operationlog.OperationLog;
+import com.auth.module.security.contract.audit.operationlog.OperationLogKind;
 import com.auth.service.system.file.model.query.FileRecordPageQuery;
 import com.auth.service.system.file.model.vo.FileRecordDetailVO;
 import com.auth.service.system.file.model.vo.FileRecordPageVO;
@@ -23,7 +23,7 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 
 import java.util.List;
 
-import static com.auth.module.security.contract.api.audit.AuditServiceDomain.SYSTEM;
+import static com.auth.module.security.contract.audit.operationlog.AuditServiceDomain.SYSTEM;
 import static com.auth.service.system.file.model.constants.FileAuditBizModule.SYS_FILE;
 
 /**

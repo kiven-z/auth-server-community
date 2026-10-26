@@ -2,7 +2,7 @@ package com.auth.module.security.autoconfigure.audit.operationlog;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import com.auth.common.core.model.response.Result;
-import com.auth.module.security.contract.annotation.OperationLog;
+import com.auth.module.security.contract.audit.operationlog.OperationLog;
 import lombok.experimental.UtilityClass;
 
 /**

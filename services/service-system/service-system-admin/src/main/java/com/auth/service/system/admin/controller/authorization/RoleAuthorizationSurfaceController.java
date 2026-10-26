@@ -2,7 +2,7 @@ package com.auth.service.system.admin.controller.authorization;
 
 import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.api.GrantTableSubjectType;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.service.system.admin.model.query.authorization.RoleGrantSubjectPageQuery;
 import com.auth.service.system.admin.model.query.authorization.RoleMenuPageQuery;
 import com.auth.service.system.admin.model.query.authorization.RolePermissionPageQuery;

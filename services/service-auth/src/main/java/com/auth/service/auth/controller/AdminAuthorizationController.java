@@ -1,10 +1,10 @@
 package com.auth.service.auth.controller;
 
 import com.auth.common.core.model.response.Result;
-import com.auth.module.security.contract.annotation.OperationLog;
-import com.auth.module.security.contract.api.audit.AuditServiceDomain;
-import com.auth.module.security.contract.api.audit.OperationLogKind;
-import com.auth.module.security.contract.api.audit.PlatformBizCodes;
+import com.auth.module.security.contract.audit.operationlog.AuditServiceDomain;
+import com.auth.module.security.contract.audit.operationlog.OperationLog;
+import com.auth.module.security.contract.audit.operationlog.OperationLogKind;
+import com.auth.module.security.contract.bizcode.PlatformBizCodes;
 import com.auth.service.auth.service.AdminAuthorizationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

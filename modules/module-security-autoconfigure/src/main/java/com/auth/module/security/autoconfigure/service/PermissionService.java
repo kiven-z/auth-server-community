@@ -6,10 +6,10 @@ import com.auth.module.security.autoconfigure.config.security.SecurityConfigProp
 import com.auth.module.security.autoconfigure.pipeline.resolver.HandlerMethodResolver;
 import com.auth.module.security.autoconfigure.security.SecurityRequestAttributes;
 import com.auth.module.security.autoconfigure.security.SecurityRequirement;
-import com.auth.module.security.contract.api.AuthProfile;
-import com.auth.module.security.contract.event.SecurityAuthorizationAuditPayloadEvent;
-import com.auth.module.security.contract.event.SecurityEventType;
-import com.auth.module.security.contract.spi.AuthorizationAuditHandler;
+import com.auth.module.security.contract.audit.decision.AuthorizationAuditHandler;
+import com.auth.module.security.contract.audit.decision.SecurityAuthorizationAuditPayloadEvent;
+import com.auth.module.security.contract.audit.decision.SecurityEventType;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.module.security.core.matcher.PermissionMatcher;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.ObjectProvider;
@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.auth.module.security.autoconfigure.web.SecurityUserUtils.currentAuthProfile;
-import static com.auth.module.security.contract.constants.PermissionConstant.isAdmin;
-import static com.auth.module.security.contract.constants.PermissionConstant.isAdminPermission;
+import static com.auth.module.security.contract.permission.PermissionConstant.isAdmin;
+import static com.auth.module.security.contract.permission.PermissionConstant.isAdminPermission;
 
 /**
  * Permission decision service.

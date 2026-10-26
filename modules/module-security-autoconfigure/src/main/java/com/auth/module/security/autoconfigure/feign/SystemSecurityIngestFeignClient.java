@@ -1,8 +1,8 @@
 package com.auth.module.security.autoconfigure.feign;
 
 import com.auth.common.core.model.response.Result;
-import com.auth.module.security.contract.dto.AuthorizationAuditIngestRequest;
-import com.auth.module.security.contract.dto.OperationLogIngestRequest;
+import com.auth.module.security.contract.audit.decision.AuthorizationAuditIngestRequest;
+import com.auth.module.security.contract.audit.operationlog.OperationLogIngestRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

@@ -1,8 +1,8 @@
 package com.auth.service.auth.support.invalidation.impact;
 
 import com.auth.common.core.constants.BatchSizes;
-import com.auth.module.security.contract.api.GrantTableSubjectType;
-import com.auth.module.security.contract.dto.invalidation.GrantSubjectKey;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
+import com.auth.module.security.contract.invalidation.GrantSubjectKey;
 import com.auth.service.auth.mapper.AuthorizationImpactMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

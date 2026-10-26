@@ -1,7 +1,7 @@
 package com.auth.service.auth.service;
 
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateResponse;
 
 /**
  * 授权失效编排唯一入口

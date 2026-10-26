@@ -1,6 +1,6 @@
 package com.auth.service.auth.model.value.invalidation;
 
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateResponse;
 import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.Accessors;

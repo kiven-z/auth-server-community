@@ -2,8 +2,8 @@ package com.auth.module.security.autoconfigure.service;
 
 import com.auth.common.core.model.response.Result;
 import com.auth.module.security.autoconfigure.feign.SystemSecurityIngestFeignClient;
-import com.auth.module.security.contract.dto.OperationLogIngestRequest;
-import com.auth.module.security.contract.event.OperationLogPayloadEvent;
+import com.auth.module.security.contract.audit.operationlog.OperationLogIngestRequest;
+import com.auth.module.security.contract.audit.operationlog.OperationLogPayloadEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

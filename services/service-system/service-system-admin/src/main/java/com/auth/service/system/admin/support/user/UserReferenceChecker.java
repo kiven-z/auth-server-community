@@ -6,7 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.auth.common.data.support.BusinessKeyAssert;
 import com.auth.module.platform.persistence.model.UserEntity;
 import com.auth.module.security.autoconfigure.web.SecurityUserUtils;
-import com.auth.module.security.contract.constants.PermissionConstant;
+import com.auth.module.security.contract.permission.PermissionConstant;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
 import com.auth.service.system.admin.mapper.admin.user.SysUserMapper;
 import com.auth.service.system.admin.model.po.user.UserBusinessKeyRowPO;

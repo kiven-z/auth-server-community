@@ -3,7 +3,7 @@ package com.auth.service.system.admin.service.me.impl;
 import com.auth.common.data.model.PageResponse;
 import com.auth.module.platform.persistence.model.UserEntity;
 import com.auth.module.security.autoconfigure.security.SecurityRequestAttributes;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.service.system.admin.model.query.log.LogLoginLogQuery;
 import com.auth.service.system.admin.model.query.me.MeLoginLogPageQuery;
 import com.auth.service.system.admin.model.vo.loglogin.LogLoginLogPageVO;

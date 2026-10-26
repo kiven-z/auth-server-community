@@ -2,7 +2,7 @@ package com.auth.service.auth.support.invalidation.impact;
 
 import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.constants.BatchSizes;
-import com.auth.module.security.contract.dto.invalidation.GrantSubjectKey;
+import com.auth.module.security.contract.invalidation.GrantSubjectKey;
 import com.auth.service.auth.mapper.AuthorizationImpactMapper;
 import com.auth.service.auth.util.BatchPartition;
 import org.springframework.stereotype.Repository;

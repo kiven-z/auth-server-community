@@ -1,7 +1,7 @@
 package com.auth.service.auth.service;
 
 import com.auth.module.platform.persistence.model.UserEntity;
-import com.auth.module.security.contract.api.UserSessionIndex;
+import com.auth.module.security.contract.session.UserSessionIndex;
 import com.auth.service.auth.TestConstants;
 import com.auth.service.auth.mapper.UserMapper;
 import com.auth.service.auth.model.query.OnlineUserPageQuery;

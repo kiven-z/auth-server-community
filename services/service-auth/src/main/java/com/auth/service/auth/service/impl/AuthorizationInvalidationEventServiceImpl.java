@@ -1,8 +1,8 @@
 package com.auth.service.auth.service.impl;
 
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.api.AuthorizationChangeKind;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateResponse;
 import com.auth.service.auth.convert.AuthorizationInvalidationEventConverter;
 import com.auth.service.auth.convert.AuthorizationInvalidationEventMappingSupport;
 import com.auth.service.auth.exception.AuthBusinessException;

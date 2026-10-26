@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 
 import java.util.List;
 
-import static com.auth.module.security.contract.constants.PermissionConstant.isAdminPermission;
+import static com.auth.module.security.contract.permission.PermissionConstant.isAdminPermission;
 
 /**
  * 权限匹配器，支持分段通配符

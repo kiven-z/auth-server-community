@@ -3,7 +3,7 @@ package com.auth.service.auth.support.session;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
 import cn.hutool.core.util.NumberUtil;
-import com.auth.module.security.contract.api.UserSessionIndex;
+import com.auth.module.security.contract.session.UserSessionIndex;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.RedisTemplate;

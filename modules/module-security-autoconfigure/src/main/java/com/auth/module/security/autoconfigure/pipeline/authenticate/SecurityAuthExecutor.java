@@ -1,8 +1,8 @@
 package com.auth.module.security.autoconfigure.pipeline.authenticate;
 
-import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.module.security.contract.exception.SecurityResultCodeEnum;
 import com.auth.module.security.contract.exception.SecurityTokenException;
+import com.auth.module.security.contract.profile.AuthProfile;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;

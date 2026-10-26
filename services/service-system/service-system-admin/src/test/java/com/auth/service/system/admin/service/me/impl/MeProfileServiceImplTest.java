@@ -1,7 +1,7 @@
 package com.auth.service.system.admin.service.me.impl;
 
 import com.auth.module.platform.persistence.model.UserEntity;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.service.system.admin.mapper.admin.user.SysUserMapper;
 import com.auth.service.system.admin.model.form.me.MeAvatarUpdateForm;
 import com.auth.service.system.admin.model.form.me.MeProfileUpdateForm;

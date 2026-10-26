@@ -1,9 +1,9 @@
 package com.auth.service.auth.service;
 
-import com.auth.module.security.contract.api.AuthorizationChangeKind;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
-import com.auth.module.security.contract.dto.invalidation.RoleInvalidatePayload;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateResponse;
+import com.auth.module.security.contract.invalidation.RoleInvalidatePayload;
 import com.auth.service.auth.model.po.user.UserInvalidationStatePO;
 import com.auth.service.auth.model.value.invalidation.InvalidationIdempotencyGate;
 import com.auth.service.auth.service.impl.AuthorizationInvalidationServiceImpl;

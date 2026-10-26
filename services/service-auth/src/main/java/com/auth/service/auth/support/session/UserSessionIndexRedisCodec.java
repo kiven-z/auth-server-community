@@ -2,7 +2,7 @@ package com.auth.service.auth.support.session;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
-import com.auth.module.security.contract.api.UserSessionIndex;
+import com.auth.module.security.contract.session.UserSessionIndex;
 import lombok.experimental.UtilityClass;
 import org.jetbrains.annotations.NotNull;
 

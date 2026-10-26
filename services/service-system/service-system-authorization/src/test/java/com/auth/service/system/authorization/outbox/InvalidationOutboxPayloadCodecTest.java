@@ -1,8 +1,8 @@
 package com.auth.service.system.authorization.outbox;
 
-import com.auth.module.security.contract.api.AuthorizationChangeKind;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidatePayload;
-import com.auth.module.security.contract.dto.invalidation.RoleInvalidatePayload;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
+import com.auth.module.security.contract.invalidation.RoleInvalidatePayload;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

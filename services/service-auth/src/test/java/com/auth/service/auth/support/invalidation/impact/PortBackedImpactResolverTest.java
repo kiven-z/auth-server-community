@@ -1,8 +1,8 @@
 package com.auth.service.auth.support.invalidation.impact;
 
-import com.auth.module.security.contract.api.AuthorizationChangeKind;
-import com.auth.module.security.contract.dto.invalidation.RoleInvalidatePayload;
-import com.auth.module.security.contract.dto.invalidation.UserInvalidatePayload;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.RoleInvalidatePayload;
+import com.auth.module.security.contract.invalidation.UserInvalidatePayload;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

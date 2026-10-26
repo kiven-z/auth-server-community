@@ -1,7 +1,7 @@
 package com.auth.module.security.autoconfigure.boot.integration;
 
 import com.auth.common.data.model.BaseEntity;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.junit.jupiter.api.AfterEach;

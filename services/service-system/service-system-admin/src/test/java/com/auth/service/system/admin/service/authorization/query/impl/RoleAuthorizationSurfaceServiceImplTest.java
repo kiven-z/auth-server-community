@@ -1,6 +1,6 @@
 package com.auth.service.system.admin.service.authorization.query.impl;
 
-import com.auth.module.security.contract.api.GrantTableSubjectType;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.MenuRoleBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.RolePermissionBindingQueryMapper;

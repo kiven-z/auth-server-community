@@ -1,7 +1,7 @@
 package com.auth.module.security.autoconfigure.outbound;
 
 import com.auth.module.security.autoconfigure.web.SecurityUserUtils;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.module.security.core.token.provider.InternalTokenProvider;
 
 import java.util.UUID;

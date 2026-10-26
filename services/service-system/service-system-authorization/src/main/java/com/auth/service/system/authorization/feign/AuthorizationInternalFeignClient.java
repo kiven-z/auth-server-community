@@ -2,8 +2,8 @@ package com.auth.service.system.authorization.feign;
 
 import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidateResponse;
 import com.auth.service.system.authorization.feign.dto.*;
 import com.auth.service.system.authorization.feign.fallback.AuthorizationInternalFeignClientFallback;
 import org.springframework.cloud.openfeign.FeignClient;

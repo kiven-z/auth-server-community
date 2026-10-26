@@ -1,6 +1,6 @@
 package com.auth.module.security.datapermission.annotation;
 
-import com.auth.module.security.contract.api.datascope.DataScopeStorageType;
+import com.auth.module.security.contract.profile.datascope.DataScopeStorageType;
 import com.auth.module.security.datapermission.handler.DataScopeHandler;
 import com.auth.module.security.datapermission.handler.DefaultDataScopeHandler;
 

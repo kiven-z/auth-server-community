@@ -1,6 +1,6 @@
 package com.auth.module.security.datapermission.context;
 
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 
 /**
  * 提供当前 {@link AuthProfile} 快照

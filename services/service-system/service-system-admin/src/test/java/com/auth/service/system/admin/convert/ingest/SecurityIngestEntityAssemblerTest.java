@@ -1,8 +1,8 @@
 package com.auth.service.system.admin.convert.ingest;
 
-import com.auth.module.security.contract.event.OperationLogPayloadEvent;
-import com.auth.module.security.contract.event.SecurityAuthorizationAuditPayloadEvent;
-import com.auth.module.security.contract.event.SecurityEventType;
+import com.auth.module.security.contract.audit.decision.SecurityAuthorizationAuditPayloadEvent;
+import com.auth.module.security.contract.audit.decision.SecurityEventType;
+import com.auth.module.security.contract.audit.operationlog.OperationLogPayloadEvent;
 import com.auth.service.system.admin.model.entity.LogAuthorizationAuditEntity;
 import com.auth.service.system.admin.model.entity.LogOperationEntity;
 import org.junit.jupiter.api.DisplayName;

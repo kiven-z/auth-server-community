@@ -5,7 +5,7 @@ import com.auth.common.ip.IpAddressService;
 import com.auth.common.ip.IpInfo;
 import com.auth.common.jwt.autoconfigure.JwtProperties;
 import com.auth.common.web.model.entity.UserAgent;
-import com.auth.module.security.contract.api.UserSessionIndex;
+import com.auth.module.security.contract.session.UserSessionIndex;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;

@@ -4,7 +4,7 @@ import cn.hutool.core.text.CharSequenceUtil;
 import com.auth.common.jwt.api.JwtTokenProvider;
 import com.auth.common.jwt.autoconfigure.JwtProperties;
 import com.auth.common.jwt.model.JwtUserToken;
-import com.auth.module.security.contract.constants.SecurityTokenKind;
+import com.auth.module.security.contract.token.SecurityTokenKind;
 import com.auth.module.security.core.token.model.SecurityTokenResult;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -15,8 +15,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.auth.module.security.contract.constants.SecurityExternalTokenConstants.TOKEN_TYPE;
-import static com.auth.module.security.contract.constants.SecurityInternalTokenConstants.*;
+import static com.auth.module.security.contract.token.SecurityExternalTokenConstants.TOKEN_TYPE;
+import static com.auth.module.security.contract.token.SecurityInternalTokenConstants.*;
 
 /**
  * 内部令牌：双模签发——「用户身份」与「服务身份」共用一种令牌种类，由 principal_type claim 区分

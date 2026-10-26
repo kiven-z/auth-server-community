@@ -1,7 +1,7 @@
 package com.auth.service.system.admin.model.query.authorization;
 
 import com.auth.common.core.model.query.PageQueryRequest;
-import com.auth.module.security.contract.api.GrantTableSubjectType;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;

@@ -1,7 +1,7 @@
 package com.auth.module.security.autoconfigure.audit.operationlog;
 
-import com.auth.module.security.contract.annotation.OperationLog;
-import com.auth.module.security.contract.context.OperationLogContext;
+import com.auth.module.security.contract.audit.operationlog.OperationLog;
+import com.auth.module.security.contract.audit.operationlog.OperationLogContext;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -23,8 +23,8 @@ public class OperationLogAspect {
 	/**
 	 * 使用全限定名绑定，避免 @annotation(x)||@within(x) 对同一形参绑定在 Spring AOP 下出现 null。
 	 */
-	@Around("@annotation(com.auth.module.security.contract.annotation.OperationLog) "
-			+ "|| @within(com.auth.module.security.contract.annotation.OperationLog)")
+	@Around("@annotation(com.auth.module.security.contract.audit.operationlog.OperationLog) "
+			+ "|| @within(com.auth.module.security.contract.audit.operationlog.OperationLog)")
 	public Object aroundControllerMethod(ProceedingJoinPoint joinPoint) throws Throwable {
 		long startNs = System.nanoTime();
 		Object result = null;

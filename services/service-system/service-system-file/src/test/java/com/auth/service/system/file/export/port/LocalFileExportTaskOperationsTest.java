@@ -1,7 +1,7 @@
 package com.auth.service.system.file.export.port;
 
 import com.auth.module.file.api.model.request.FileExportTaskCreateRequest;
-import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.service.system.file.config.properties.FileExportTaskProperties;
 import com.auth.service.system.file.export.remote.RemotePageFetcher;
 import com.auth.service.system.file.mapper.FileExportTaskMapper;

@@ -1,6 +1,6 @@
 package com.auth.service.system.authorization.model.constants;
 
-import com.auth.module.security.contract.api.audit.PlatformBizCodes;
+import com.auth.module.security.contract.bizcode.PlatformBizCodes;
 import lombok.experimental.UtilityClass;
 
 /**

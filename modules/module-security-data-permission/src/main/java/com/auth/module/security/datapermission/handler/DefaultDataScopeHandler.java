@@ -2,10 +2,10 @@ package com.auth.module.security.datapermission.handler;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.text.CharSequenceUtil;
-import com.auth.module.security.contract.api.AuthProfile;
-import com.auth.module.security.contract.api.ScopeGrant;
-import com.auth.module.security.contract.api.datascope.DataScopeStorageType;
-import com.auth.module.security.contract.constants.PermissionConstant;
+import com.auth.module.security.contract.permission.PermissionConstant;
+import com.auth.module.security.contract.profile.AuthProfile;
+import com.auth.module.security.contract.profile.ScopeGrant;
+import com.auth.module.security.contract.profile.datascope.DataScopeStorageType;
 import com.auth.module.security.datapermission.annotation.DataScope;
 
 import java.util.LinkedHashSet;

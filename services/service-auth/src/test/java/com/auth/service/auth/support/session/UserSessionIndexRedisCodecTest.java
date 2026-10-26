@@ -1,6 +1,6 @@
 package com.auth.service.auth.support.session;
 
-import com.auth.module.security.contract.api.UserSessionIndex;
+import com.auth.module.security.contract.session.UserSessionIndex;
 import com.auth.service.auth.TestConstants;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

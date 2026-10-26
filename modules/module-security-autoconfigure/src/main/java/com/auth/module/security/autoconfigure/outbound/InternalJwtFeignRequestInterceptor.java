@@ -4,7 +4,7 @@ import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import org.springframework.http.HttpHeaders;
 
-import static com.auth.module.security.contract.constants.SecurityInternalTokenConstants.INTERNAL_HEADER;
+import static com.auth.module.security.contract.token.SecurityInternalTokenConstants.INTERNAL_HEADER;
 
 /**
  * Feign 拦截器：出站为服务间调用签发短生命周期内部 JWT，并清除外部 Authorization，避免误传播
