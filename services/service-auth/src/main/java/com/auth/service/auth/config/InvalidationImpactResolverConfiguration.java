@@ -52,19 +52,6 @@ public class InvalidationImpactResolverConfiguration {
 	}
 
 	/**
-	 * 按部门 ID 反查成员用户 ID（P3，含子部门）。
-	 * @param impactQuery 授权影响面查询
-	 * @return 部门成员影响面解析器
-	 */
-	@Bean
-	ImpactResolver<UserDeptInvalidatePayload> userDeptImpactResolver(AuthorizationImpactQuerySupport impactQuery,
-			AuthorizationImpactMapper authorizationImpactMapper) {
-		return new PortBackedImpactResolver<>(AuthorizationChangeKind.USER_DEPT, UserDeptInvalidatePayload.class,
-				payload -> impactQuery.findUserIdsByLongKeys(payload.deptIds(),
-						authorizationImpactMapper::selectUserIdsByDeptIds));
-	}
-
-	/**
 	 * 按岗位 ID 反查成员用户 ID（P3）。
 	 * @param impactQuery 授权影响面查询
 	 * @return 岗位成员影响面解析器

@@ -1,6 +1,7 @@
 package com.auth.service.system.admin.service.admin.impl;
 
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
+import com.auth.service.system.admin.mapper.admin.user.UserDeptMapper;
 import com.auth.service.system.admin.mapper.authorization.DeptRelationQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.model.entity.SysDeptEntity;
@@ -11,7 +12,7 @@ import com.auth.service.system.admin.model.query.dept.SysDeptListQuery;
 import com.auth.service.system.admin.model.vo.dept.SysDeptListVO;
 import com.auth.service.system.admin.support.dept.DeptClosureMaintainer;
 import com.auth.service.system.admin.support.dept.DeptReferenceChecker;
-import com.auth.service.system.authorization.dispatch.trigger.DeptAuthorizationInvalidationTrigger;
+import com.auth.service.system.authorization.dispatch.trigger.UserAuthorizationInvalidationTrigger;
 import com.auth.service.system.common.exception.SystemBusinessException;
 import com.auth.service.system.common.exception.code.SystemCommonResultCode;
 import com.auth.service.system.common.service.AuditUserDisplayService;
@@ -56,7 +57,10 @@ class SysDeptServiceImplTest {
 	private DeptClosureMaintainer deptClosureMaintainer;
 
 	@Mock
-	private DeptAuthorizationInvalidationTrigger deptInvalidationTrigger;
+	private UserDeptMapper userDeptMapper;
+
+	@Mock
+	private UserAuthorizationInvalidationTrigger userAuthorizationInvalidationTrigger;
 
 	@Mock
 	private DeptRelationQueryMapper deptRelationQueryMapper;
@@ -89,8 +93,8 @@ class SysDeptServiceImplTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		sysDeptService = spy(
-				new SysDeptServiceImpl(deptReferenceChecker, deptClosureMaintainer, deptInvalidationTrigger));
+		sysDeptService = spy(new SysDeptServiceImpl(deptReferenceChecker, deptClosureMaintainer, userDeptMapper,
+				userAuthorizationInvalidationTrigger));
 		sysDeptQueryService = new SysDeptQueryServiceImpl(auditUserDisplayService, deptReferenceChecker,
 				deptRelationQueryMapper, grantBindingQueryMapper);
 		Field baseMapperField = CrudRepository.class.getDeclaredField("baseMapper");
@@ -176,7 +180,8 @@ class SysDeptServiceImplTest {
 		sysDeptService.updateMeta(form);
 
 		verify(sysDeptMapper).updateById(argThat((SysDeptEntity e) -> "新部门名".equals(e.getDeptName())));
-		verify(deptInvalidationTrigger, never()).submitByDeptIds(any(), any());
+		verify(userDeptMapper, never()).selectUserIdsByAncestorDeptIds(any());
+		verify(userAuthorizationInvalidationTrigger, never()).submitByUserIds(any(), any());
 		verify(deptClosureMaintainer, never()).moveNode(anyLong(), anyLong());
 	}
 
@@ -189,12 +194,13 @@ class SysDeptServiceImplTest {
 		when(sysDeptMapper.countById(10L)).thenReturn(1);
 		when(sysDeptMapper.countDescendantRelation(deptId, 10L)).thenReturn(0L);
 		when(sysDeptMapper.updateById(any(SysDeptEntity.class))).thenReturn(1);
+		when(userDeptMapper.selectUserIdsByAncestorDeptIds(List.of(deptId))).thenReturn(List.of(21L, 22L));
 
 		SysDeptForm form = minimalForm(deptId, 10L, "D003", "原部门");
 		sysDeptService.updateMeta(form);
 
 		verify(deptClosureMaintainer).moveNode(deptId, 10L);
-		verify(deptInvalidationTrigger).submitByDeptIds(List.of(deptId), "move");
+		verify(userAuthorizationInvalidationTrigger).submitByUserIds(List.of(21L, 22L), "move");
 	}
 
 	@Test
@@ -212,11 +218,12 @@ class SysDeptServiceImplTest {
 
 		verify(sysDeptMapper, never()).updateById(any(SysDeptEntity.class));
 		verify(deptClosureMaintainer, never()).moveNode(anyLong(), anyLong());
-		verify(deptInvalidationTrigger, never()).submitByDeptIds(any(), any());
+		verify(userDeptMapper, never()).selectUserIdsByAncestorDeptIds(any());
+		verify(userAuthorizationInvalidationTrigger, never()).submitByUserIds(any(), any());
 	}
 
 	@Test
-	@DisplayName("移动部门：父级变更时更新 parentId、维护闭包并提交失效")
+	@DisplayName("移动部门：父级变更且无成员时不提交失效")
 	void moveUpdatesParentWhenChanged() {
 		// 变更父级后写库并触发授权失效
 		Long deptId = 7L;
@@ -225,6 +232,7 @@ class SysDeptServiceImplTest {
 		when(sysDeptMapper.countById(12L)).thenReturn(1);
 		when(sysDeptMapper.countDescendantRelation(deptId, 12L)).thenReturn(0L);
 		when(sysDeptMapper.updateById(any(SysDeptEntity.class))).thenReturn(1);
+		when(userDeptMapper.selectUserIdsByAncestorDeptIds(List.of(deptId))).thenReturn(List.of());
 
 		SysDeptMoveForm form = new SysDeptMoveForm();
 		form.setId(deptId);
@@ -233,7 +241,61 @@ class SysDeptServiceImplTest {
 
 		verify(sysDeptMapper).updateById(argThat((SysDeptEntity e) -> Long.valueOf(12L).equals(e.getParentId())));
 		verify(deptClosureMaintainer).moveNode(deptId, 12L);
-		verify(deptInvalidationTrigger).submitByDeptIds(List.of(deptId), "move");
+		verify(userAuthorizationInvalidationTrigger, never()).submitByUserIds(any(), any());
+	}
+
+	@Test
+	@DisplayName("移动部门：父级变更且存在成员时按用户提交失效")
+	void moveSubmitsUserInvalidationWhenMembersExist() {
+		Long deptId = 11L;
+		SysDeptEntity existing = activeDept(deptId, "D011");
+		when(deptReferenceChecker.getExistingActive(deptId)).thenReturn(existing);
+		when(sysDeptMapper.countById(12L)).thenReturn(1);
+		when(sysDeptMapper.countDescendantRelation(deptId, 12L)).thenReturn(0L);
+		when(sysDeptMapper.updateById(any(SysDeptEntity.class))).thenReturn(1);
+		when(userDeptMapper.selectUserIdsByAncestorDeptIds(List.of(deptId))).thenReturn(List.of(31L));
+
+		SysDeptMoveForm form = new SysDeptMoveForm();
+		form.setId(deptId);
+		form.setParentId(12L);
+		sysDeptService.move(form);
+
+		verify(userAuthorizationInvalidationTrigger).submitByUserIds(List.of(31L), "move");
+	}
+
+	@Test
+	@DisplayName("删除部门：无引用时先展开成员，空集不提交失效")
+	void deleteQueriesMembersThenRemovesWhenUnreferenced() {
+		Long deptId = 4L;
+		when(deptReferenceChecker.getExistingActive(deptId)).thenReturn(activeDept(deptId, "D004"));
+		when(sysDeptMapper.countActiveDirectChildren(deptId)).thenReturn(0);
+		when(sysDeptMapper.existsSubtreeReference(deptId)).thenReturn(false);
+		when(userDeptMapper.selectUserIdsByAncestorDeptIds(List.of(deptId))).thenReturn(List.of());
+		when(sysDeptMapper.deleteById(deptId)).thenReturn(1);
+
+		sysDeptService.deleteById(deptId);
+
+		var inOrder = inOrder(userDeptMapper, deptClosureMaintainer, sysDeptMapper);
+		inOrder.verify(userDeptMapper).selectUserIdsByAncestorDeptIds(List.of(deptId));
+		inOrder.verify(deptClosureMaintainer).removeClosurePaths(deptId);
+		inOrder.verify(sysDeptMapper).deleteById(deptId);
+		verify(userAuthorizationInvalidationTrigger, never()).submitByUserIds(any(), any());
+	}
+
+	@Test
+	@DisplayName("删除部门：子树仍被引用时不展开成员")
+	void deleteRejectsWhenSubtreeReferenced() {
+		Long deptId = 5L;
+		when(deptReferenceChecker.getExistingActive(deptId)).thenReturn(activeDept(deptId, "D005"));
+		when(sysDeptMapper.countActiveDirectChildren(deptId)).thenReturn(0);
+		when(sysDeptMapper.existsSubtreeReference(deptId)).thenReturn(true);
+
+		assertThatThrownBy(() -> sysDeptService.deleteById(deptId)).isInstanceOf(SystemBusinessException.class)
+			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
+			.isEqualTo(SystemCommonResultCode.DATA_IN_USE);
+
+		verify(userDeptMapper, never()).selectUserIdsByAncestorDeptIds(any());
+		verify(deptClosureMaintainer, never()).removeClosurePaths(anyLong());
 	}
 
 	@Test

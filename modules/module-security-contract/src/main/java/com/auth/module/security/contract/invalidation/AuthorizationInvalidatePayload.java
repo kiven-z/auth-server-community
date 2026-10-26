@@ -6,7 +6,7 @@ package com.auth.module.security.contract.invalidation;
  * @author Bunny
  */
 public sealed interface AuthorizationInvalidatePayload permits RoleInvalidatePayload, PermissionInvalidatePayload,
-		GrantInvalidatePayload, UserDeptInvalidatePayload, UserPostInvalidatePayload, UserInvalidatePayload {
+		GrantInvalidatePayload, UserPostInvalidatePayload, UserInvalidatePayload {
 
 	/**
 	 * 本负载对应的变更维度。

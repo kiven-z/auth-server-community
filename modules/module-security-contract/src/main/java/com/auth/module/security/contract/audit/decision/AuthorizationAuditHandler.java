@@ -7,7 +7,6 @@ package com.auth.module.security.contract.audit.decision;
  * 业务服务如需将授权审计事件持久化（DB / ES / 日志），实现此接口并注册为 Spring Bean autoconfigure 层提供
  *
  * @author Bunny
- * @ConditionalOnMissingBean 空实现，确保不接入时不会 NPE
  * </p>
  *
  * <p>

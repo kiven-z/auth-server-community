@@ -9,6 +9,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.*;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * 用户部门关联 Mapper
  *
@@ -73,5 +76,12 @@ public interface UserDeptMapper extends BaseMapper<UserDeptEntity> {
 	 * @return 主部门投影，不存在时为 null
 	 */
 	UserPrimaryDeptPO selectPrimaryDeptByUserId(@Param("userId") Long userId);
+
+	/**
+	 * 按部门闭包展开本节点及下级成员用户 ID
+	 * @param deptIds 部门 ID
+	 * @return 去重后的用户 ID，无成员时为空列表
+	 */
+	List<Long> selectUserIdsByAncestorDeptIds(@Param("deptIds") Collection<Long> deptIds);
 
 }

@@ -80,4 +80,15 @@
           AND ud.is_primary = 1
         LIMIT 1
     </select>
+
+    <!-- 本部门及下级成员（闭包祖先含自身） -->
+    <select id="selectUserIdsByAncestorDeptIds" resultType="java.lang.Long">
+        SELECT DISTINCT ud.user_id
+        FROM user_dept ud
+        INNER JOIN dept_closure dc ON ud.dept_id = dc.descendant_id
+        WHERE dc.ancestor_id IN
+        <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
+            #{deptId}
+        </foreach>
+    </select>
 </mapper>

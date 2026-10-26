@@ -1,11 +1,13 @@
 package com.auth.service.system.admin.service.admin.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.utils.FieldChangeSupport;
 import com.auth.common.core.utils.TreeParentIdUtil;
 import com.auth.common.core.utils.TreeRelationUtil;
 import com.auth.common.data.support.BusinessKeyAssert;
 import com.auth.service.system.admin.convert.admin.SysDeptConverter;
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
+import com.auth.service.system.admin.mapper.admin.user.UserDeptMapper;
 import com.auth.service.system.admin.model.entity.SysDeptEntity;
 import com.auth.service.system.admin.model.form.dept.SysDeptForm;
 import com.auth.service.system.admin.model.form.dept.SysDeptMoveForm;
@@ -13,7 +15,7 @@ import com.auth.service.system.admin.model.po.dept.DeptClosureNodePO;
 import com.auth.service.system.admin.service.admin.SysDeptService;
 import com.auth.service.system.admin.support.dept.DeptClosureMaintainer;
 import com.auth.service.system.admin.support.dept.DeptReferenceChecker;
-import com.auth.service.system.authorization.dispatch.trigger.DeptAuthorizationInvalidationTrigger;
+import com.auth.service.system.authorization.dispatch.trigger.UserAuthorizationInvalidationTrigger;
 import com.auth.service.system.common.exception.SystemBusinessException;
 import com.auth.service.system.common.exception.code.SystemCommonResultCode;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -40,7 +42,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 
 	private final DeptClosureMaintainer deptClosureMaintainer;
 
-	private final DeptAuthorizationInvalidationTrigger deptInvalidationTrigger;
+	private final UserDeptMapper userDeptMapper;
+
+	private final UserAuthorizationInvalidationTrigger userAuthorizationInvalidationTrigger;
 
 	/**
 	 * {@inheritDoc}
@@ -92,7 +96,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 
 		if (parentChanged) {
 			deptClosureMaintainer.moveNode(id, newParentId);
-			deptInvalidationTrigger.submitByDeptIds(List.of(id), "move");
+			refreshDeptMembers(id, "move");
 		}
 	}
 
@@ -115,7 +119,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 		updateById(existing);
 
 		deptClosureMaintainer.moveNode(deptId, newParentId);
-		deptInvalidationTrigger.submitByDeptIds(List.of(deptId), "move");
+		refreshDeptMembers(deptId, "move");
 	}
 
 	/**
@@ -133,10 +137,24 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 			log.warn("department in use: id={}", deptId);
 			throw new SystemBusinessException(SystemCommonResultCode.DATA_IN_USE);
 		}
-		deptInvalidationTrigger.submitByDeptIds(List.of(deptId), "delete");
+		refreshDeptMembers(deptId, "delete");
 		deptClosureMaintainer.removeClosurePaths(deptId);
 
 		removeById(deptId);
+	}
+
+	/**
+	 * 按闭包展开本部门及下级成员并提交用户画像刷新。无成员时不提交
+	 * @param deptId 部门 ID
+	 * @param operation 操作动词，如 move、delete
+	 */
+	private void refreshDeptMembers(Long deptId, String operation) {
+		List<Long> deptIds = userDeptMapper.selectUserIdsByAncestorDeptIds(List.of(deptId));
+		List<Long> userIds = CollUtil.emptyIfNull(deptIds);
+		if (CollUtil.isEmpty(userIds)) {
+			return;
+		}
+		userAuthorizationInvalidationTrigger.submitByUserIds(userIds, operation);
 	}
 
 	/**

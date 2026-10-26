@@ -23,11 +23,6 @@ public enum AuthorizationChangeKind {
 	GRANT,
 
 	/**
-	 * 用户-部门关系
-	 */
-	USER_DEPT,
-
-	/**
 	 * 用户-岗位关系
 	 */
 	USER_POST,
