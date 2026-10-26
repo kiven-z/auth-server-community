@@ -147,11 +147,10 @@ public class AuthorizationInvalidationEventServiceImpl implements AuthorizationI
 	/**
 	 * 处理失败时释放占位，便于 Outbox 重试
 	 * @param eventId 业务事件 ID
-	 * @return 是否实际释放
 	 */
 	@Override
-	public boolean releaseClaim(String eventId) {
-		return invalidationEventMapper.deleteProcessingClaim(eventId) > 0;
+	public void releaseClaim(String eventId) {
+		invalidationEventMapper.deleteProcessingClaim(eventId);
 	}
 
 	/**

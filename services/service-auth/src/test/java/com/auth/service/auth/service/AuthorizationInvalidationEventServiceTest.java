@@ -73,7 +73,7 @@ class AuthorizationInvalidationEventServiceTest {
 
 		Page<AuthorizationInvalidationEventPageRowPO> pageResult = new Page<>(1, 10, 2);
 		pageResult.setRecords(List.of(completedRow, processingRow));
-		when(invalidationEventMapper.selectListByPage(any(Page.class), any(AuthorizationInvalidationEventQuery.class)))
+		when(invalidationEventMapper.selectListByPage(any(), any(AuthorizationInvalidationEventQuery.class)))
 			.thenReturn(pageResult);
 
 		PageResponse<AuthorizationInvalidationEventPageVO> response = eventService.getPage(query);
@@ -86,7 +86,7 @@ class AuthorizationInvalidationEventServiceTest {
 
 		ArgumentCaptor<AuthorizationInvalidationEventQuery> filterCaptor = ArgumentCaptor
 			.forClass(AuthorizationInvalidationEventQuery.class);
-		verify(invalidationEventMapper).selectListByPage(any(Page.class), filterCaptor.capture());
+		verify(invalidationEventMapper).selectListByPage(any(), filterCaptor.capture());
 		assertEquals("evt-prefix", filterCaptor.getValue().getEventId());
 		assertTrue(filterCaptor.getValue().getProcessing());
 	}

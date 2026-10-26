@@ -105,8 +105,7 @@ class RoleImpactServiceImplTest {
 		po.setStatus(1);
 		Page<UserReferencePO> page = new Page<>(1, 10, 1, false);
 		page.setRecords(List.of(po));
-		when(roleImpactQueryMapper.selectImpactUsersByRoleIdPage(any(Page.class), eq(ROLE_ID), eq(query)))
-			.thenReturn(page);
+		when(roleImpactQueryMapper.selectImpactUsersByRoleIdPage(any(), eq(ROLE_ID), eq(query))).thenReturn(page);
 
 		PageResponse<UserReferenceVO> result = service.pageImpactUsers(ROLE_ID, query);
 
@@ -114,7 +113,7 @@ class RoleImpactServiceImplTest {
 		assertThat(result.getList()).hasSize(1);
 		assertThat(result.getList().get(0).getUsername()).isEqualTo("alice");
 
-		ArgumentCaptor<Page> pageCaptor = ArgumentCaptor.forClass(Page.class);
+		ArgumentCaptor<Page<?>> pageCaptor = ArgumentCaptor.captor();
 		verify(roleImpactQueryMapper).selectImpactUsersByRoleIdPage(pageCaptor.capture(), eq(ROLE_ID), eq(query));
 		assertThat(pageCaptor.getValue().searchCount()).isFalse();
 		assertThat(pageCaptor.getValue().getTotal()).isEqualTo(1L);

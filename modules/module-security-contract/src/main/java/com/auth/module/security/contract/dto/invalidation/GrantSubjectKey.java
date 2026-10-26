@@ -18,8 +18,8 @@ public record GrantSubjectKey(GrantTableSubjectType subjectType, Long subjectId)
 	private static final long serialVersionUID = 1L;
 
 	public GrantSubjectKey {
-		subjectType = InvalidationPayloadSupport.requireNonNull(subjectType, "subjectType");
-		subjectId = InvalidationPayloadSupport.requireNonNull(subjectId, "subjectId");
+		InvalidationPayloadSupport.requireNonNull(subjectType, "subjectType");
+		InvalidationPayloadSupport.requireNonNull(subjectId, "subjectId");
 	}
 
 }

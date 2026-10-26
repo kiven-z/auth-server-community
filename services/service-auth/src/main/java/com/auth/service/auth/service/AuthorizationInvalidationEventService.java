@@ -58,9 +58,8 @@ public interface AuthorizationInvalidationEventService {
 	/**
 	 * 处理失败时释放占位，便于 Outbox 重试
 	 * @param eventId 业务事件 ID
-	 * @return 是否实际释放
 	 */
-	boolean releaseClaim(String eventId);
+	void releaseClaim(String eventId);
 
 	/**
 	 * 释放 processing 占位行，允许 Outbox 重新投递

@@ -58,19 +58,18 @@ public class AuthorizationInvalidationOutboxProcessor {
 	 * 补偿 Job：抢占后处理。
 	 * @param row 已查询的 Outbox 行
 	 * @param lockedBy 抢占实例标识
-	 * @return 是否处理成功
 	 */
-	public boolean processClaimedRow(SysAuthorizationInvalidationOutboxEntity row, String lockedBy) {
+	public void processClaimedRow(SysAuthorizationInvalidationOutboxEntity row, String lockedBy) {
 		Instant now = Instant.now();
 		int claimed = outboxMapper.claimForProcessing(row.getId(), lockedBy, now, row.getVersion());
 		if (claimed == 0) {
-			return false;
+			return;
 		}
 		row.setStatus(AuthorizationInvalidationOutboxStatus.PROCESSING.name());
 		row.setLockedBy(lockedBy);
 		row.setLockedAt(now);
 		row.setVersion(row.getVersion() + 1);
-		return dispatchRow(row);
+		dispatchRow(row);
 	}
 
 	/**

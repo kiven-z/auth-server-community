@@ -27,16 +27,6 @@ public class AdminAuthorizationServiceImpl implements AdminAuthorizationService 
 	private final AuthProfileMaterializationService authProfileMaterializationService;
 
 	/**
-	 * 按用户 ID 加载授权画像（供内部接口查询生效角色码与权限码）
-	 * @param userId 用户 ID
-	 * @return 授权画像
-	 */
-	@Override
-	public AuthProfile loadAuthProfile(Long userId) {
-		return authProfileRepository.buildByUserId(userId);
-	}
-
-	/**
 	 * 查询用户生效角色码与权限码
 	 * @param userId 用户 ID
 	 * @return 生效码 VO

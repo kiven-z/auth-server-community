@@ -81,11 +81,15 @@ class FileExportTaskWorkerTest {
 			releaseExports.countDown();
 		}
 		if (asyncExecutor != null) {
+			ThreadPoolExecutor executor = asyncExecutor.getThreadPoolExecutor();
 			asyncExecutor.shutdown();
 			try {
-				asyncExecutor.getThreadPoolExecutor().awaitTermination(5, TimeUnit.SECONDS);
+				if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+					executor.shutdownNow();
+				}
 			}
 			catch (InterruptedException exception) {
+				executor.shutdownNow();
 				Thread.currentThread().interrupt();
 			}
 			asyncExecutor = null;

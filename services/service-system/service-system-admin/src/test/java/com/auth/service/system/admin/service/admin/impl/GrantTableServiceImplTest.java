@@ -117,7 +117,7 @@ class GrantTableServiceImplTest {
 		Field baseMapperField = CrudRepository.class.getDeclaredField("baseMapper");
 		baseMapperField.setAccessible(true);
 		baseMapperField.set(grantTableService, grantTableMapper);
-		lenient().doReturn(true).when(grantTableService).saveBatch(any(Collection.class));
+		lenient().doReturn(true).when(grantTableService).saveBatch(any());
 		lenient().when(sysPostMapper.countEffectiveById(SUBJECT_ID)).thenReturn(1L);
 	}
 
@@ -181,7 +181,7 @@ class GrantTableServiceImplTest {
 		grantTableService = spy(new GrantTableServiceImpl(verifierWithUserDeptPost, userReferenceChecker,
 				rbacReferenceChecker, grantInvalidationTrigger));
 		injectBaseMapper(grantTableService, grantTableMapper);
-		doReturn(true).when(grantTableService).saveBatch(any(Collection.class));
+		doReturn(true).when(grantTableService).saveBatch(any());
 
 		grantTableService.replaceGrantSubjectsByRoleId(ROLE_ID, subjectsForm(GrantTableSubjectType.USER, List.of(12L)));
 
@@ -212,7 +212,7 @@ class GrantTableServiceImplTest {
 		grantTableService.replaceGrantSubjectsByRoleId(ROLE_ID, subjectsForm(GrantTableSubjectType.DEPT, List.of()));
 
 		verify(userReferenceChecker, never()).requireOperable(any());
-		verify(grantTableService, never()).saveBatch(any(Collection.class));
+		verify(grantTableService, never()).saveBatch(any());
 		verify(grantTableMapper).deleteByRoleIdAndSubjectType(ROLE_ID, "DEPT");
 		verify(grantTableMapper, never()).deleteByRoleIdAndSubjectType(ROLE_ID, "USER");
 		verify(grantTableMapper, never()).deleteByRoleIdAndSubjectType(ROLE_ID, "POST");
@@ -250,7 +250,7 @@ class GrantTableServiceImplTest {
 		verify(rbacReferenceChecker).requireExistingEnabledRoleIds(List.of(101L, 102L),
 				SystemCommonResultCode.GRANT_REFERENCE_INVALID);
 		verify(grantTableMapper).deleteBySubjectIds(GrantTableSubjectType.POST.name(), List.of(SUBJECT_ID));
-		verify(grantTableService).saveBatch(any(Collection.class));
+		verify(grantTableService).saveBatch(any());
 
 		@SuppressWarnings("unchecked")
 		ArgumentCaptor<List<GrantSubjectKey>> subjectsCaptor = ArgumentCaptor.forClass(List.class);
@@ -269,7 +269,7 @@ class GrantTableServiceImplTest {
 		grantTableService.replaceOrgSubjectRoles(GrantTableSubjectType.POST, SUBJECT_ID, form);
 
 		verify(grantTableMapper).deleteBySubjectIds(GrantTableSubjectType.POST.name(), List.of(SUBJECT_ID));
-		verify(grantTableService, never()).saveBatch(any(Collection.class));
+		verify(grantTableService, never()).saveBatch(any());
 		verify(grantInvalidationTrigger).submitByGrantSubjects(any(), eq("replace-roles"));
 	}
 
@@ -297,7 +297,7 @@ class GrantTableServiceImplTest {
 		grantTableService.replaceSubjectRoleGrants("DEPT", SUBJECT_ID, List.of());
 
 		verify(grantTableMapper).deleteBySubjectIds(GrantTableSubjectType.DEPT.name(), List.of(SUBJECT_ID));
-		verify(grantTableService, never()).saveBatch(any(Collection.class));
+		verify(grantTableService, never()).saveBatch(any());
 	}
 
 }

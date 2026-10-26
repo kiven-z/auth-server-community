@@ -1,6 +1,5 @@
 package com.auth.service.auth.service;
 
-import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.service.auth.model.vo.authorization.EffectiveCodesVO;
 
 import java.util.Collection;
@@ -11,13 +10,6 @@ import java.util.Collection;
  * @author Bunny
  */
 public interface AdminAuthorizationService {
-
-	/**
-	 * 按用户 ID 加载授权画像（供内部接口查询生效角色码与权限码）
-	 * @param userId 用户 ID
-	 * @return 授权画像
-	 */
-	AuthProfile loadAuthProfile(Long userId);
 
 	/**
 	 * 查询用户生效角色码与权限码
