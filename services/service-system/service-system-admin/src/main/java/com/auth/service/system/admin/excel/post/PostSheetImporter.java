@@ -82,7 +82,6 @@ public class PostSheetImporter extends AbstractSheetImporter<SysPostImportRow, S
 
 		return Context.builder()
 			.deptIdByCode(deptIdByCode)
-			.unassignableDeptCodes(precheck.getUnassignableDeptCodes())
 			.duplicateCompositeKeysInFile(precheck.getDuplicateCompositeKeysInFile())
 			.existingCompositeKeys(precheck.getExistingCompositeKeys())
 			.build();
@@ -124,8 +123,6 @@ public class PostSheetImporter extends AbstractSheetImporter<SysPostImportRow, S
 	public static class Context {
 
 		Map<String, Long> deptIdByCode;
-
-		Set<String> unassignableDeptCodes;
 
 		Set<String> duplicateCompositeKeysInFile;
 

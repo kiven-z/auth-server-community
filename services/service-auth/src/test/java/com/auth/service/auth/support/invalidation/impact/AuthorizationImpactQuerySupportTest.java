@@ -59,8 +59,8 @@ class AuthorizationImpactQuerySupportTest {
 	@DisplayName("按 grant 主体分组后分别调用对应 Mapper")
 	void findUserIdsByGrantSubjects_shouldGroupBySubjectType() {
 		when(authorizationImpactMapper.selectUserIdsByGrantUserSubjectIds(List.of(10L))).thenReturn(List.of(10L));
-		when(authorizationImpactMapper.selectUserIdsByGrantDeptSubjectIds(List.of(20L))).thenReturn(List.of(21L));
-		when(authorizationImpactMapper.selectUserIdsByGrantPostSubjectIds(List.of(30L))).thenReturn(List.of(31L));
+		when(authorizationImpactMapper.selectUserIdsByDeptIds(List.of(20L))).thenReturn(List.of(21L));
+		when(authorizationImpactMapper.selectUserIdsByPostIds(List.of(30L))).thenReturn(List.of(31L));
 
 		Set<Long> userIds = impactQuery
 			.findUserIdsByGrantSubjects(List.of(new GrantSubjectKey(GrantTableSubjectType.USER, 10L),
@@ -69,8 +69,8 @@ class AuthorizationImpactQuerySupportTest {
 
 		assertEquals(Set.of(10L, 21L, 31L), userIds);
 		verify(authorizationImpactMapper).selectUserIdsByGrantUserSubjectIds(List.of(10L));
-		verify(authorizationImpactMapper).selectUserIdsByGrantDeptSubjectIds(List.of(20L));
-		verify(authorizationImpactMapper).selectUserIdsByGrantPostSubjectIds(List.of(30L));
+		verify(authorizationImpactMapper).selectUserIdsByDeptIds(List.of(20L));
+		verify(authorizationImpactMapper).selectUserIdsByPostIds(List.of(30L));
 	}
 
 	@Test

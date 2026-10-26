@@ -2,7 +2,9 @@ package com.auth.service.system.admin.support.post;
 
 import com.auth.service.system.admin.excel.post.SysPostImportRow;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
+import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
+import com.auth.service.system.admin.model.entity.SysDeptEntity;
 import com.auth.service.system.admin.model.form.post.SysPostForm;
 import com.auth.service.system.admin.model.po.post.PostDeptCodePairPO;
 import com.auth.service.system.common.exception.SystemBusinessException;
@@ -31,6 +33,15 @@ class PostWriteGuardTest {
 	@Mock
 	private SysPostMapper sysPostMapper;
 
+	@Mock
+	private SysDeptMapper sysDeptMapper;
+
+	private static SysDeptEntity dept() {
+		SysDeptEntity entity = new SysDeptEntity();
+		entity.setId(1L);
+		return entity;
+	}
+
 	private static SysPostForm form(Long deptId, String postCode) {
 		SysPostForm form = new SysPostForm();
 		form.setDeptId(deptId);
@@ -54,17 +65,17 @@ class PostWriteGuardTest {
 	}
 
 	@Test
-	@DisplayName("requireBatchCreatable：部门不可挂载时抛出 DATA_UNAVAILABLE")
-	void requireBatchCreatableThrowsWhenDeptNotAssignable() {
-		when(sysPostMapper.selectAssignableDeptIds(List.of(99L))).thenReturn(List.of());
+	@DisplayName("requireBatchCreatable：部门不存在时抛出 DATA_NOT_EXIST")
+	void requireBatchCreatableThrowsWhenDeptMissing() {
+		when(sysDeptMapper.selectByIds(List.of(99L))).thenReturn(List.of());
 
 		SysPostForm postForm = form(99L, "P1");
 		List<SysPostForm> forms = List.of(postForm);
-		assertThatThrownBy(() -> PostWriteGuard.requireBatchCreatable(sysPostMapper, forms))
+		assertThatThrownBy(() -> PostWriteGuard.requireBatchCreatable(sysPostMapper, sysDeptMapper, forms))
 			.isInstanceOf(SystemBusinessException.class)
 			.satisfies(ex -> {
 				SystemBusinessException biz = (SystemBusinessException) ex;
-				assertThat(biz.getResultCode()).isEqualTo(SystemCommonResultCode.DATA_UNAVAILABLE);
+				assertThat(biz.getResultCode()).isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
 				assertThat(biz.getMessageArgs()).isEmpty();
 			});
 	}
@@ -72,7 +83,7 @@ class PostWriteGuardTest {
 	@Test
 	@DisplayName("requireBatchCreatable：库中已存在复合键时抛出 POST_CODE_DUPLICATE_IN_DEPT")
 	void requireBatchCreatableThrowsWhenDbConflict() {
-		when(sysPostMapper.selectAssignableDeptIds(List.of(1L))).thenReturn(List.of(1L));
+		when(sysDeptMapper.selectByIds(List.of(1L))).thenReturn(List.of(dept()));
 		PostDeptCodePairPO existing = new PostDeptCodePairPO();
 		existing.setDeptId(1L);
 		existing.setPostCode("DUP");
@@ -80,18 +91,17 @@ class PostWriteGuardTest {
 
 		SysPostForm duplicateForm = form(1L, "DUP");
 		List<SysPostForm> duplicateForms = List.of(duplicateForm);
-		assertThatThrownBy(() -> PostWriteGuard.requireBatchCreatable(sysPostMapper, duplicateForms))
+		assertThatThrownBy(() -> PostWriteGuard.requireBatchCreatable(sysPostMapper, sysDeptMapper, duplicateForms))
 			.isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemAdminResultCode.POST_CODE_DUPLICATE_IN_DEPT);
 	}
 
 	@Test
-	@DisplayName("precheckForImport：汇总不可挂载部门、文件内重复与库中已存在键")
+	@DisplayName("precheckForImport：汇总文件内重复与库中已存在键")
 	void precheckForImportAggregatesImportViolations() {
 		List<SysPostImportRow> rows = List.of(importRow("RD", "A"), importRow("RD", "A"), importRow("OPS", "B"));
 		Map<String, Long> deptIdByCode = Map.of("RD", 1L, "OPS", 2L);
-		when(sysPostMapper.selectAssignableDeptIds(anyList())).thenReturn(List.of(1L));
 		PostDeptCodePairPO existing = new PostDeptCodePairPO();
 		existing.setDeptId(2L);
 		existing.setPostCode("B");
@@ -99,7 +109,6 @@ class PostWriteGuardTest {
 
 		PostWriteGuard.ImportPrecheck precheck = PostWriteGuard.precheckForImport(sysPostMapper, rows, deptIdByCode);
 
-		assertThat(precheck.getUnassignableDeptCodes()).containsExactly("OPS");
 		assertThat(precheck.getDuplicateCompositeKeysInFile())
 			.containsExactly(PostWriteGuard.deptCodePostCodeKey("RD", "A"));
 		assertThat(precheck.getExistingCompositeKeys()).containsExactly(PostWriteGuard.deptIdPostCodeKey(2L, "B"));
@@ -108,9 +117,9 @@ class PostWriteGuardTest {
 	@Test
 	@DisplayName("requireBatchCreatable：空列表直接返回")
 	void requireBatchCreatableSkipsWhenEmpty() {
-		PostWriteGuard.requireBatchCreatable(sysPostMapper, List.of());
+		PostWriteGuard.requireBatchCreatable(sysPostMapper, sysDeptMapper, List.of());
 
-		verify(sysPostMapper, never()).selectAssignableDeptIds(anyList());
+		verify(sysDeptMapper, never()).selectByIds(any());
 	}
 
 }

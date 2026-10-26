@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString
 public class PostAuthorizationSummaryVO {
 
-	@Schema(title = "绑定用户数", description = "含岗位已停用")
+	@Schema(title = "绑定用户数", description = "含用户已停用")
 	private Long boundUserCount;
 
 	@Schema(title = "已授角色数")

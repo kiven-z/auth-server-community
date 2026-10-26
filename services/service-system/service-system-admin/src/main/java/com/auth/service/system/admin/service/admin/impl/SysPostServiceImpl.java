@@ -7,6 +7,7 @@ import com.auth.module.security.contract.api.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.convert.admin.SysPostConverter;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
+import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.PostRelationQueryMapper;
@@ -20,6 +21,7 @@ import com.auth.service.system.admin.model.vo.post.SysPostDetailVO;
 import com.auth.service.system.admin.model.vo.post.SysPostPageVO;
 import com.auth.service.system.admin.model.vo.post.SysPostSearchItemVO;
 import com.auth.service.system.admin.service.admin.SysPostService;
+import com.auth.service.system.admin.support.dept.DeptReferenceChecker;
 import com.auth.service.system.admin.support.post.PostReferenceChecker;
 import com.auth.service.system.admin.support.post.PostWriteGuard;
 import com.auth.service.system.admin.support.sqlbuild.SysPostPageOrderSqlBuilder;
@@ -55,6 +57,10 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 	private final PostAuthorizationInvalidationTrigger postInvalidationTrigger;
 
 	private final PostReferenceChecker postReferenceChecker;
+
+	private final DeptReferenceChecker deptReferenceChecker;
+
+	private final SysDeptMapper sysDeptMapper;
 
 	private final PostRelationQueryMapper postRelationQueryMapper;
 
@@ -112,7 +118,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public void createBatchFromImport(List<SysPostForm> forms) {
-		PostWriteGuard.requireBatchCreatable(baseMapper, forms);
+		PostWriteGuard.requireBatchCreatable(baseMapper, sysDeptMapper, forms);
 		if (CollUtil.isEmpty(forms)) {
 			return;
 		}
@@ -131,11 +137,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 
 		Long deptId = form.getDeptId();
 		if (!Objects.equals(existing.getDeptId(), deptId)) {
-			List<Long> assignableDeptIds = baseMapper.selectAssignableDeptIds(List.of(deptId));
-			if (assignableDeptIds.isEmpty()) {
-				log.warn("department unavailable: id={}", deptId);
-				throw new SystemBusinessException(SystemCommonResultCode.DATA_UNAVAILABLE);
-			}
+			deptReferenceChecker.getExistingActive(deptId);
 		}
 
 		String postCode = form.getPostCode();

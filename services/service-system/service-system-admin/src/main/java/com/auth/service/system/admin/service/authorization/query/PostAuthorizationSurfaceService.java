@@ -15,7 +15,7 @@ import com.auth.service.system.admin.model.vo.reference.ext.PostBoundUserReferen
 public interface PostAuthorizationSurfaceService {
 
 	/**
-	 * 分页查询岗位绑定用户（基表，含岗位已停用）
+	 * 分页查询岗位绑定用户
 	 * @param postId 岗位 ID
 	 * @param query 查询条件
 	 * @return 分页数据

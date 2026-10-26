@@ -61,19 +61,6 @@
         #{limit}
     </select>
 
-    <!-- 可挂载岗位 -->
-    <select id="selectAssignableDeptIds" resultType="long">
-        SELECT
-        d.id
-        FROM
-        sys_dept d
-        WHERE
-        d.id IN
-        <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
-            #{deptId}
-        </foreach>
-    </select>
-
     <!-- 按 (部门 ID, 岗位编码) 批量查询已存在的岗位键 -->
     <select id="selectReferenceByDeptPostPairs"
             resultType="com.auth.service.system.admin.model.po.post.PostDeptCodePairPO">

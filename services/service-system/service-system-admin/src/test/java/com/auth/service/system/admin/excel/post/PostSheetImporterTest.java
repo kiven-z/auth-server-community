@@ -64,7 +64,6 @@ class PostSheetImporterTest {
 	@BeforeEach
 	void setUp() {
 		postSheetImporter = new PostSheetImporter(deptLookupSupport, sysPostMapper, sysPostService);
-		when(sysPostMapper.selectAssignableDeptIds(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 	}
 
 	@Test
@@ -122,18 +121,16 @@ class PostSheetImporterTest {
 
 	@Test
 	@DisplayName("目标部门不存在时返回行级错误且不落库")
-	void doImport_whenDeptExistsButNotAssignable_returnsRowError() throws IOException {
+	void doImport_whenDeptMissing_returnsRowError() throws IOException {
 		MockMultipartFile file = buildImportFile(List.of(validRow("DEV", "研发岗")));
-		when(deptLookupSupport.resolveIdsByCodes(anyList(), any())).thenReturn(Map.of("RD", 2L));
-		when(sysPostMapper.selectAssignableDeptIds(List.of(2L))).thenReturn(List.of());
-		when(sysPostMapper.selectReferenceByDeptPostPairs(anyList())).thenReturn(List.of());
+		when(deptLookupSupport.resolveIdsByCodes(anyList(), any())).thenReturn(Map.of());
 
 		SpreadsheetImportResult result = postSheetImporter.doImport(file);
 
 		assertThat(result.success()).isFalse();
 		assertThat(result.importedCount()).isZero();
 		assertThat(result.errors()).hasSize(1);
-		assertThat(result.errors().get(0).message()).contains("不存在或不可用");
+		assertThat(result.errors().get(0).message()).contains("不存在");
 		verify(sysPostService, never()).createBatchFromImport(any());
 	}
 

@@ -65,8 +65,8 @@ public class AuthorizationImpactQuerySupport {
 		}
 
 		queryLongKeysInBatches(userSubjectIds, authorizationImpactMapper::selectUserIdsByGrantUserSubjectIds, userIds);
-		queryLongKeysInBatches(deptSubjectIds, authorizationImpactMapper::selectUserIdsByGrantDeptSubjectIds, userIds);
-		queryLongKeysInBatches(postSubjectIds, authorizationImpactMapper::selectUserIdsByGrantPostSubjectIds, userIds);
+		queryLongKeysInBatches(deptSubjectIds, authorizationImpactMapper::selectUserIdsByDeptIds, userIds);
+		queryLongKeysInBatches(postSubjectIds, authorizationImpactMapper::selectUserIdsByPostIds, userIds);
 		return Set.copyOf(userIds);
 	}
 

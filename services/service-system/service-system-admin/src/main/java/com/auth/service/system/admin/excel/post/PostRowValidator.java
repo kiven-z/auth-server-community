@@ -42,20 +42,6 @@ public class PostRowValidator {
 	};
 
 	/**
-	 * 部门可分配校验规则（部门行须存在）
-	 */
-	private static final RowRule<PostParsedRow, PostSheetImporter.Context> DEPT_ASSIGNABLE = (parsed, rowNum, ctx) -> {
-		Long deptId = ctx.deptIdByCode().get(parsed.deptCode());
-		if (deptId == null) {
-			return List.of();
-		}
-		if (ctx.unassignableDeptCodes().contains(parsed.deptCode())) {
-			return List.of(ImportErrors.referenceUnavailable(rowNum, FIELD_DEPT_CODE, parsed.deptCode()));
-		}
-		return List.of();
-	};
-
-	/**
 	 * 数据库存在校验规则
 	 */
 	private static final RowRule<PostParsedRow, PostSheetImporter.Context> DB_EXISTS = (parsed, rowNum, ctx) -> {
@@ -79,8 +65,7 @@ public class PostRowValidator {
 	 */
 	public static List<ImportRowError> validate(PostParsedRow parsed, int rowNum, PostSheetImporter.Context context) {
 		// 岗位导入校验规则
-		List<RowRule<PostParsedRow, PostSheetImporter.Context>> rules = List.of(FILE_DUPLICATE, DEPT_EXISTS,
-				DEPT_ASSIGNABLE, DB_EXISTS);
+		List<RowRule<PostParsedRow, PostSheetImporter.Context>> rules = List.of(FILE_DUPLICATE, DEPT_EXISTS, DB_EXISTS);
 		return RowRules.applyFailFast(rules, parsed, rowNum, context);
 	}
 

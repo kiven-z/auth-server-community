@@ -5,7 +5,9 @@ import cn.hutool.core.text.CharSequenceUtil;
 import com.auth.common.data.support.BusinessKeyAssert;
 import com.auth.service.system.admin.excel.post.SysPostImportRow;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
+import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
+import com.auth.service.system.admin.model.entity.SysDeptEntity;
 import com.auth.service.system.admin.model.form.post.SysPostForm;
 import com.auth.service.system.admin.model.po.post.PostDeptCodePairPO;
 import com.auth.service.system.common.exception.SystemBusinessException;
@@ -19,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 岗位写入复合键校验：部门可挂载性与 (deptId, postCode) 唯一性。
+ * 岗位写入复合键校验：部门存在性与 (deptId, postCode) 唯一性。
  *
  * @author Bunny
  */
@@ -53,11 +55,13 @@ public class PostWriteGuard {
 	}
 
 	/**
-	 * 批量新增前校验：部门可挂载、批次内键唯一、库中无冲突
-	 * @param mapper 岗位 Mapper
+	 * 批量新增前校验：部门存在、批次内键唯一、库中无冲突
+	 * @param postMapper 岗位 Mapper
+	 * @param deptMapper 部门 Mapper
 	 * @param forms 待新增表单
 	 */
-	public static void requireBatchCreatable(SysPostMapper mapper, List<SysPostForm> forms) {
+	public static void requireBatchCreatable(SysPostMapper postMapper, SysDeptMapper deptMapper,
+			List<SysPostForm> forms) {
 		// 1. 传入表单为空不保存
 		if (CollUtil.isEmpty(forms)) {
 			return;
@@ -73,16 +77,18 @@ public class PostWriteGuard {
 			return;
 		}
 
-		// 3. 检查目标部门是否可挂载
-		List<Long> selectedAssignableDeptIds = mapper.selectAssignableDeptIds(distinctDeptIds);
-		Set<Long> assignableDeptIds = Set.copyOf(selectedAssignableDeptIds);
-		Long invalidDeptId = distinctDeptIds.stream()
-			.filter(deptId -> !assignableDeptIds.contains(deptId))
+		// 3. 检查目标部门是否存在
+		Set<Long> existingDeptIds = deptMapper.selectByIds(distinctDeptIds)
+			.stream()
+			.map(SysDeptEntity::getId)
+			.collect(Collectors.toSet());
+		Long missingDeptId = distinctDeptIds.stream()
+			.filter(deptId -> !existingDeptIds.contains(deptId))
 			.findFirst()
 			.orElse(null);
-		if (invalidDeptId != null) {
-			log.warn("department unavailable: id={}", invalidDeptId);
-			throw new SystemBusinessException(SystemCommonResultCode.DATA_UNAVAILABLE);
+		if (missingDeptId != null) {
+			log.warn("department not found: id={}", missingDeptId);
+			throw new SystemBusinessException(SystemCommonResultCode.DATA_NOT_EXIST);
 		}
 
 		// 4. 检查批次内复合键是否唯一
@@ -101,7 +107,7 @@ public class PostWriteGuard {
 			pair.setPostCode(form.getPostCode());
 			return pair;
 		}).toList();
-		List<PostDeptCodePairPO> existing = mapper.selectReferenceByDeptPostPairs(pairs);
+		List<PostDeptCodePairPO> existing = postMapper.selectReferenceByDeptPostPairs(pairs);
 		if (CollUtil.isNotEmpty(existing)) {
 			PostDeptCodePairPO conflict = existing.get(0);
 			log.warn("Post code duplicate in department: deptId={}, postCode={}", conflict.getDeptId(),
@@ -112,7 +118,7 @@ public class PostWriteGuard {
 	}
 
 	/**
-	 * 导入预检：不可挂载部门、文件内重复键、库中已存在键
+	 * 导入预检：文件内重复键、库中已存在键
 	 * @param mapper 岗位 Mapper
 	 * @param rows 导入行
 	 * @param deptIdByCode 部门编码与主键映射
@@ -121,31 +127,9 @@ public class PostWriteGuard {
 	public static ImportPrecheck precheckForImport(SysPostMapper mapper, List<SysPostImportRow> rows,
 			Map<String, Long> deptIdByCode) {
 		return ImportPrecheck.builder()
-			.unassignableDeptCodes(resolveUnassignableDeptCodes(mapper, deptIdByCode))
 			.duplicateCompositeKeysInFile(detectDuplicateCompositeKeysInFile(rows))
 			.existingCompositeKeys(loadExistingCompositeKeys(mapper, rows, deptIdByCode))
 			.build();
-	}
-
-	/**
-	 * 解析存在但不可挂载的部门编码
-	 * @param mapper 岗位 Mapper
-	 * @param deptIdByCode 部门编码与主键映射
-	 * @return 不可挂载部门编码集合
-	 */
-	private static Set<String> resolveUnassignableDeptCodes(SysPostMapper mapper, Map<String, Long> deptIdByCode) {
-		List<Long> distinctDeptIds = deptIdByCode.values().stream().distinct().toList();
-		if (distinctDeptIds.isEmpty()) {
-			return Set.of();
-		}
-
-		List<Long> selectAssignableDeptIds = mapper.selectAssignableDeptIds(distinctDeptIds);
-		Set<Long> assignableDeptIds = Set.copyOf(selectAssignableDeptIds);
-		return deptIdByCode.entrySet()
-			.stream()
-			.filter(entry -> !assignableDeptIds.contains(entry.getValue()))
-			.map(Map.Entry::getKey)
-			.collect(Collectors.toSet());
 	}
 
 	/**
@@ -210,8 +194,6 @@ public class PostWriteGuard {
 	@Value
 	@Builder
 	public static class ImportPrecheck {
-
-		Set<String> unassignableDeptCodes;
 
 		Set<String> duplicateCompositeKeysInFile;
 

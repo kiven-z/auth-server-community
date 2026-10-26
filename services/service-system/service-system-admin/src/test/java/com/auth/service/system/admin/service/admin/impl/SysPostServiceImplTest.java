@@ -3,14 +3,17 @@ package com.auth.service.system.admin.service.admin.impl;
 import com.auth.common.core.constants.BatchSizes;
 import com.auth.module.security.contract.api.GrantTableSubjectType;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
+import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.PostRelationQueryMapper;
+import com.auth.service.system.admin.model.entity.SysDeptEntity;
 import com.auth.service.system.admin.model.entity.SysPostEntity;
 import com.auth.service.system.admin.model.form.post.SysPostForm;
 import com.auth.service.system.admin.model.po.post.PostDeptCodePairPO;
 import com.auth.service.system.admin.model.po.reference.DeptReferencePO;
 import com.auth.service.system.admin.model.vo.post.SysPostDetailVO;
+import com.auth.service.system.admin.support.dept.DeptReferenceChecker;
 import com.auth.service.system.admin.support.post.PostReferenceChecker;
 import com.auth.service.system.authorization.dispatch.trigger.PostAuthorizationInvalidationTrigger;
 import com.auth.service.system.common.exception.SystemBusinessException;
@@ -58,7 +61,19 @@ class SysPostServiceImplTest {
 	@Mock
 	private GrantBindingQueryMapper grantBindingQueryMapper;
 
+	@Mock
+	private DeptReferenceChecker deptReferenceChecker;
+
+	@Mock
+	private SysDeptMapper sysDeptMapper;
+
 	private SysPostServiceImpl sysPostService;
+
+	private static SysDeptEntity dept(Long id) {
+		SysDeptEntity entity = new SysDeptEntity();
+		entity.setId(id);
+		return entity;
+	}
 
 	private static SysPostForm minimalForm(Long deptId, String postCode, String postName) {
 		return minimalForm(null, deptId, postCode, postName);
@@ -86,8 +101,9 @@ class SysPostServiceImplTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		PostReferenceChecker postReferenceChecker = new PostReferenceChecker(sysPostMapper);
-		sysPostService = spy(new SysPostServiceImpl(auditUserDisplayService, postInvalidationTrigger,
-				postReferenceChecker, postRelationQueryMapper, grantBindingQueryMapper));
+		sysPostService = spy(
+				new SysPostServiceImpl(auditUserDisplayService, postInvalidationTrigger, postReferenceChecker,
+						deptReferenceChecker, sysDeptMapper, postRelationQueryMapper, grantBindingQueryMapper));
 		Field baseMapperField = CrudRepository.class.getDeclaredField("baseMapper");
 		baseMapperField.setAccessible(true);
 		baseMapperField.set(sysPostService, sysPostMapper);
@@ -183,26 +199,26 @@ class SysPostServiceImplTest {
 	void createBatchFromImportSkipsWhenEmpty() {
 		sysPostService.createBatchFromImport(List.of());
 
-		verify(sysPostMapper, never()).selectAssignableDeptIds(any());
+		verify(sysDeptMapper, never()).selectByIds(any());
 		verify(sysPostService, never()).saveBatch(anyList(), anyInt());
 	}
 
 	@Test
-	@DisplayName("新增：目标部门不存在时 DATA_UNAVAILABLE")
-	void createThrowsWhenDeptNotAssignable() {
-		when(sysPostMapper.selectAssignableDeptIds(List.of(99L))).thenReturn(List.of());
+	@DisplayName("新增：目标部门不存在时 DATA_NOT_EXIST")
+	void createThrowsWhenDeptMissing() {
+		when(sysDeptMapper.selectByIds(List.of(99L))).thenReturn(List.of());
 		SysPostForm form = minimalForm(99L, "P1", "开发");
 
 		ThrowingCallable executable = () -> sysPostService.createBatchFromImport(List.of(form));
 		assertThatThrownBy(executable).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
-			.isEqualTo(SystemCommonResultCode.DATA_UNAVAILABLE);
+			.isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
 	}
 
 	@Test
 	@DisplayName("新增：部门内编码重复时 POST_CODE_DUPLICATE_IN_DEPT")
 	void createThrowsWhenPostCodeDuplicateInDept() {
-		when(sysPostMapper.selectAssignableDeptIds(List.of(1L))).thenReturn(List.of(1L));
+		when(sysDeptMapper.selectByIds(List.of(1L))).thenReturn(List.of(dept(1L)));
 		PostDeptCodePairPO existing = new PostDeptCodePairPO();
 		existing.setDeptId(1L);
 		existing.setPostCode("DUP");
@@ -221,7 +237,7 @@ class SysPostServiceImplTest {
 	@Test
 	@DisplayName("新增：校验通过时批量落库")
 	void createPersistsWhenValid() {
-		when(sysPostMapper.selectAssignableDeptIds(List.of(2L))).thenReturn(List.of(2L));
+		when(sysDeptMapper.selectByIds(List.of(2L))).thenReturn(List.of(dept(2L)));
 		when(sysPostMapper.selectReferenceByDeptPostPairs(anyList())).thenReturn(List.of());
 		SysPostForm form = minimalForm(2L, "NEW_CODE", "新岗位");
 
@@ -247,8 +263,8 @@ class SysPostServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("更新：编制部门未变时不校验可挂载性且不提交授权失效")
-	void updateWithoutDeptChangeSkipsAssignableAndInvalidation() {
+	@DisplayName("更新：编制部门未变时不校验部门存在性且不提交授权失效")
+	void updateWithoutDeptChangeSkipsDeptCheckAndInvalidation() {
 		Long postId = 10L;
 		SysPostEntity existing = activePost(postId, 1L, "DEV");
 		when(sysPostMapper.selectById(postId)).thenReturn(existing);
@@ -259,7 +275,7 @@ class SysPostServiceImplTest {
 
 		sysPostService.update(form);
 
-		verify(sysPostMapper, never()).selectAssignableDeptIds(any());
+		verify(deptReferenceChecker, never()).getExistingActive(any());
 		verify(sysPostMapper).updateById(argThat((SysPostEntity e) -> "研发岗".equals(e.getPostName())));
 		verify(postInvalidationTrigger, never()).submitByPostIds(any(), any());
 	}
@@ -270,7 +286,7 @@ class SysPostServiceImplTest {
 		Long postId = 12L;
 		SysPostEntity existing = activePost(postId, 1L, "DEV");
 		when(sysPostMapper.selectById(postId)).thenReturn(existing);
-		when(sysPostMapper.selectAssignableDeptIds(List.of(5L))).thenReturn(List.of(5L));
+		when(deptReferenceChecker.getExistingActive(5L)).thenReturn(dept(5L));
 		when(sysPostMapper.selectCount(any())).thenReturn(0L);
 		when(sysPostMapper.updateById(any(SysPostEntity.class))).thenReturn(1);
 
@@ -278,24 +294,25 @@ class SysPostServiceImplTest {
 
 		sysPostService.update(form);
 
-		verify(sysPostMapper).selectAssignableDeptIds(List.of(5L));
+		verify(deptReferenceChecker).getExistingActive(5L);
 		verify(sysPostMapper).updateById(argThat((SysPostEntity e) -> Long.valueOf(5L).equals(e.getDeptId())));
 		verify(postInvalidationTrigger, never()).submitByPostIds(any(), any());
 	}
 
 	@Test
-	@DisplayName("更新：改挂到不存在的部门时 DATA_UNAVAILABLE")
-	void updateThrowsWhenNewDeptNotAssignable() {
+	@DisplayName("更新：改挂到不存在的部门时 DATA_NOT_EXIST")
+	void updateThrowsWhenNewDeptMissing() {
 		Long postId = 13L;
 		SysPostEntity existing = activePost(postId, 1L, "DEV");
 		when(sysPostMapper.selectById(postId)).thenReturn(existing);
-		when(sysPostMapper.selectAssignableDeptIds(List.of(99L))).thenReturn(List.of());
+		when(deptReferenceChecker.getExistingActive(99L))
+			.thenThrow(new SystemBusinessException(SystemCommonResultCode.DATA_NOT_EXIST));
 
 		SysPostForm form = minimalForm(postId, 99L, "DEV", "原名");
 
 		assertThatThrownBy(() -> sysPostService.update(form)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
-			.isEqualTo(SystemCommonResultCode.DATA_UNAVAILABLE);
+			.isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
 
 		verify(sysPostMapper, never()).updateById(any(SysPostEntity.class));
 		verify(postInvalidationTrigger, never()).submitByPostIds(any(), any());

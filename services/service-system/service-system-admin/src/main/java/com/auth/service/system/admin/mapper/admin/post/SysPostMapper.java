@@ -50,13 +50,6 @@ public interface SysPostMapper extends BaseMapper<SysPostEntity> {
 	long countGrantPostSubjectByPostId(@Param("postId") Long postId);
 
 	/**
-	 * 查询可挂载岗位的部门主键（部门行须存在）
-	 * @param deptIds 部门主键列表
-	 * @return 可挂载的部门 ID 列表
-	 */
-	List<Long> selectAssignableDeptIds(@Param("deptIds") List<Long> deptIds);
-
-	/**
 	 * 按 (部门 ID, 岗位编码) 批量查询已存在的岗位键
 	 * @param pairs 部门与岗位编码对列表（调用方应已去重）
 	 * @return 库中已存在的键对

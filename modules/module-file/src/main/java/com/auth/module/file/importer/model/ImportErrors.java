@@ -151,23 +151,6 @@ public class ImportErrors {
 	}
 
 	/**
-	 * 引用目标存在但不可用（停用或祖先链不可用）
-	 * @param rowNum 行号
-	 * @param field 字段名
-	 * @param value 字段值
-	 * @return 行级错误
-	 */
-	public static ImportRowError referenceUnavailable(int rowNum, String field, String value) {
-		String message = "第" + rowNum + "行：" + field + "「" + value + "」不存在或不可用";
-		return ImportRowError.builder()
-			.rowIndex(rowNum)
-			.message(message)
-			.code(ImportErrorCode.INVALID_VALUE)
-			.args(List.of(field, value))
-			.build();
-	}
-
-	/**
 	 * 通用无效值
 	 * @param rowNum 行号
 	 * @param field 字段名
