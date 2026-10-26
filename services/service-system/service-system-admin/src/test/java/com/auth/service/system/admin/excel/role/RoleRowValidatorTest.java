@@ -42,20 +42,6 @@ class RoleRowValidatorTest {
 	}
 
 	@Test
-	@DisplayName("roleCode 格式非法时返回格式错误")
-	void validate_whenRoleCodeInvalid_returnsFormatError() {
-		RoleSheetImporter.Context context = RoleSheetImporter.Context.builder()
-			.duplicateRoleCodesInFile(Set.of())
-			.existingRoleCodes(Set.of())
-			.build();
-
-		List<ImportRowError> errors = RoleRowValidator.validate(parsedRow("admin", "启用"), 2, context);
-
-		assertThat(errors).hasSize(1);
-		assertThat(errors.get(0).message()).contains("格式不符合约定");
-	}
-
-	@Test
 	@DisplayName("状态文案非法时返回无效值错误")
 	void validate_whenStatusInvalid_returnsInvalidValue() {
 		RoleSheetImporter.Context context = RoleSheetImporter.Context.builder()

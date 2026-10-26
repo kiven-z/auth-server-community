@@ -1,11 +1,9 @@
 package com.auth.service.system.admin.excel.permission;
 
-import com.auth.module.file.importer.model.ImportErrorCode;
 import com.auth.module.file.importer.model.ImportErrors;
 import com.auth.module.file.importer.model.ImportRowError;
 import com.auth.module.file.importer.rule.RowRule;
 import com.auth.module.file.importer.rule.RowRules;
-import com.auth.module.security.contract.constants.AuthCodeConvention;
 import com.auth.service.system.admin.excel.EnableStatus;
 import com.auth.service.system.admin.excel.EnableStatusLabels;
 import lombok.experimental.UtilityClass;
@@ -29,11 +27,6 @@ public class PermissionRowValidator {
 				PermissionSheetImporter.Context::duplicatePermissionCodesInFile,
 				PermissionSheetImporter.Context::existingPermissionCodes);
 
-	private static final RowRule<PermissionParsedRow, PermissionSheetImporter.Context> PERMISSION_CODE_FORMAT = RowRules
-		.assertThat(FIELD_PERMISSION_CODE, PermissionParsedRow::permissionCode,
-				parsed -> AuthCodeConvention.isWellFormedPermissionCode(parsed.permissionCode()),
-				ImportErrorCode.INVALID_FORMAT);
-
 	private static final RowRule<PermissionParsedRow, PermissionSheetImporter.Context> ENABLE_STATUS = (parsed, rowNum,
 			ctx) -> {
 		if (EnableStatusLabels.parseImport(parsed.statusLabel()) == EnableStatus.UNKNOWN) {
@@ -43,7 +36,7 @@ public class PermissionRowValidator {
 	};
 
 	private static final List<RowRule<PermissionParsedRow, PermissionSheetImporter.Context>> RULES = List
-		.of(PERMISSION_CODE_UNIQUE, PERMISSION_CODE_FORMAT, ENABLE_STATUS);
+		.of(PERMISSION_CODE_UNIQUE, ENABLE_STATUS);
 
 	/**
 	 * 校验已解析行

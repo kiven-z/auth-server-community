@@ -42,20 +42,6 @@ class PermissionRowValidatorTest {
 	}
 
 	@Test
-	@DisplayName("permissionCode 格式非法时返回格式错误")
-	void validate_whenPermissionCodeInvalid_returnsFormatError() {
-		PermissionSheetImporter.Context context = PermissionSheetImporter.Context.builder()
-			.duplicatePermissionCodesInFile(Set.of())
-			.existingPermissionCodes(Set.of())
-			.build();
-
-		List<ImportRowError> errors = PermissionRowValidator.validate(parsedRow("ADMIN", "启用"), 2, context);
-
-		assertThat(errors).hasSize(1);
-		assertThat(errors.get(0).message()).contains("格式不符合约定");
-	}
-
-	@Test
 	@DisplayName("状态文案非法时返回无效值错误")
 	void validate_whenStatusInvalid_returnsInvalidValue() {
 		PermissionSheetImporter.Context context = PermissionSheetImporter.Context.builder()

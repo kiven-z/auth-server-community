@@ -2,11 +2,9 @@ package com.auth.service.system.admin.model.form.permission;
 
 import com.auth.common.web.valid.group.CreateGroup;
 import com.auth.common.web.valid.group.UpdateGroup;
-import com.auth.module.security.contract.constants.AuthCodeConvention;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,9 +31,6 @@ public class SysPermissionForm implements Serializable {
 
 	@Schema(title = "权限编码（唯一标识）", requiredMode = Schema.RequiredMode.REQUIRED)
 	@Size(max = 128, message = "权限编码长度不能超过128个字符", groups = { CreateGroup.class, UpdateGroup.class })
-	@Pattern(regexp = AuthCodeConvention.PERMISSION_CODE_REGEX,
-			message = "权限编码格式不符合约定（全小写，1～4 段以冒号分隔，每段为 * 或小写 [a-z][a-z0-9]*）",
-			groups = { CreateGroup.class, UpdateGroup.class })
 	@NotBlank(message = "权限编码不能为空", groups = { CreateGroup.class, UpdateGroup.class })
 	private String permissionCode;
 

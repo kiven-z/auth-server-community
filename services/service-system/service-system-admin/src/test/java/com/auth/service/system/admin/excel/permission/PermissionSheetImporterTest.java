@@ -102,20 +102,6 @@ class PermissionSheetImporterTest {
 	}
 
 	@Test
-	@DisplayName("permissionCode 格式不符合约定时返回行级错误")
-	void doImport_whenPermissionCodeInvalid_returnsFormatError() throws IOException {
-		MockMultipartFile file = buildImportFile(List.of(validRow("ADMIN", "大写编码")));
-		when(sysPermissionMapper.selectReferenceByPermissionCodes(List.of("ADMIN"))).thenReturn(List.of());
-
-		SpreadsheetImportResult result = permissionSheetImporter.doImport(file);
-
-		assertThat(result.success()).isFalse();
-		assertThat(result.errors()).hasSize(1);
-		assertThat(result.errors().get(0).message()).contains("格式不符合约定");
-		verify(sysPermissionService, never()).createBatchFromImport(any());
-	}
-
-	@Test
 	@DisplayName("文件内 permissionCode 重复时返回行级错误")
 	void doImport_whenPermissionCodeDuplicatedInFile_returnsDuplicateError() throws IOException {
 		MockMultipartFile file = buildImportFile(

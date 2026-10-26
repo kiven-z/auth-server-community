@@ -1,11 +1,9 @@
 package com.auth.service.system.admin.model.form.role;
 
 import com.auth.common.web.valid.group.UpdateGroup;
-import com.auth.module.security.contract.constants.AuthCodeConvention;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -32,7 +30,6 @@ public class SysRoleForm implements Serializable {
 
 	@Schema(title = "角色编码", requiredMode = Schema.RequiredMode.REQUIRED)
 	@Size(max = 64, message = "角色编码长度不能超过64个字符")
-	@Pattern(regexp = AuthCodeConvention.ROLE_CODE_REGEX, message = "角色编码格式不符合约定（全大写，仅字母与下划线，且首字符为大写字母）")
 	@NotBlank(message = "角色编码不能为空")
 	private String roleCode;
 

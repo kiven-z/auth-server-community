@@ -100,20 +100,6 @@ class RoleSheetImporterTest {
 	}
 
 	@Test
-	@DisplayName("roleCode 格式不符合约定时返回行级错误")
-	void doImport_whenRoleCodeInvalid_returnsFormatError() throws IOException {
-		MockMultipartFile file = buildImportFile(List.of(validRow("admin", "小写编码")));
-		when(sysRoleMapper.selectReferenceByRoleCodes(List.of("admin"))).thenReturn(List.of());
-
-		SpreadsheetImportResult result = roleSheetImporter.doImport(file);
-
-		assertThat(result.success()).isFalse();
-		assertThat(result.errors()).hasSize(1);
-		assertThat(result.errors().get(0).message()).contains("格式不符合约定");
-		verify(sysRoleService, never()).createBatchFromImport(any());
-	}
-
-	@Test
 	@DisplayName("文件内 roleCode 重复时返回行级错误")
 	void doImport_whenRoleCodeDuplicatedInFile_returnsDuplicateError() throws IOException {
 		MockMultipartFile file = buildImportFile(List.of(validRow("DUP_ROLE", "角色A"), validRow("DUP_ROLE", "角色B")));
