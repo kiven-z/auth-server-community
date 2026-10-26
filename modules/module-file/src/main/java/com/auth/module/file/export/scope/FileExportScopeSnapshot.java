@@ -1,6 +1,6 @@
 package com.auth.module.file.export.scope;
 
-import com.auth.module.security.contract.api.authorization.ScopeGrant;
+import com.auth.module.security.contract.api.ScopeGrant;
 import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;

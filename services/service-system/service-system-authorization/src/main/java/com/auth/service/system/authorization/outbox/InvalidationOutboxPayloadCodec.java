@@ -1,6 +1,6 @@
 package com.auth.service.system.authorization.outbox;
 
-import com.auth.module.security.contract.api.authorization.AuthorizationChangeKind;
+import com.auth.module.security.contract.api.AuthorizationChangeKind;
 import com.auth.module.security.contract.dto.invalidation.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

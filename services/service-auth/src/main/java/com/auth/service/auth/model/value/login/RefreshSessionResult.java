@@ -1,6 +1,6 @@
 package com.auth.service.auth.model.value.login;
 
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Value;

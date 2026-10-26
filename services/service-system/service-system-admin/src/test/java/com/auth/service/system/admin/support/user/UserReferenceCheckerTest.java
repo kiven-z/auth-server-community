@@ -2,7 +2,7 @@ package com.auth.service.system.admin.support.user;
 
 import com.auth.module.platform.persistence.model.UserEntity;
 import com.auth.module.security.autoconfigure.pipeline.authenticate.AuthProfileSecurityContextPopulator;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.module.security.contract.constants.PermissionConstant;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
 import com.auth.service.system.admin.mapper.admin.user.SysUserMapper;

@@ -1,7 +1,7 @@
 package com.auth.module.security.starter.outbound;
 
 import com.auth.module.security.autoconfigure.outbound.OutboundInternalJwtIssuer;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.module.security.core.token.provider.InternalTokenProvider;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;

@@ -2,7 +2,7 @@ package com.auth.module.file.export.scope;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import com.auth.common.core.utils.JsonSupport;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import lombok.experimental.UtilityClass;
 
 /**

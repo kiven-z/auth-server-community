@@ -1,7 +1,7 @@
 package com.auth.service.auth.support.redis;
 
 import cn.hutool.core.collection.CollUtil;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.redis.core.RedisTemplate;

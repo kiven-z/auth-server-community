@@ -1,7 +1,7 @@
 package com.auth.service.auth.service;
 
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.api.authorization.AuthorizationChangeKind;
+import com.auth.module.security.contract.api.AuthorizationChangeKind;
 import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
 import com.auth.service.auth.model.query.AuthorizationInvalidationEventQuery;
 import com.auth.service.auth.model.value.invalidation.InvalidationIdempotencyGate;

@@ -1,7 +1,7 @@
 package com.auth.module.security.datapermission.handler;
 
-import com.auth.module.security.contract.api.authorization.AuthProfile;
-import com.auth.module.security.contract.api.authorization.ScopeGrant;
+import com.auth.module.security.contract.api.AuthProfile;
+import com.auth.module.security.contract.api.ScopeGrant;
 import com.auth.module.security.contract.api.datascope.DataScopeStorageType;
 import com.auth.module.security.datapermission.annotation.DataScope;
 import org.junit.jupiter.api.DisplayName;

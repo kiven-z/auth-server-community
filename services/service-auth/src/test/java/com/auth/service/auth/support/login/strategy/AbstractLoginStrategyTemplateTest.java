@@ -1,6 +1,6 @@
 package com.auth.service.auth.support.login.strategy;
 
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.service.auth.TestConstants;
 import com.auth.service.auth.exception.AuthBadCredentialsException;
 import com.auth.service.auth.exception.AuthBusinessException;

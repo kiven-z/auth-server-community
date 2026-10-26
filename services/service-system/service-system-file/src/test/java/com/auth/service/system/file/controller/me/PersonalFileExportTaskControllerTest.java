@@ -2,7 +2,7 @@ package com.auth.service.system.file.controller.me;
 
 import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.service.system.file.model.query.FileExportTaskPageQuery;
 import com.auth.service.system.file.model.vo.FileExportTaskDetailVO;
 import com.auth.service.system.file.model.vo.FileExportTaskDownloadLinkVO;

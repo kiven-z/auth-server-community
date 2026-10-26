@@ -4,7 +4,7 @@ import com.auth.module.security.autoconfigure.config.security.AuditPolicy;
 import com.auth.module.security.autoconfigure.config.security.SecurityConfigProperties;
 import com.auth.module.security.autoconfigure.pipeline.resolver.HandlerMethodResolver;
 import com.auth.module.security.autoconfigure.service.PermissionService;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.module.security.contract.event.SecurityAuthorizationAuditPayloadEvent;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;

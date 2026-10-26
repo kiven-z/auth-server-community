@@ -1,6 +1,6 @@
 package com.auth.module.security.contract.api.datascope;
 
-import com.auth.module.security.contract.api.authorization.ScopeGrant;
+import com.auth.module.security.contract.api.ScopeGrant;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

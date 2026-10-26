@@ -1,6 +1,6 @@
 package com.auth.module.security.autoconfigure.service;
 
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.module.security.contract.exception.SecurityResultCodeEnum;
 import com.auth.module.security.contract.exception.SecurityTokenException;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,6 +1,6 @@
 package com.auth.service.system.admin.support.grant;
 
-import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
+import com.auth.module.security.contract.api.GrantTableSubjectType;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;

@@ -2,7 +2,7 @@ package com.auth.service.auth.support.authorization;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.json.JSONUtil;
-import com.auth.module.security.contract.api.authorization.ScopeGrant;
+import com.auth.module.security.contract.api.ScopeGrant;
 import com.auth.module.security.contract.api.datascope.DataScopeStorageType;
 import com.auth.module.security.contract.api.datascope.DeptScopeMerger;
 import com.auth.service.auth.mapper.DeptClosureMapper;

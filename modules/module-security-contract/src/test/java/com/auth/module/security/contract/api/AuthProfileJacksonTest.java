@@ -1,4 +1,4 @@
-package com.auth.module.security.contract.api.authorization;
+package com.auth.module.security.contract.api;
 
 import com.auth.module.security.contract.api.datascope.DataScopeStorageType;
 import com.fasterxml.jackson.databind.DeserializationFeature;

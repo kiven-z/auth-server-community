@@ -1,7 +1,7 @@
 package com.auth.service.auth.support.login.strategy;
 
 import com.auth.module.platform.persistence.model.UserEntity;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.service.auth.exception.AuthBusinessException;
 import com.auth.service.auth.exception.AuthResultCode;
 import com.auth.service.auth.mapper.UserMapper;

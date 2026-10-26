@@ -1,4 +1,4 @@
-package com.auth.module.security.contract.api.authorization;
+package com.auth.module.security.contract.api;
 
 import lombok.Builder;
 import lombok.Getter;

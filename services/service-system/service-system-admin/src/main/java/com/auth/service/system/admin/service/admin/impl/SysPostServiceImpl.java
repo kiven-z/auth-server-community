@@ -5,7 +5,7 @@ import com.auth.common.core.constants.BatchSizes;
 import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.common.core.utils.FieldChangeSupport;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
+import com.auth.module.security.contract.api.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.convert.admin.SysPostConverter;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;

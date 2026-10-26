@@ -1,4 +1,4 @@
-package com.auth.module.security.contract.api.granttable;
+package com.auth.module.security.contract.api;
 
 import lombok.Getter;
 

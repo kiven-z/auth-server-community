@@ -1,7 +1,7 @@
 package com.auth.service.system.admin.service.authorization.impact.impl;
 
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
+import com.auth.module.security.contract.api.GrantTableSubjectType;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.RoleImpactQueryMapper;
 import com.auth.service.system.admin.model.entity.SysRoleEntity;

@@ -2,7 +2,7 @@ package com.auth.service.auth.support.invalidation;
 
 import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.constants.BatchSizes;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.service.auth.support.authorization.AuthProfileRepository;
 import com.auth.service.auth.support.redis.AuthProfileRedisCache;
 import com.auth.service.auth.util.BatchPartition;

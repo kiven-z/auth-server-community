@@ -1,7 +1,7 @@
 package com.auth.service.system.authorization.dispatch.trigger;
 
+import com.auth.module.security.contract.api.AuthorizationChangeKind;
 import com.auth.module.security.contract.api.audit.PlatformBizCodes;
-import com.auth.module.security.contract.api.authorization.AuthorizationChangeKind;
 import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
 import com.auth.module.security.contract.dto.invalidation.UserInvalidatePayload;
 import com.auth.service.system.authorization.dispatch.AuthorizationInvalidationCoordinator;

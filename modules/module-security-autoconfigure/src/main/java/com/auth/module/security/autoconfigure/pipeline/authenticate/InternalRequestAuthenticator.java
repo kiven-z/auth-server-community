@@ -2,7 +2,7 @@ package com.auth.module.security.autoconfigure.pipeline.authenticate;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import com.auth.module.security.autoconfigure.service.AuthProfileCacheService;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.module.security.contract.constants.SecurityInternalTokenConstants;
 import com.auth.module.security.contract.exception.SecurityResultCodeEnum;
 import com.auth.module.security.contract.exception.SecurityTokenException;

@@ -1,6 +1,6 @@
 package com.auth.service.auth.convert;
 
-import com.auth.module.security.contract.api.authorization.AuthorizationChangeKind;
+import com.auth.module.security.contract.api.AuthorizationChangeKind;
 import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;
 import com.auth.service.auth.model.po.invalidation.AuthorizationInvalidationEventPO;
 import com.auth.service.auth.support.invalidation.InvalidationProcessingMarker;

@@ -7,7 +7,7 @@ import com.auth.module.file.api.model.request.FileExportTaskCreateRequest;
 import com.auth.module.file.export.definition.ExportColumns;
 import com.auth.module.file.export.scope.FileExportScopeSnapshots;
 import com.auth.module.security.autoconfigure.web.SecurityUserUtils;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.service.system.common.exception.SystemBusinessException;
 import com.auth.service.system.common.exception.code.SystemCommonResultCode;
 import lombok.Builder;

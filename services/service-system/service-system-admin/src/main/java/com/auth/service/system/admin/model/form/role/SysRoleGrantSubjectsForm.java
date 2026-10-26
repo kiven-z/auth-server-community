@@ -1,6 +1,6 @@
 package com.auth.service.system.admin.model.form.role;
 
-import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
+import com.auth.module.security.contract.api.GrantTableSubjectType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;

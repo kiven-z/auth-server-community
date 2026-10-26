@@ -10,7 +10,7 @@ import com.auth.module.file.export.task.FileExportTaskArtifact;
 import com.auth.module.file.export.task.FileExportTaskContext;
 import com.auth.module.file.export.task.FileExportTaskProgressListener;
 import com.auth.module.security.autoconfigure.pipeline.authenticate.AuthProfileSecurityContextPopulator;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.service.system.common.exception.SystemBusinessException;
 import com.auth.service.system.common.exception.code.SystemCommonResultCode;
 import com.auth.service.system.file.config.properties.FileExportTaskProperties;

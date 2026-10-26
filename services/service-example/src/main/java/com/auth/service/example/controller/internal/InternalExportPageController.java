@@ -4,7 +4,7 @@ import com.auth.common.core.model.response.Result;
 import com.auth.module.file.api.model.dto.ExportPageDataDTO;
 import com.auth.module.file.export.scope.FileExportScopeSnapshots;
 import com.auth.module.security.autoconfigure.annotation.InternalApi;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.service.example.export.ExampleOrderExportPageFetcher;
 import com.auth.service.example.model.request.InternalExportPageRequest;
 import io.swagger.v3.oas.annotations.Operation;

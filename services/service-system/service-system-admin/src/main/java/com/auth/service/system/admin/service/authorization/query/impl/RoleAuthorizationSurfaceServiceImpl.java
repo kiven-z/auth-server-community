@@ -2,7 +2,7 @@ package com.auth.service.system.admin.service.authorization.query.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
+import com.auth.module.security.contract.api.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.convert.authorization.AuthorizationSurfaceConverter;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;

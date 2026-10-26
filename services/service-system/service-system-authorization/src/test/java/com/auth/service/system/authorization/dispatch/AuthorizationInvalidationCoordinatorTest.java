@@ -1,6 +1,6 @@
 package com.auth.service.system.authorization.dispatch;
 
-import com.auth.module.security.contract.api.authorization.AuthorizationChangeKind;
+import com.auth.module.security.contract.api.AuthorizationChangeKind;
 import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
 import com.auth.module.security.contract.dto.invalidation.RoleInvalidatePayload;
 import com.auth.service.system.authorization.config.AuthorizationInvalidationProperties;

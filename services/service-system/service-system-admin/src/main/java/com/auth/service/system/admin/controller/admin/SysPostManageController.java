@@ -2,9 +2,9 @@ package com.auth.service.system.admin.controller.admin;
 
 import com.auth.common.core.model.response.Result;
 import com.auth.module.security.contract.annotation.OperationLog;
+import com.auth.module.security.contract.api.GrantTableSubjectType;
 import com.auth.module.security.contract.api.audit.AuditServiceDomain;
 import com.auth.module.security.contract.api.audit.OperationLogKind;
-import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
 import com.auth.service.system.admin.model.form.granttable.GrantTableAssignRoleForm;
 import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 import com.auth.service.system.admin.service.admin.GrantTableService;

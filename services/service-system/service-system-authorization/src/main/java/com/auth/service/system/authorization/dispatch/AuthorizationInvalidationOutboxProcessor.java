@@ -2,7 +2,7 @@ package com.auth.service.system.authorization.dispatch;
 
 import cn.hutool.core.text.CharSequenceUtil;
 import com.auth.common.core.model.response.Result;
-import com.auth.module.security.contract.api.authorization.AuthorizationChangeKind;
+import com.auth.module.security.contract.api.AuthorizationChangeKind;
 import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidatePayload;
 import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateRequest;
 import com.auth.module.security.contract.dto.invalidation.AuthorizationInvalidateResponse;

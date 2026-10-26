@@ -1,6 +1,6 @@
 package com.auth.service.auth.support.authorization;
 
-import com.auth.module.security.contract.api.authorization.ScopeGrant;
+import com.auth.module.security.contract.api.ScopeGrant;
 import com.auth.module.security.contract.api.datascope.DataScopeStorageType;
 import com.auth.service.auth.mapper.DeptClosureMapper;
 import com.auth.service.auth.model.po.scope.DeptClosureDescendantRowPO;

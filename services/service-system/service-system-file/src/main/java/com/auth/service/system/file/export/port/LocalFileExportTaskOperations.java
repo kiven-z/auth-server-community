@@ -8,7 +8,7 @@ import com.auth.module.file.api.port.FileExportTaskOperations;
 import com.auth.module.file.export.scope.FileExportScopeSnapshots;
 import com.auth.module.file.export.shard.ExportShardPolicy;
 import com.auth.module.security.autoconfigure.web.SecurityUserUtils;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.service.system.common.exception.SystemBusinessException;
 import com.auth.service.system.common.exception.code.SystemCommonResultCode;
 import com.auth.service.system.file.config.properties.FileExportTaskProperties;

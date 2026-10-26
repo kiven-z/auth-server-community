@@ -2,7 +2,7 @@ package com.auth.service.system.admin.service.admin.impl;
 
 import com.auth.common.core.constants.BatchSizes;
 import com.auth.common.core.model.form.IdsEnableStatusForm;
-import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
+import com.auth.module.security.contract.api.GrantTableSubjectType;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;

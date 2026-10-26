@@ -1,6 +1,6 @@
 package com.auth.module.security.contract.dto.invalidation;
 
-import com.auth.module.security.contract.api.authorization.AuthorizationChangeKind;
+import com.auth.module.security.contract.api.AuthorizationChangeKind;
 
 /**
  * 授权失效业务键（密封类型）：不同 {@link AuthorizationChangeKind} 使用不同子类型。

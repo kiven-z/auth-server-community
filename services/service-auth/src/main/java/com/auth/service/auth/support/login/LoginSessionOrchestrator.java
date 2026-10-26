@@ -1,7 +1,7 @@
 package com.auth.service.auth.support.login;
 
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.module.security.contract.api.UserSessionIndex;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
 import com.auth.service.auth.exception.AuthBusinessException;
 import com.auth.service.auth.model.enums.AuthLoginLogType;
 import com.auth.service.auth.model.value.login.AuthenticatedUser;

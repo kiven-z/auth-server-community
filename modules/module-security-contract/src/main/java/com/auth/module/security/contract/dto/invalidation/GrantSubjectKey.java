@@ -1,6 +1,6 @@
 package com.auth.module.security.contract.dto.invalidation;
 
-import com.auth.module.security.contract.api.granttable.GrantTableSubjectType;
+import com.auth.module.security.contract.api.GrantTableSubjectType;
 
 import java.io.Serial;
 import java.io.Serializable;

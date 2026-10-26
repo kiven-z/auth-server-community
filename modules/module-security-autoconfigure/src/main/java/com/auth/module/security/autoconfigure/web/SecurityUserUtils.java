@@ -1,7 +1,7 @@
 package com.auth.module.security.autoconfigure.web;
 
 import com.auth.module.security.autoconfigure.security.SecurityRequestAttributes;
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;

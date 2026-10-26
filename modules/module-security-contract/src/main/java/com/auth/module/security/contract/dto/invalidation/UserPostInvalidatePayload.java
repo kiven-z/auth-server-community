@@ -1,6 +1,6 @@
 package com.auth.module.security.contract.dto.invalidation;
 
-import com.auth.module.security.contract.api.authorization.AuthorizationChangeKind;
+import com.auth.module.security.contract.api.AuthorizationChangeKind;
 
 import java.io.Serial;
 import java.io.Serializable;

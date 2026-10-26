@@ -1,7 +1,7 @@
 package com.auth.module.security.contract.api.datascope;
 
 import cn.hutool.core.collection.CollUtil;
-import com.auth.module.security.contract.api.authorization.ScopeGrant;
+import com.auth.module.security.contract.api.ScopeGrant;
 import lombok.experimental.UtilityClass;
 
 import java.util.Collection;

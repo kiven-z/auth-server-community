@@ -1,4 +1,4 @@
-package com.auth.module.security.contract.api.authorization;
+package com.auth.module.security.contract.api;
 
 /**
  * 授权变更维度

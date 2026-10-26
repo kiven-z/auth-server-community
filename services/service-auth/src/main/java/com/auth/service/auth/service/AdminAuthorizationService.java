@@ -1,6 +1,6 @@
 package com.auth.service.auth.service;
 
-import com.auth.module.security.contract.api.authorization.AuthProfile;
+import com.auth.module.security.contract.api.AuthProfile;
 import com.auth.service.auth.model.vo.authorization.EffectiveCodesVO;
 
 import java.util.Collection;
