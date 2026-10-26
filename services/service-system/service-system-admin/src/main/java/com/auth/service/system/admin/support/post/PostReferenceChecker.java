@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * 岗位存在性与计算有效校验
+ * 岗位存在性校验
  *
  * @author Bunny
  */
@@ -30,20 +30,6 @@ public class PostReferenceChecker {
 		if (existing == null) {
 			log.warn("post not found: id={}", postId);
 			throw new SystemBusinessException(SystemCommonResultCode.DATA_NOT_EXIST);
-		}
-		return existing;
-	}
-
-	/**
-	 * 校验岗位存在且计算有效
-	 * @param postId 岗位 ID
-	 * @return 岗位实体
-	 */
-	public SysPostEntity requireEffective(Long postId) {
-		SysPostEntity existing = getExistingActive(postId);
-		if (sysPostMapper.countEffectiveById(postId) == 0) {
-			log.warn("post unavailable: id={}", postId);
-			throw new SystemBusinessException(SystemCommonResultCode.DATA_UNAVAILABLE);
 		}
 		return existing;
 	}

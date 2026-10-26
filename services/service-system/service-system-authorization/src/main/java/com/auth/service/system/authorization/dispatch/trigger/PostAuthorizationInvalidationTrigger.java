@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 岗位启用状态变更后触发授权失效
+ * 岗位删除后触发授权失效
  *
  * @author Bunny
  */

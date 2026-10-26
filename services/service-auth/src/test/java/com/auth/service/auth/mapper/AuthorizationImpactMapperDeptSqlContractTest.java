@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * SQL 契约：部门失效反查须覆盖禁用节点（不按 status 过滤），与正向画像重算规则分离。
+ * SQL 契约：部门反查不按部门启停过滤（部门已无启停）。移动/删除仍要能刷新画像，与正向画像重算规则分离。
  */
 @DisplayName("AuthorizationImpactMapper 部门反查 SQL 契约")
 class AuthorizationImpactMapperDeptSqlContractTest {
@@ -24,7 +24,7 @@ class AuthorizationImpactMapperDeptSqlContractTest {
 	}
 
 	@Test
-	@DisplayName("按部门 ID 反查成员：不按 sys_dept.status 过滤，以便禁用/移动仍能刷新画像")
+	@DisplayName("按部门 ID 反查成员：不按部门启停过滤，移动/删除仍要能刷新画像")
 	void selectUserIdsByDeptIdsDoesNotFilterByDeptStatus() throws IOException {
 		String xml = readClasspathText();
 

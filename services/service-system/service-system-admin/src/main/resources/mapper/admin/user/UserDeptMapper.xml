@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auth.service.system.admin.mapper.admin.user.UserDeptMapper">
 
-    <!-- 用户部门关联分页（基表全量，含已停用/传播禁用部门） -->
+    <!-- 用户部门关联分页 -->
     <select id="selectListByPage" resultType="com.auth.service.system.admin.model.po.user.UserDeptPageRowPO">
         SELECT
         ud.id,
@@ -10,8 +10,6 @@
         ud.dept_id,
         d.dept_name,
         d.dept_code,
-        d.status AS dept_status,
-        (ve.id IS NOT NULL) AS dept_effective,
         ud.is_primary,
         ud.created_at,
         ud.updated_at,
@@ -22,7 +20,6 @@
         FROM
         user_dept ud
         INNER JOIN sys_dept d ON d.id = ud.dept_id
-        LEFT JOIN v_dept_effective ve ON ve.id = d.id
         WHERE
         ud.user_id = #{userId}
         <if test="query.deptName != null and query.deptName != ''">
@@ -72,12 +69,12 @@
         LIMIT 1
     </select>
 
-    <!-- 用户主部门（有效任职且 is_primary） -->
+    <!-- 用户主部门（is_primary） -->
     <select id="selectPrimaryDeptByUserId"
             resultType="com.auth.service.system.admin.model.po.user.UserPrimaryDeptPO">
         SELECT ud.dept_id  AS deptId,
                d.dept_name AS deptName
-        FROM v_user_dept_effective ud
+        FROM user_dept ud
                  INNER JOIN sys_dept d ON d.id = ud.dept_id
         WHERE ud.user_id = #{userId}
           AND ud.is_primary = 1

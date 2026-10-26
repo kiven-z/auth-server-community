@@ -44,7 +44,6 @@ public class SysPostSpreadsheetService {
 		row.setDeptCode("（示例：RD，部门必须已存在）");
 		row.setPostCode("（示例：P01，同部门内唯一）");
 		row.setPostName("（示例：高级工程师）");
-		row.setStatusLabel("启用");
 		row.setOrderNum(1);
 		row.setRemark("（可选）");
 		byte[] bytes = new ExcelExportWriter<>(SysPostImportRow.class, "岗位导入模板").write(List.of(row));

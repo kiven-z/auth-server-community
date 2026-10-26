@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.LongConsumer;
 
 /**
- * grant_table 授权前校验主体存在且启用；新增主体类型时注册对应 {@link GrantTableActiveSubjectChecker} 即可
+ * grant_table 授权前校验主体存在；新增主体类型时注册对应 {@link GrantTableActiveSubjectChecker} 即可
  *
  * @author Bunny
  */
@@ -30,7 +30,7 @@ public class GrantTableSubjectExistenceVerifier {
 	}
 
 	/**
-	 * 校验授权主体存在且为启用状态
+	 * 校验授权主体存在
 	 * @param subjectType 主体类型
 	 * @param subjectId 主体 ID
 	 */

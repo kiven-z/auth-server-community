@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * SQL 契约：启用搜索仅返回计算有效岗位
+ * SQL 契约：岗位搜索打基表，不按启用状态过滤
  *
  * @author Bunny
  */
@@ -26,8 +26,8 @@ class SysPostMapperSearchSqlContractTest {
 	}
 
 	@Test
-	@DisplayName("status=true 走 v_post_effective；status=false 打基表 status")
-	void searchEnabledUsesEffectiveView() throws IOException {
+	@DisplayName("搜索打 sys_post，不按启用状态或有效视图过滤")
+	void searchUsesBaseTableWithoutStatusFilter() throws IOException {
 		String xml = readClasspathText();
 
 		int selectStart = xml.indexOf("<select id=\"search\"");
@@ -35,10 +35,13 @@ class SysPostMapperSearchSqlContractTest {
 		int selectEnd = xml.indexOf("</select>", selectStart);
 		String selectBlock = xml.substring(selectStart, selectEnd);
 
-		assertThat(selectBlock).contains("v_post_effective")
-			.contains("status != null and status")
-			.contains("status != null and !status")
-			.doesNotContain("test=\"status != null\">");
+		assertThat(selectBlock).contains("sys_post p")
+			.doesNotContain("v_dept_effective")
+			.doesNotContain("v_post_effective")
+			.doesNotContain("v_user_dept_effective")
+			.doesNotContain("v_user_post_effective")
+			.doesNotContain("p.status")
+			.doesNotContain("test=\"status");
 	}
 
 }

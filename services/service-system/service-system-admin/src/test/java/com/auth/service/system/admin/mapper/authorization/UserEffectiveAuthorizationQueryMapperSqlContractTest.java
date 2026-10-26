@@ -43,8 +43,16 @@ class UserEffectiveAuthorizationQueryMapperSqlContractTest {
 			.doesNotContain("da.status = 1")
 			.doesNotContain("grant.subject_id = ud.dept_id");
 
-		assertThat(selectBlock(xml, "countPostsByUserId")).contains("v_user_post_effective");
-		assertThat(selectBlock(xml, "countDeptsByUserId")).contains("v_user_dept_effective");
+		assertThat(selectBlock(xml, "countPostsByUserId")).contains("user_post up")
+			.doesNotContain("v_dept_effective")
+			.doesNotContain("v_post_effective")
+			.doesNotContain("v_user_dept_effective")
+			.doesNotContain("v_user_post_effective");
+		assertThat(selectBlock(xml, "countDeptsByUserId")).contains("user_dept ud")
+			.doesNotContain("v_dept_effective")
+			.doesNotContain("v_post_effective")
+			.doesNotContain("v_user_dept_effective")
+			.doesNotContain("v_user_post_effective");
 		assertThat(selectBlock(xml, "countEffectiveRolesByUserId")).contains("v_user_grant_subjects")
 			.contains("us.user_id = #{userId}");
 		assertThat(selectBlock(xml, "selectEffectiveRolesByUserIdPage")).contains("v_user_grant_subjects")

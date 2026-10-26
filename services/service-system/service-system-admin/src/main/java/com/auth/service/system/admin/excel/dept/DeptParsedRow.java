@@ -30,11 +30,6 @@ public class DeptParsedRow {
 	String deptName;
 
 	/**
-	 * 状态标签
-	 */
-	String statusLabel;
-
-	/**
 	 * 排序号
 	 */
 	Integer orderNum;

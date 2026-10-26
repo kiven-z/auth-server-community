@@ -72,7 +72,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<UserDeptMapper, UserDept
 		Long deptId = form.getDeptId();
 		userReferenceChecker.getExistingActive(userId);
 		userReferenceChecker.requireOperable(List.of(userId));
-		deptReferenceChecker.requireEffective(deptId);
+		deptReferenceChecker.getExistingActive(deptId);
 
 		if (baseMapper.countByUserIdAndDeptId(userId, deptId) > 0) {
 			log.warn("create user department relation duplicate: userId={}, deptId={}", userId, deptId);
@@ -105,7 +105,7 @@ public class SysUserDeptServiceImpl extends ServiceImpl<UserDeptMapper, UserDept
 		}
 
 		if (!Objects.equals(existing.getDeptId(), form.getDeptId())) {
-			deptReferenceChecker.requireEffective(form.getDeptId());
+			deptReferenceChecker.getExistingActive(form.getDeptId());
 
 			UserDeptEntity conflict = baseMapper.selectByUserIdAndDeptId(userId, form.getDeptId());
 			if (conflict != null && !Objects.equals(conflict.getId(), id)) {

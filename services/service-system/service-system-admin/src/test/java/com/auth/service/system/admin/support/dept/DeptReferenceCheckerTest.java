@@ -13,7 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * {@link DeptReferenceChecker} 单元测试。
@@ -60,42 +61,6 @@ class DeptReferenceCheckerTest {
 				assertThat(biz.getResultCode()).isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
 				assertThat(biz.getMessageArgs()).isEmpty();
 			});
-	}
-
-	@Test
-	@DisplayName("requireEffective：计算有效时返回实体")
-	void requireEffectiveReturnsEntityWhenInView() {
-		SysDeptEntity entity = activeDept();
-		when(sysDeptMapper.selectById(DEPT_ID)).thenReturn(entity);
-		when(sysDeptMapper.countEffectiveById(DEPT_ID)).thenReturn(1L);
-
-		assertThat(deptReferenceChecker.requireEffective(DEPT_ID)).isSameAs(entity);
-		verify(sysDeptMapper).countEffectiveById(DEPT_ID);
-	}
-
-	@Test
-	@DisplayName("requireEffective：部门不存在时抛出 DATA_NOT_EXIST")
-	void requireEffectiveThrowsWhenMissing() {
-		when(sysDeptMapper.selectById(DEPT_ID)).thenReturn(null);
-
-		assertThatThrownBy(() -> deptReferenceChecker.requireEffective(DEPT_ID))
-			.isInstanceOf(SystemBusinessException.class)
-			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
-			.isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
-		verify(sysDeptMapper, never()).countEffectiveById(DEPT_ID);
-	}
-
-	@Test
-	@DisplayName("requireEffective：不在有效视图时抛出 DATA_UNAVAILABLE")
-	void requireEffectiveThrowsWhenNotInView() {
-		SysDeptEntity entity = activeDept();
-		when(sysDeptMapper.selectById(DEPT_ID)).thenReturn(entity);
-		when(sysDeptMapper.countEffectiveById(DEPT_ID)).thenReturn(0L);
-
-		assertThatThrownBy(() -> deptReferenceChecker.requireEffective(DEPT_ID))
-			.isInstanceOf(SystemBusinessException.class)
-			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
-			.isEqualTo(SystemCommonResultCode.DATA_UNAVAILABLE);
 	}
 
 }

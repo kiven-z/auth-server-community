@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 系统部门主表（物理删除；禁用见 {@link #status}）
+ * 系统部门主表
  *
  * @author Bunny
  */
@@ -25,9 +25,6 @@ public class SysDeptEntity extends BaseEntity {
 
 	@Schema(title = "部门编码（唯一标识）")
 	private String deptCode;
-
-	@Schema(title = "启用状态（true=正常，false=禁用）")
-	private Boolean status;
 
 	@Schema(title = "显示顺序")
 	private Integer orderNum;

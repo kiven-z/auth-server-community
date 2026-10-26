@@ -33,12 +33,6 @@ public class SysDeptListVO extends BaseResponse {
 	@Schema(title = "部门编码")
 	private String deptCode;
 
-	@Schema(title = "状态：true 正常 false 禁用")
-	private Boolean status;
-
-	@Schema(title = "计算有效（本节点及全部祖先均启用）")
-	private Boolean effective;
-
 	@Schema(title = "显示顺序")
 	private Integer orderNum;
 

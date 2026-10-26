@@ -33,12 +33,6 @@ public class SysPostPageVO extends BaseResponse {
 	@Schema(title = "岗位名称")
 	private String postName;
 
-	@Schema(title = "启用状态（true=启用，false=停用）")
-	private Boolean status;
-
-	@Schema(title = "计算有效（本节点启用且所属部门计算有效）")
-	private Boolean effective;
-
 	@Schema(title = "显示顺序")
 	private Integer orderNum;
 

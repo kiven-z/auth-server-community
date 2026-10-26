@@ -71,7 +71,6 @@ class GrantTableServiceImplTest {
 		entity.setDeptId(1L);
 		entity.setPostCode("DEV");
 		entity.setPostName("开发岗");
-		entity.setStatus(true);
 		return entity;
 	}
 
@@ -109,7 +108,7 @@ class GrantTableServiceImplTest {
 	void setUp() throws Exception {
 		PostReferenceChecker postReferenceChecker = new PostReferenceChecker(sysPostMapper);
 		TypedGrantTableActiveSubjectChecker postSubjectChecker = new TypedGrantTableActiveSubjectChecker(
-				GrantTableSubjectType.POST, postReferenceChecker::requireEffective);
+				GrantTableSubjectType.POST, postReferenceChecker::getExistingActive);
 		GrantTableSubjectExistenceVerifier subjectExistenceVerifier = new GrantTableSubjectExistenceVerifier(
 				List.of(postSubjectChecker));
 		grantTableService = spy(new GrantTableServiceImpl(subjectExistenceVerifier, userReferenceChecker,
@@ -118,7 +117,6 @@ class GrantTableServiceImplTest {
 		baseMapperField.setAccessible(true);
 		baseMapperField.set(grantTableService, grantTableMapper);
 		lenient().doReturn(true).when(grantTableService).saveBatch(any());
-		lenient().when(sysPostMapper.countEffectiveById(SUBJECT_ID)).thenReturn(1L);
 	}
 
 	@Test

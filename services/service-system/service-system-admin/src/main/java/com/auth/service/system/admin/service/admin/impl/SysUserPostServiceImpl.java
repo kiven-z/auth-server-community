@@ -72,7 +72,7 @@ public class SysUserPostServiceImpl extends ServiceImpl<UserPostMapper, UserPost
 	public void create(Long userId, UserPostAssignForm form) {
 		userReferenceChecker.getExistingActive(userId);
 		userReferenceChecker.requireOperable(List.of(userId));
-		postReferenceChecker.requireEffective(form.getPostId());
+		postReferenceChecker.getExistingActive(form.getPostId());
 
 		if (baseMapper.countByUserIdAndPostId(userId, form.getPostId()) > 0) {
 			log.warn("User post relation duplicate: userId={}, postId={}", userId, form.getPostId());
@@ -107,7 +107,7 @@ public class SysUserPostServiceImpl extends ServiceImpl<UserPostMapper, UserPost
 
 		Boolean isPrimary = form.getIsPrimary();
 		if (isPrimary != null && isPrimary) {
-			postReferenceChecker.requireEffective(existing.getPostId());
+			postReferenceChecker.getExistingActive(existing.getPostId());
 			baseMapper.demotePrimaryByUserId(userId);
 		}
 

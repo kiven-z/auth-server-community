@@ -25,7 +25,7 @@ public class SysPostPageOrderSqlBuilder extends AbstractOrderSqlBuilder {
 
 	private static final Map<String, String> FIELD_TO_COLUMN = Map.ofEntries(Map.entry("orderNum", "p.order_num"),
 			Map.entry("createdAt", "p.created_at"), Map.entry("updatedAt", "p.updated_at"),
-			Map.entry("postCode", "p.post_code"), Map.entry("postName", "p.post_name"), Map.entry("status", "p.status"),
+			Map.entry("postCode", "p.post_code"), Map.entry("postName", "p.post_name"),
 			Map.entry("deptName", "d.dept_name"));
 
 	/**

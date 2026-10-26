@@ -74,9 +74,6 @@
         <if test="query != null and query.postName != null and query.postName != ''">
             AND p.post_name LIKE CONCAT('%', #{query.postName}, '%')
         </if>
-        <if test="query != null and query.status != null">
-            AND p.status = #{query.status}
-        </if>
     </select>
 
     <!-- 分页查询部门下属岗位 -->
@@ -85,8 +82,7 @@
         SELECT
         p.id,
         p.post_code,
-        p.post_name,
-        p.status
+        p.post_name
         FROM
         sys_post p
         WHERE
@@ -96,9 +92,6 @@
         </if>
         <if test="query != null and query.postName != null and query.postName != ''">
             AND p.post_name LIKE CONCAT('%', #{query.postName}, '%')
-        </if>
-        <if test="query != null and query.status != null">
-            AND p.status = #{query.status}
         </if>
         ORDER BY
         p.order_num,

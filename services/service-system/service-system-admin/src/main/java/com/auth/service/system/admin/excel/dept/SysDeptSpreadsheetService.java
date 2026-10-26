@@ -44,7 +44,6 @@ public class SysDeptSpreadsheetService {
 		row.setParentDeptCode("（示例：ROOT，留空表示顶级部门）");
 		row.setDeptCode("（示例：RD，全局唯一）");
 		row.setDeptName("（示例：研发部）");
-		row.setStatusLabel("启用");
 		row.setOrderNum(1);
 		row.setRemark("（可选）");
 		byte[] bytes = new ExcelExportWriter<>(SysDeptImportRow.class, "部门导入模板").write(List.of(row));

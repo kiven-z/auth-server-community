@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * SQL 契约：管理端用户岗位列表打基表并投影状态
+ * SQL 契约：用户岗位关联打基表
  *
  * @author Bunny
  */
@@ -33,14 +33,17 @@ class UserPostMapperSqlContractTest {
 	}
 
 	@Test
-	@DisplayName("用户岗位分页：基表全量；更新加载打基表")
-	void userPostPageUsesBaseTableWithStatusProjection() throws IOException {
+	@DisplayName("用户岗位分页：打 user_post，不投影启用或计算有效")
+	void userPostPageUsesBaseTable() throws IOException {
 		String xml = readClasspathText();
 
 		assertThat(selectBlock(xml, "selectListByPage")).contains("user_post up")
-			.contains("post_status")
-			.contains("post_effective")
-			.contains("v_post_effective")
+			.contains("sys_post sp")
+			.doesNotContain("post_status")
+			.doesNotContain("post_effective")
+			.doesNotContain("v_dept_effective")
+			.doesNotContain("v_post_effective")
+			.doesNotContain("v_user_dept_effective")
 			.doesNotContain("v_user_post_effective");
 		assertThat(selectBlock(xml, "selectByIdAndUserId")).contains("FROM user_post")
 			.doesNotContain("v_user_post_effective");

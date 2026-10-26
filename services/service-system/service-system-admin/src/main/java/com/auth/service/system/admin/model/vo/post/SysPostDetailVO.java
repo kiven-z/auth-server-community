@@ -31,12 +31,6 @@ public class SysPostDetailVO extends BaseResponse {
 	@Schema(title = "岗位名称")
 	private String postName;
 
-	@Schema(title = "启用状态（true=启用，false=停用）")
-	private Boolean status;
-
-	@Schema(title = "计算有效", description = "本节点启用且所属部门计算有效")
-	private Boolean effective;
-
 	@Schema(title = "显示顺序")
 	private Integer orderNum;
 
@@ -46,7 +40,7 @@ public class SysPostDetailVO extends BaseResponse {
 	@Schema(title = "所属部门快照")
 	private DeptReferenceVO boundDept;
 
-	@Schema(title = "绑定用户数", description = "含岗位已停用")
+	@Schema(title = "绑定用户数")
 	private Long boundUserCount;
 
 	@Schema(title = "已授角色数")

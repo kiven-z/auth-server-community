@@ -1,6 +1,5 @@
 package com.auth.service.system.admin.service.admin;
 
-import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.service.system.admin.model.entity.SysDeptEntity;
 import com.auth.service.system.admin.model.form.dept.SysDeptForm;
 import com.auth.service.system.admin.model.form.dept.SysDeptMoveForm;
@@ -26,12 +25,6 @@ public interface SysDeptService extends IService<SysDeptEntity> {
 	 * @param form 保存表单
 	 */
 	void updateMeta(SysDeptForm form);
-
-	/**
-	 * 批量启停部门
-	 * @param form 主键列表与目标状态
-	 */
-	void batchUpdateStatus(IdsEnableStatusForm form);
 
 	/**
 	 * 变更父部门并重算闭包

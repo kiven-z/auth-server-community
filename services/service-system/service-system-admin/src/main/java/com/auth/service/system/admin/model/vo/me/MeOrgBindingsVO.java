@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 当前登录用户组织任职（有效部门与岗位）
+ * 当前登录用户组织任职
  *
  * @author Bunny
  */
@@ -21,10 +21,10 @@ import java.util.List;
 @ToString
 public class MeOrgBindingsVO {
 
-	@Schema(title = "有效任职部门列表（主部门优先）")
+	@Schema(title = "任职部门列表（主部门优先）")
 	private List<UserDeptReferenceVO> depts = new ArrayList<>();
 
-	@Schema(title = "有效任职岗位列表（主岗位优先）")
+	@Schema(title = "任职岗位列表（主岗位优先）")
 	private List<UserPostReferenceVO> posts = new ArrayList<>();
 
 }

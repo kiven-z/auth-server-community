@@ -1,6 +1,5 @@
 package com.auth.service.system.admin.controller.admin;
 
-import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
 import com.auth.common.web.valid.group.CreateGroup;
@@ -48,7 +47,7 @@ import java.util.List;
  *
  * @author Bunny
  */
-@Tag(name = "系统部门管理", description = "部门树 CRUD 与启停")
+@Tag(name = "系统部门管理", description = "部门树 CRUD")
 @RequiredArgsConstructor
 @RequestMapping("/api/system/dept")
 @RestController
@@ -142,16 +141,6 @@ public class SysDeptController {
 	@PutMapping
 	public Result<Void> update(@Validated(UpdateGroup.class) @RequestBody SysDeptForm form) {
 		sysDeptService.updateMeta(form);
-		return Result.success();
-	}
-
-	@OperationLog(targetType = "DEPT", serviceDomain = AuditServiceDomain.SYSTEM, bizModule = PlatformBizCodes.SYS_DEPT,
-			operation = OperationLogKind.UPDATE)
-	@Operation(summary = "批量启停部门")
-	@PreAuthorize("@auth.decide('sys:dept:update')")
-	@PutMapping("/status")
-	public Result<Void> batchUpdateStatus(@Valid @RequestBody IdsEnableStatusForm form) {
-		sysDeptService.batchUpdateStatus(form);
 		return Result.success();
 	}
 

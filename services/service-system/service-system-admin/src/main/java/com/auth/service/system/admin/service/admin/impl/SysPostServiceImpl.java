@@ -2,8 +2,6 @@ package com.auth.service.system.admin.service.admin.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.constants.BatchSizes;
-import com.auth.common.core.model.form.IdsEnableStatusForm;
-import com.auth.common.core.utils.FieldChangeSupport;
 import com.auth.common.data.model.PageResponse;
 import com.auth.module.security.contract.api.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
@@ -82,10 +80,10 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 	 */
 	@Override
 	@Transactional(readOnly = true)
-	public List<SysPostSearchItemVO> search(String keyword, Boolean status, Integer limit) {
+	public List<SysPostSearchItemVO> search(String keyword, Integer limit) {
 		int cappedLimit = limit == null ? 20 : Math.max(1, Math.min(limit, 50));
 
-		List<SysPostSearchItemPO> poList = baseMapper.search(keyword, status, cappedLimit);
+		List<SysPostSearchItemPO> poList = baseMapper.search(keyword, cappedLimit);
 		return SysPostConverter.INSTANCE.toSearchItemVoList(poList);
 	}
 
@@ -98,7 +96,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 		SysPostEntity entity = postReferenceChecker.getExistingActive(id);
 
 		SysPostDetailVO detail = SysPostConverter.INSTANCE.toDetailVo(entity);
-		detail.setEffective(baseMapper.countEffectiveById(id) > 0);
 		DeptReferencePO boundDept = baseMapper.selectBoundDeptByPostId(id);
 		detail.setBoundDept(ReferenceConverter.INSTANCE.toDeptReference(boundDept));
 		detail.setBoundUserCount(postRelationQueryMapper.countUsersByPostId(id, null));
@@ -151,35 +148,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 			throw new SystemBusinessException(SystemAdminResultCode.POST_CODE_DUPLICATE_IN_DEPT, postCode);
 		}
 
-		boolean statusChanged = FieldChangeSupport.valueChanged(existing.getStatus(), form.getStatus());
 		SysPostConverter.INSTANCE.applyUpdateForm(form, existing);
 		super.updateById(existing);
-
-		if (statusChanged) {
-			postInvalidationTrigger.submitByPostIds(List.of(id), "update");
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	@Transactional(rollbackFor = Exception.class)
-	public void batchUpdateStatus(IdsEnableStatusForm form) {
-		List<Long> ids = form.getIds().stream().filter(Objects::nonNull).distinct().toList();
-		if (CollUtil.isEmpty(ids)) {
-			return;
-		}
-
-		Boolean status = form.getStatus();
-		List<SysPostEntity> updates = ids.stream().map(id -> {
-			SysPostEntity entity = new SysPostEntity();
-			entity.setId(id);
-			entity.setStatus(status);
-			return entity;
-		}).toList();
-		super.updateBatchById(updates);
-		postInvalidationTrigger.submitByPostIds(ids, "update");
 	}
 
 	/**

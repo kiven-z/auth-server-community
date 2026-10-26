@@ -34,7 +34,6 @@ class DeptRowExtractorTest {
 		row.setParentDeptCode(" ROOT ");
 		row.setDeptCode(" RD ");
 		row.setDeptName(" 研发部 ");
-		row.setStatusLabel("启用");
 		row.setOrderNum(1);
 		row.setRemark("备注");
 
@@ -45,7 +44,6 @@ class DeptRowExtractorTest {
 		assertThat(outcome.value().parentDeptCode()).isEqualTo("ROOT");
 		assertThat(outcome.value().deptCode()).isEqualTo("RD");
 		assertThat(outcome.value().deptName()).isEqualTo("研发部");
-		assertThat(outcome.value().statusLabel()).isEqualTo("启用");
 		assertThat(outcome.value().orderNum()).isEqualTo(1);
 		assertThat(outcome.value().remark()).isEqualTo("备注");
 	}

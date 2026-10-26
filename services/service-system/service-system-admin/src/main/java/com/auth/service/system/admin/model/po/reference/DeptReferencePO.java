@@ -29,7 +29,4 @@ public class DeptReferencePO implements Serializable {
 	@Schema(title = "部门名称")
 	private String deptName;
 
-	@Schema(title = "启用状态（true=正常，false=禁用）")
-	private Boolean status;
-
 }

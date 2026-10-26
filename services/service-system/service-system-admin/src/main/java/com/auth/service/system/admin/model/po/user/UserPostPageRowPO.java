@@ -35,12 +35,6 @@ public class UserPostPageRowPO implements Serializable {
 	@Schema(title = "岗位名称")
 	private String postName;
 
-	@Schema(title = "岗位本节点启用状态")
-	private Boolean postStatus;
-
-	@Schema(title = "岗位计算有效（本节点启用且所属部门计算有效）")
-	private Boolean postEffective;
-
 	@Schema(title = "是否主岗位")
 	private Boolean isPrimary;
 

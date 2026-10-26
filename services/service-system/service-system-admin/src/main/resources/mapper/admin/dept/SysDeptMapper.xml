@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper">
 
-    <!-- 部门扁平列表查询（无分页，供树形构建；含计算有效） -->
+    <!-- 部门扁平列表查询（无分页，供树形构建） -->
     <select id="selectListByQuery"
             resultType="com.auth.service.system.admin.model.po.dept.SysDeptPageRowPO">
         SELECT
@@ -10,8 +10,6 @@
         d.parent_id,
         d.dept_name,
         d.dept_code,
-        d.status,
-        (ve.id IS NOT NULL) AS effective,
         d.order_num,
         d.remark,
         d.created_at,
@@ -20,15 +18,8 @@
         d.updated_by
         FROM
         sys_dept d
-        LEFT JOIN v_dept_effective ve ON ve.id = d.id
         <where>
-            <if test="query.status != null">
-                d.status = #{query.status}
-            </if>
             <if test="query.keyword != null and query.keyword != ''">
-                <if test="query.status != null">
-                    AND
-                </if>
                 d.id IN (
                 SELECT
                 dc.ancestor_id
@@ -46,7 +37,7 @@
         d.id
     </select>
 
-    <!-- 分页查询部门（含父部门信息与计算有效；表格视图与 Excel 导出共用） -->
+    <!-- 分页查询部门（含父部门信息；表格视图与 Excel 导出共用） -->
     <select id="selectListByPage"
             resultType="com.auth.service.system.admin.model.po.dept.SysDeptPageRowPO">
         SELECT
@@ -56,8 +47,6 @@
         p.dept_name AS parent_dept_name,
         d.dept_name,
         d.dept_code,
-        d.status,
-        (ve.id IS NOT NULL) AS effective,
         d.order_num,
         d.remark,
         d.created_at,
@@ -67,19 +56,12 @@
         FROM
         sys_dept d
         LEFT JOIN sys_dept p ON d.parent_id = p.id
-        LEFT JOIN v_dept_effective ve ON ve.id = d.id
         <where>
-            <if test="query.status != null">
-                d.status = #{query.status}
-            </if>
             <if test="query.deptName != null and query.deptName != ''">
-                <if test="query.status != null">
-                    AND
-                </if>
                 d.dept_name LIKE CONCAT('%', #{query.deptName}, '%')
             </if>
             <if test="query.deptCode != null and query.deptCode != ''">
-                <if test="query.status != null or (query.deptName != null and query.deptName != '')">
+                <if test="query.deptName != null and query.deptName != ''">
                     AND
                 </if>
                 d.dept_code LIKE CONCAT('%', #{query.deptCode}, '%')
@@ -120,7 +102,6 @@
         d.parent_id,
         d.dept_name,
         d.dept_code,
-        d.status,
         d.order_num,
         d.remark,
         d.created_at,

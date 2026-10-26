@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 部门父级或启用状态变更、删除后触发授权失效
+ * 部门父级变更、移动或删除后触发授权失效
  *
  * @author Bunny
  */

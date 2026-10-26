@@ -23,7 +23,4 @@ public class SysDeptListQuery implements Serializable {
 	@Schema(title = "关键词")
 	private String keyword;
 
-	@Schema(title = "状态（true=正常，false=禁用）")
-	private Boolean status;
-
 }

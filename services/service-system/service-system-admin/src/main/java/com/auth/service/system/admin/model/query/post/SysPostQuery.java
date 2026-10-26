@@ -26,7 +26,4 @@ public class SysPostQuery extends PageQueryRequest {
 	@Schema(title = "部门名称")
 	private String deptName;
 
-	@Schema(title = "启用状态（true=启用，false=停用）")
-	private Boolean status;
-
 }

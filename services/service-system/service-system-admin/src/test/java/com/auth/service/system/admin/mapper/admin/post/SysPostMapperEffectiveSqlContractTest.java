@@ -10,11 +10,11 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * SQL 契约：岗位列表带计算有效
+ * SQL 契约：岗位列表打基表
  *
  * @author Bunny
  */
-@DisplayName("SysPostMapper 计算有效 SQL 契约")
+@DisplayName("SysPostMapper 列表 SQL 契约")
 class SysPostMapperEffectiveSqlContractTest {
 
 	private static String readClasspathXml() throws IOException {
@@ -33,13 +33,17 @@ class SysPostMapperEffectiveSqlContractTest {
 	}
 
 	@Test
-	@DisplayName("分页列表：LEFT JOIN v_post_effective 投影 effective")
-	void pageQueryProjectsEffectiveFromView() throws IOException {
+	@DisplayName("分页列表：打 sys_post，不投影启用或计算有效")
+	void pageQueryUsesBaseTable() throws IOException {
 		String xml = readClasspathXml();
 
-		assertThat(selectBlock(xml, "selectListByPage")).contains("v_post_effective vpe")
-			.contains("AS effective")
-			.contains("sys_post p");
+		assertThat(selectBlock(xml, "selectListByPage")).contains("sys_post p")
+			.doesNotContain("v_dept_effective")
+			.doesNotContain("v_post_effective")
+			.doesNotContain("v_user_dept_effective")
+			.doesNotContain("v_user_post_effective")
+			.doesNotContain("AS effective")
+			.doesNotContain("p.status");
 	}
 
 }

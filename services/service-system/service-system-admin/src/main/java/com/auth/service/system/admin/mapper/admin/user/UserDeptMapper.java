@@ -68,7 +68,7 @@ public interface UserDeptMapper extends BaseMapper<UserDeptEntity> {
 	int deleteByUserId(@Param("userId") Long userId);
 
 	/**
-	 * 查询用户主部门（有效任职且 is_primary）
+	 * 查询用户主部门（is_primary）
 	 * @param userId 用户 ID
 	 * @return 主部门投影，不存在时为 null
 	 */

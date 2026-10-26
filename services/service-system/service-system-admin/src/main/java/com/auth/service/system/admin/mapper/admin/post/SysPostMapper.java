@@ -34,7 +34,7 @@ public interface SysPostMapper extends BaseMapper<SysPostEntity> {
 			@Param("query") SysPostQuery query, @Param("orderBySql") String orderBySql);
 
 	/**
-	 * 是否存在用户-岗位关联（基表行，含主体已停用）
+	 * 是否存在用户-岗位关联
 	 * @param postId 岗位 ID
 	 * @return 引用行数
 	 */
@@ -50,7 +50,7 @@ public interface SysPostMapper extends BaseMapper<SysPostEntity> {
 	long countGrantPostSubjectByPostId(@Param("postId") Long postId);
 
 	/**
-	 * 查询可用于挂载岗位的部门主键（须计算有效）
+	 * 查询可挂载岗位的部门主键（部门行须存在）
 	 * @param deptIds 部门主键列表
 	 * @return 可挂载的部门 ID 列表
 	 */
@@ -64,22 +64,12 @@ public interface SysPostMapper extends BaseMapper<SysPostEntity> {
 	List<PostDeptCodePairPO> selectReferenceByDeptPostPairs(@Param("pairs") List<PostDeptCodePairPO> pairs);
 
 	/**
-	 * 是否在计算有效视图中
-	 * @param postId 岗位 ID
-	 * @return 命中行数
-	 */
-	@Select("SELECT COUNT(1) FROM v_post_effective WHERE id = #{postId}")
-	long countEffectiveById(@Param("postId") Long postId);
-
-	/**
 	 * 岗位关键词搜索（编码/名称前缀匹配，限制条数；无关键字时返回默认列表）
 	 * @param keyword 搜索关键字（前缀匹配，可选）
-	 * @param status 启用状态
 	 * @param limit 返回条数上限
 	 * @return 搜索行列表
 	 */
-	List<SysPostSearchItemPO> search(@Param("keyword") String keyword, @Param("status") Boolean status,
-			@Param("limit") int limit);
+	List<SysPostSearchItemPO> search(@Param("keyword") String keyword, @Param("limit") int limit);
 
 	/**
 	 * 查询岗位所属部门快照

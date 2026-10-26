@@ -17,7 +17,7 @@ import org.apache.ibatis.annotations.*;
 public interface UserPostMapper extends BaseMapper<UserPostEntity> {
 
 	/**
-	 * 分页查询用户岗位关联（基表全量，含失效任职）
+	 * 分页查询用户岗位关联
 	 * @param page 分页参数
 	 * @param userId 用户 ID
 	 * @param query 查询条件

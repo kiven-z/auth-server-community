@@ -50,7 +50,6 @@ class PostSheetImporterTest {
 		row.setDeptCode("RD");
 		row.setPostCode(postCode);
 		row.setPostName(postName);
-		row.setStatusLabel("启用");
 		row.setOrderNum(1);
 		row.setRemark("备注");
 		return row;
@@ -122,7 +121,7 @@ class PostSheetImporterTest {
 	}
 
 	@Test
-	@DisplayName("部门存在但不可分配时返回行级错误且不落库")
+	@DisplayName("目标部门不存在时返回行级错误且不落库")
 	void doImport_whenDeptExistsButNotAssignable_returnsRowError() throws IOException {
 		MockMultipartFile file = buildImportFile(List.of(validRow("DEV", "研发岗")));
 		when(deptLookupSupport.resolveIdsByCodes(anyList(), any())).thenReturn(Map.of("RD", 2L));

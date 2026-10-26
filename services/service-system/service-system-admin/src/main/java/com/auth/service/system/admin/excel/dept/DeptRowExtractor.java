@@ -36,7 +36,6 @@ public class DeptRowExtractor {
 			.parentDeptCode(ImportTextParsers.optional(row.getParentDeptCode()))
 			.deptCode(deptCode.value())
 			.deptName(deptName.value())
-			.statusLabel(row.getStatusLabel())
 			.orderNum(row.getOrderNum())
 			.remark(row.getRemark())
 			.build());

@@ -88,7 +88,6 @@ class SysUserDeptServiceImplTest {
 		entity.setId(DEPT_ID);
 		entity.setDeptName("研发部");
 		entity.setDeptCode("RD");
-		entity.setStatus(true);
 		return entity;
 	}
 
@@ -215,16 +214,15 @@ class SysUserDeptServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("创建关联：停用或传播禁用部门不可新增任职")
-	void createRejectsDisabledDept() {
+	@DisplayName("创建关联：部门不存在时拒绝")
+	void createRejectsMissingDept() {
 		when(sysUserMapper.selectById(USER_ID)).thenReturn(activeUser());
-		when(sysDeptMapper.selectById(DEPT_ID)).thenReturn(activeDept());
-		when(sysDeptMapper.countEffectiveById(DEPT_ID)).thenReturn(0L);
+		when(sysDeptMapper.selectById(DEPT_ID)).thenReturn(null);
 		UserDeptAssignForm form = createForm(false, null);
 
 		assertThatThrownBy(() -> sysUserDeptService.create(USER_ID, form)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
-			.isEqualTo(SystemCommonResultCode.DATA_UNAVAILABLE);
+			.isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
 
 		verify(userDeptMapper, never()).insert(any(UserDeptEntity.class));
 		verify(userAuthorizationInvalidationTrigger, never()).submitByUserIds(any(), any());
@@ -233,7 +231,6 @@ class SysUserDeptServiceImplTest {
 	private void stubCreatePrerequisites() {
 		when(sysUserMapper.selectById(USER_ID)).thenReturn(activeUser());
 		when(sysDeptMapper.selectById(DEPT_ID)).thenReturn(activeDept());
-		when(sysDeptMapper.countEffectiveById(DEPT_ID)).thenReturn(1L);
 	}
 
 	@Test
@@ -275,7 +272,6 @@ class SysUserDeptServiceImplTest {
 		SysDeptEntity otherDept = activeDept();
 		otherDept.setId(OTHER_DEPT_ID);
 		when(sysDeptMapper.selectById(OTHER_DEPT_ID)).thenReturn(otherDept);
-		when(sysDeptMapper.countEffectiveById(OTHER_DEPT_ID)).thenReturn(1L);
 		UserDeptEntity conflict = new UserDeptEntity();
 		conflict.setId(200L);
 		conflict.setUserId(USER_ID);
@@ -293,21 +289,18 @@ class SysUserDeptServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("更新关联：改到停用或传播禁用部门时拒绝")
-	void updateRejectsDisabledDept() {
+	@DisplayName("更新关联：改到不存在的部门时拒绝")
+	void updateRejectsMissingDept() {
 		when(sysUserMapper.selectById(USER_ID)).thenReturn(activeUser());
 		when(userDeptMapper.selectByIdAndUserId(RELATION_ID, USER_ID)).thenReturn(existingRelation());
-		SysDeptEntity otherDept = activeDept();
-		otherDept.setId(OTHER_DEPT_ID);
-		when(sysDeptMapper.selectById(OTHER_DEPT_ID)).thenReturn(otherDept);
-		when(sysDeptMapper.countEffectiveById(OTHER_DEPT_ID)).thenReturn(0L);
+		when(sysDeptMapper.selectById(OTHER_DEPT_ID)).thenReturn(null);
 		UserDeptAssignForm form = createForm(false, null);
 		form.setDeptId(OTHER_DEPT_ID);
 
 		assertThatThrownBy(() -> sysUserDeptService.update(USER_ID, RELATION_ID, form))
 			.isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
-			.isEqualTo(SystemCommonResultCode.DATA_UNAVAILABLE);
+			.isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
 
 		verify(userDeptMapper, never()).updateById(any(UserDeptEntity.class));
 	}

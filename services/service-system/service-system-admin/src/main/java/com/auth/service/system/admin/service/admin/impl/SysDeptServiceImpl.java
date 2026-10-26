@@ -2,7 +2,6 @@ package com.auth.service.system.admin.service.admin.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.constants.BatchSizes;
-import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.common.core.utils.FieldChangeSupport;
 import com.auth.common.core.utils.TreeParentIdUtil;
 import com.auth.common.core.utils.TreeRelationUtil;
@@ -27,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 部门写服务实现
@@ -93,7 +91,6 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 
 		long newParentId = normalizeAndRequireExistingParent(form.getParentId());
 		boolean parentChanged = TreeParentIdUtil.normalize(existing.getParentId()) != newParentId;
-		boolean statusChanged = FieldChangeSupport.valueChanged(existing.getStatus(), form.getStatus());
 		if (parentChanged) {
 			TreeRelationUtil.requireValidMoveTarget(id, newParentId,
 					(ancestorId, nodeId) -> baseMapper.countDescendantRelation(ancestorId, nodeId) > 0);
@@ -105,33 +102,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 
 		if (parentChanged) {
 			deptClosureMaintainer.moveNode(id, newParentId);
+			deptInvalidationTrigger.submitByDeptIds(List.of(id), "move");
 		}
-
-		if (FieldChangeSupport.anyChanged(parentChanged, statusChanged)) {
-			String invalidationOp = parentChanged ? "move" : "update";
-			deptInvalidationTrigger.submitByDeptIds(List.of(id), invalidationOp);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void batchUpdateStatus(IdsEnableStatusForm form) {
-		List<Long> ids = form.getIds().stream().filter(Objects::nonNull).distinct().toList();
-		if (CollUtil.isEmpty(ids)) {
-			return;
-		}
-
-		Boolean status = form.getStatus();
-		List<SysDeptEntity> updates = ids.stream().map(id -> {
-			SysDeptEntity entity = new SysDeptEntity();
-			entity.setId(id);
-			entity.setStatus(status);
-			return entity;
-		}).toList();
-		super.updateBatchById(updates);
-		deptInvalidationTrigger.submitByDeptIds(ids, "update");
 	}
 
 	/**
@@ -178,7 +150,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptEntity
 	}
 
 	/**
-	 * 规范化父部门 ID 并校验父部门存在（顶级跳过校验；含停用节点）
+	 * 规范化父部门 ID 并校验父部门存在（顶级跳过校验）
 	 * @param rawParentId 原始父部门 ID
 	 * @return 规范化后的父部门 ID
 	 */

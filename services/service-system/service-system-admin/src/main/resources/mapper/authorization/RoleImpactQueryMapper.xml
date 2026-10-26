@@ -11,15 +11,14 @@
         UNION
         SELECT ud.user_id
         FROM grant_table gt
-                 INNER JOIN v_user_dept_effective ud ON gt.subject_type = 'DEPT'
+                 INNER JOIN user_dept ud ON gt.subject_type = 'DEPT'
                  INNER JOIN dept_closure dc ON ud.dept_id = dc.descendant_id
             AND dc.ancestor_id = gt.subject_id
-                 INNER JOIN sys_dept da ON da.id = dc.ancestor_id AND da.status = 1
         WHERE gt.role_id = #{roleId}
         UNION
         SELECT up.user_id
         FROM grant_table gt
-                 INNER JOIN v_user_post_effective up ON gt.subject_type = 'POST'
+                 INNER JOIN user_post up ON gt.subject_type = 'POST'
             AND up.post_id = gt.subject_id
         WHERE gt.role_id = #{roleId}
     </sql>

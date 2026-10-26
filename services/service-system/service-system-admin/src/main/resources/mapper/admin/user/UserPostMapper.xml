@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auth.service.system.admin.mapper.admin.user.UserPostMapper">
 
-    <!-- 用户岗位关联分页（基表全量，含已停用/传播禁用岗位） -->
+    <!-- 用户岗位关联分页 -->
     <select id="selectListByPage" resultType="com.auth.service.system.admin.model.po.user.UserPostPageRowPO">
         SELECT
         up.id,
@@ -10,8 +10,6 @@
         up.post_id,
         sp.post_code,
         sp.post_name,
-        sp.status AS post_status,
-        (vpe.id IS NOT NULL) AS post_effective,
         up.is_primary,
         up.created_at,
         up.updated_at,
@@ -22,7 +20,6 @@
         FROM
         user_post up
         INNER JOIN sys_post sp ON sp.id = up.post_id
-        LEFT JOIN v_post_effective vpe ON vpe.id = sp.id
         WHERE
         up.user_id = #{userId}
         <if test="query.postName != null and query.postName != ''">

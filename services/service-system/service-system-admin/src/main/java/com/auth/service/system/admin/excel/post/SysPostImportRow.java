@@ -22,13 +22,10 @@ public class SysPostImportRow {
 	@ExcelProperty(value = "岗位名称", index = 2)
 	private String postName;
 
-	@ExcelProperty(value = "状态", index = 3)
-	private String statusLabel;
-
-	@ExcelProperty(value = "显示顺序", index = 4)
+	@ExcelProperty(value = "显示顺序", index = 3)
 	private Integer orderNum;
 
-	@ExcelProperty(value = "备注", index = 5)
+	@ExcelProperty(value = "备注", index = 4)
 	private String remark;
 
 }

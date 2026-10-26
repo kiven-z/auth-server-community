@@ -102,30 +102,28 @@
         </where>
     </select>
 
-    <!-- 用户档案：部门列表（有效任职） -->
+    <!-- 用户档案：部门列表 -->
     <select id="selectDeptProfileByUserId"
             resultType="com.auth.service.system.admin.model.po.user.UserDeptProfilePO">
         SELECT d.id,
                d.dept_name,
                d.dept_code,
-               d.status,
                ud.is_primary
-        FROM v_user_dept_effective ud
+        FROM user_dept ud
                  INNER JOIN sys_dept d ON ud.dept_id = d.id
         WHERE ud.user_id = #{userId}
         ORDER BY ud.is_primary DESC,
                  ud.created_at DESC
     </select>
 
-    <!-- 用户档案：岗位列表（有效任职） -->
+    <!-- 用户档案：岗位列表 -->
     <select id="selectPostProfileByUserId"
             resultType="com.auth.service.system.admin.model.po.user.UserPostProfilePO">
         SELECT sp.id,
                sp.post_code,
                sp.post_name,
-               sp.status,
                up.is_primary
-        FROM v_user_post_effective up
+        FROM user_post up
                  INNER JOIN sys_post sp ON up.post_id = sp.id
         WHERE up.user_id = #{userId}
         ORDER BY up.is_primary DESC,

@@ -24,8 +24,6 @@ public interface SysDeptSpreadsheetConverter {
 	 * @return 表格行
 	 */
 	@Mapping(target = "deptPath", ignore = true)
-	@Mapping(target = "statusLabel", source = "status", qualifiedByName = "statusLabel")
-	@Mapping(target = "effectiveLabel", source = "effective", qualifiedByName = "effectiveLabel")
 	@Mapping(target = "createdAtText", source = "createdAt", qualifiedByName = "dateTimeText")
 	@Mapping(target = "updatedAtText", source = "updatedAt", qualifiedByName = "dateTimeText")
 	SysDeptSpreadsheetRow toSpreadsheetRow(SysDeptPageRowPO po);

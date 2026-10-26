@@ -1,6 +1,5 @@
 package com.auth.service.system.admin.controller.admin;
 
-import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
 import com.auth.common.web.valid.group.CreateGroup;
@@ -29,7 +28,6 @@ import com.auth.service.system.admin.support.export.AdminFileExportTaskCreateReq
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -47,7 +45,7 @@ import java.util.List;
  *
  * @author Bunny
  */
-@Tag(name = "系统岗位管理", description = "岗位 CRUD 与启停")
+@Tag(name = "系统岗位管理", description = "岗位 CRUD")
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/system/post")
@@ -110,10 +108,9 @@ public class SysPostController {
 	@GetMapping("/search")
 	public Result<List<SysPostSearchItemVO>> search(
 			@Parameter(description = "搜索关键字") @RequestParam(required = false) String keyword,
-			@Parameter(description = "启用状态(true=启用，false=停用)") @RequestParam(required = false) Boolean status,
 			@Parameter(description = "返回条数上限，默认 20，最大 50") @RequestParam(required = false,
 					defaultValue = "20") Integer limit) {
-		List<SysPostSearchItemVO> search = sysPostService.search(keyword, status, limit);
+		List<SysPostSearchItemVO> search = sysPostService.search(keyword, limit);
 		return Result.success(search);
 	}
 
@@ -140,16 +137,6 @@ public class SysPostController {
 	@PutMapping
 	public Result<Void> update(@Validated(UpdateGroup.class) @RequestBody SysPostForm form) {
 		sysPostService.update(form);
-		return Result.success();
-	}
-
-	@OperationLog(targetType = "POST", serviceDomain = AuditServiceDomain.SYSTEM, bizModule = PlatformBizCodes.SYS_POST,
-			operation = OperationLogKind.UPDATE)
-	@Operation(summary = "批量启停岗位")
-	@PreAuthorize("@auth.decide('sys:post:update')")
-	@PutMapping("/status")
-	public Result<Void> batchUpdateStatus(@Valid @RequestBody IdsEnableStatusForm form) {
-		sysPostService.batchUpdateStatus(form);
 		return Result.success();
 	}
 

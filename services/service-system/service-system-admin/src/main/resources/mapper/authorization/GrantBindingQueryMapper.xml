@@ -5,13 +5,13 @@
     <!-- 统计主体已授角色 -->
     <select id="countBoundRolesBySubject" resultType="long">
         SELECT
-            COUNT(1)
+        COUNT(1)
         FROM
-            grant_table gt
-            INNER JOIN sys_role r ON r.id = gt.role_id
+        grant_table gt
+        INNER JOIN sys_role r ON r.id = gt.role_id
         WHERE
-            gt.subject_type = #{subjectType}
-            AND gt.subject_id = #{subjectId}
+        gt.subject_type = #{subjectType}
+        AND gt.subject_id = #{subjectId}
         <if test="query != null and query.roleCode != null and query.roleCode != ''">
             AND r.role_code LIKE CONCAT('%', #{query.roleCode}, '%')
         </if>
@@ -27,16 +27,16 @@
     <select id="selectBoundRolesBySubjectPage"
             resultType="com.auth.service.system.admin.model.po.reference.RoleReferencePO">
         SELECT
-            r.id,
-            r.role_code,
-            r.role_name,
-            r.status
+        r.id,
+        r.role_code,
+        r.role_name,
+        r.status
         FROM
-            grant_table gt
-            INNER JOIN sys_role r ON r.id = gt.role_id
+        grant_table gt
+        INNER JOIN sys_role r ON r.id = gt.role_id
         WHERE
-            gt.subject_type = #{subjectType}
-            AND gt.subject_id = #{subjectId}
+        gt.subject_type = #{subjectType}
+        AND gt.subject_id = #{subjectId}
         <if test="query != null and query.roleCode != null and query.roleCode != ''">
             AND r.role_code LIKE CONCAT('%', #{query.roleCode}, '%')
         </if>
@@ -47,7 +47,7 @@
             AND r.status = #{query.status}
         </if>
         ORDER BY
-            r.role_code
+        r.role_code
     </select>
 
     <!-- 统计角色下指定类型授权对象 -->
@@ -55,17 +55,17 @@
         <choose>
             <when test="subjectType == 'USER'">
                 SELECT
-                    COUNT(1)
+                COUNT(1)
                 FROM
-                    grant_table gt
-                    INNER JOIN sys_user u ON u.id = gt.subject_id
+                grant_table gt
+                INNER JOIN sys_user u ON u.id = gt.subject_id
                 WHERE
-                    gt.role_id = #{roleId}
-                    AND gt.subject_type = 'USER'
+                gt.role_id = #{roleId}
+                AND gt.subject_type = 'USER'
                 <if test="query != null and query.keyword != null and query.keyword != ''">
                     AND (
-                        u.username LIKE CONCAT('%', #{query.keyword}, '%')
-                        OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
+                    u.username LIKE CONCAT('%', #{query.keyword}, '%')
+                    OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
                     )
                 </if>
                 <if test="query != null and query.status != null">
@@ -74,40 +74,34 @@
             </when>
             <when test="subjectType == 'DEPT'">
                 SELECT
-                    COUNT(1)
+                COUNT(1)
                 FROM
-                    grant_table gt
-                    INNER JOIN sys_dept d ON d.id = gt.subject_id
+                grant_table gt
+                INNER JOIN sys_dept d ON d.id = gt.subject_id
                 WHERE
-                    gt.role_id = #{roleId}
-                    AND gt.subject_type = 'DEPT'
+                gt.role_id = #{roleId}
+                AND gt.subject_type = 'DEPT'
                 <if test="query != null and query.keyword != null and query.keyword != ''">
                     AND (
-                        d.dept_code LIKE CONCAT('%', #{query.keyword}, '%')
-                        OR d.dept_name LIKE CONCAT('%', #{query.keyword}, '%')
+                    d.dept_code LIKE CONCAT('%', #{query.keyword}, '%')
+                    OR d.dept_name LIKE CONCAT('%', #{query.keyword}, '%')
                     )
-                </if>
-                <if test="query != null and query.status != null">
-                    AND d.status = #{query.status}
                 </if>
             </when>
             <otherwise>
                 SELECT
-                    COUNT(1)
+                COUNT(1)
                 FROM
-                    grant_table gt
-                    INNER JOIN sys_post p ON p.id = gt.subject_id
+                grant_table gt
+                INNER JOIN sys_post p ON p.id = gt.subject_id
                 WHERE
-                    gt.role_id = #{roleId}
-                    AND gt.subject_type = 'POST'
+                gt.role_id = #{roleId}
+                AND gt.subject_type = 'POST'
                 <if test="query != null and query.keyword != null and query.keyword != ''">
                     AND (
-                        p.post_code LIKE CONCAT('%', #{query.keyword}, '%')
-                        OR p.post_name LIKE CONCAT('%', #{query.keyword}, '%')
+                    p.post_code LIKE CONCAT('%', #{query.keyword}, '%')
+                    OR p.post_name LIKE CONCAT('%', #{query.keyword}, '%')
                     )
-                </if>
-                <if test="query != null and query.status != null">
-                    AND p.status = #{query.status}
                 </if>
             </otherwise>
         </choose>
@@ -119,69 +113,63 @@
         <choose>
             <when test="subjectType == 'USER'">
                 SELECT
-                    u.id,
-                    COALESCE(NULLIF(TRIM(u.nickname), ''), u.username) AS label
+                u.id,
+                COALESCE(NULLIF(TRIM(u.nickname), ''), u.username) AS label
                 FROM
-                    grant_table gt
-                    INNER JOIN sys_user u ON u.id = gt.subject_id
+                grant_table gt
+                INNER JOIN sys_user u ON u.id = gt.subject_id
                 WHERE
-                    gt.role_id = #{roleId}
-                    AND gt.subject_type = 'USER'
+                gt.role_id = #{roleId}
+                AND gt.subject_type = 'USER'
                 <if test="query != null and query.keyword != null and query.keyword != ''">
                     AND (
-                        u.username LIKE CONCAT('%', #{query.keyword}, '%')
-                        OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
+                    u.username LIKE CONCAT('%', #{query.keyword}, '%')
+                    OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
                     )
                 </if>
                 <if test="query != null and query.status != null">
                     AND u.status = #{query.status}
                 </if>
                 ORDER BY
-                    u.username
+                u.username
             </when>
             <when test="subjectType == 'DEPT'">
                 SELECT
-                    d.id,
-                    d.dept_name AS label
+                d.id,
+                d.dept_name AS label
                 FROM
-                    grant_table gt
-                    INNER JOIN sys_dept d ON d.id = gt.subject_id
+                grant_table gt
+                INNER JOIN sys_dept d ON d.id = gt.subject_id
                 WHERE
-                    gt.role_id = #{roleId}
-                    AND gt.subject_type = 'DEPT'
+                gt.role_id = #{roleId}
+                AND gt.subject_type = 'DEPT'
                 <if test="query != null and query.keyword != null and query.keyword != ''">
                     AND (
-                        d.dept_code LIKE CONCAT('%', #{query.keyword}, '%')
-                        OR d.dept_name LIKE CONCAT('%', #{query.keyword}, '%')
+                    d.dept_code LIKE CONCAT('%', #{query.keyword}, '%')
+                    OR d.dept_name LIKE CONCAT('%', #{query.keyword}, '%')
                     )
                 </if>
-                <if test="query != null and query.status != null">
-                    AND d.status = #{query.status}
-                </if>
                 ORDER BY
-                    d.dept_code
+                d.dept_code
             </when>
             <otherwise>
                 SELECT
-                    p.id,
-                    p.post_name AS label
+                p.id,
+                p.post_name AS label
                 FROM
-                    grant_table gt
-                    INNER JOIN sys_post p ON p.id = gt.subject_id
+                grant_table gt
+                INNER JOIN sys_post p ON p.id = gt.subject_id
                 WHERE
-                    gt.role_id = #{roleId}
-                    AND gt.subject_type = 'POST'
+                gt.role_id = #{roleId}
+                AND gt.subject_type = 'POST'
                 <if test="query != null and query.keyword != null and query.keyword != ''">
                     AND (
-                        p.post_code LIKE CONCAT('%', #{query.keyword}, '%')
-                        OR p.post_name LIKE CONCAT('%', #{query.keyword}, '%')
+                    p.post_code LIKE CONCAT('%', #{query.keyword}, '%')
+                    OR p.post_name LIKE CONCAT('%', #{query.keyword}, '%')
                     )
                 </if>
-                <if test="query != null and query.status != null">
-                    AND p.status = #{query.status}
-                </if>
                 ORDER BY
-                    p.post_code
+                p.post_code
             </otherwise>
         </choose>
     </select>
@@ -192,42 +180,42 @@
         <choose>
             <when test="subjectType == 'USER'">
                 SELECT
-                    u.id,
-                    COALESCE(NULLIF(TRIM(u.nickname), ''), u.username) AS label
+                u.id,
+                COALESCE(NULLIF(TRIM(u.nickname), ''), u.username) AS label
                 FROM
-                    grant_table gt
-                    INNER JOIN sys_user u ON u.id = gt.subject_id
+                grant_table gt
+                INNER JOIN sys_user u ON u.id = gt.subject_id
                 WHERE
-                    gt.role_id = #{roleId}
-                    AND gt.subject_type = 'USER'
+                gt.role_id = #{roleId}
+                AND gt.subject_type = 'USER'
                 ORDER BY
-                    u.username
+                u.username
             </when>
             <when test="subjectType == 'DEPT'">
                 SELECT
-                    d.id,
-                    d.dept_name AS label
+                d.id,
+                d.dept_name AS label
                 FROM
-                    grant_table gt
-                    INNER JOIN sys_dept d ON d.id = gt.subject_id
+                grant_table gt
+                INNER JOIN sys_dept d ON d.id = gt.subject_id
                 WHERE
-                    gt.role_id = #{roleId}
-                    AND gt.subject_type = 'DEPT'
+                gt.role_id = #{roleId}
+                AND gt.subject_type = 'DEPT'
                 ORDER BY
-                    d.dept_code
+                d.dept_code
             </when>
             <otherwise>
                 SELECT
-                    p.id,
-                    p.post_name AS label
+                p.id,
+                p.post_name AS label
                 FROM
-                    grant_table gt
-                    INNER JOIN sys_post p ON p.id = gt.subject_id
+                grant_table gt
+                INNER JOIN sys_post p ON p.id = gt.subject_id
                 WHERE
-                    gt.role_id = #{roleId}
-                    AND gt.subject_type = 'POST'
+                gt.role_id = #{roleId}
+                AND gt.subject_type = 'POST'
                 ORDER BY
-                    p.post_code
+                p.post_code
             </otherwise>
         </choose>
     </select>

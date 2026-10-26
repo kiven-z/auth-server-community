@@ -76,7 +76,6 @@ public class SysDeptQueryServiceImpl extends ServiceImpl<SysDeptMapper, SysDeptE
 		SysDeptEntity entity = deptReferenceChecker.getExistingActive(id);
 
 		SysDeptDetailVO detail = SysDeptConverter.INSTANCE.toDetailVo(entity);
-		detail.setEffective(baseMapper.countEffectiveById(id) > 0);
 		detail.setBoundUserCount(deptRelationQueryMapper.countUsersByDeptId(id, null));
 		detail.setBoundPostCount(deptRelationQueryMapper.countPostsByDeptId(id, null));
 		detail.setBoundRoleCount(

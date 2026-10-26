@@ -18,7 +18,7 @@ import java.util.List;
 public interface SysUserPostService extends IService<UserPostEntity> {
 
 	/**
-	 * 分页查询用户岗位关联（基表全量，含失效任职）
+	 * 分页查询用户岗位关联
 	 * @param userId 用户 ID
 	 * @param query 查询条件
 	 * @return 分页结果
@@ -26,14 +26,14 @@ public interface SysUserPostService extends IService<UserPostEntity> {
 	PageResponse<UserPostPageVO> getPage(Long userId, UserPostPageQuery query);
 
 	/**
-	 * 新增用户岗位关联（仅计算有效岗位）
+	 * 新增用户岗位关联（岗位须存在）
 	 * @param userId 用户 ID
 	 * @param form 关联表单
 	 */
 	void create(Long userId, UserPostAssignForm form);
 
 	/**
-	 * 更新用户岗位关联（设为主岗时岗位须计算有效）
+	 * 更新用户岗位关联（设为主岗时岗位须存在）
 	 * @param userId 用户 ID
 	 * @param id 关联主键
 	 * @param form 更新表单

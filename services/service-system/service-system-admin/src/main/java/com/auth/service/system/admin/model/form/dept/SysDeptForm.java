@@ -42,10 +42,6 @@ public class SysDeptForm implements Serializable {
 	@NotBlank(message = "部门编码不能为空")
 	private String deptCode;
 
-	@Schema(title = "启用状态（true=正常，false=停用）", requiredMode = Schema.RequiredMode.REQUIRED)
-	@NotNull(message = "状态不能为空")
-	private Boolean status;
-
 	@Schema(title = "显示顺序")
 	private Integer orderNum;
 

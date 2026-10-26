@@ -35,12 +35,6 @@ public class UserDeptPageRowPO implements Serializable {
 	@Schema(title = "部门编码")
 	private String deptCode;
 
-	@Schema(title = "部门本节点启用状态")
-	private Boolean deptStatus;
-
-	@Schema(title = "部门计算有效（本节点及全部祖先均启用）")
-	private Boolean deptEffective;
-
 	@Schema(title = "是否主部门")
 	private Boolean isPrimary;
 

@@ -4,8 +4,6 @@ import com.auth.module.file.importer.model.ImportErrors;
 import com.auth.module.file.importer.model.ImportRowError;
 import com.auth.module.file.importer.rule.RowRule;
 import com.auth.module.file.importer.rule.RowRules;
-import com.auth.service.system.admin.excel.EnableStatus;
-import com.auth.service.system.admin.excel.EnableStatusLabels;
 import lombok.experimental.UtilityClass;
 
 import java.util.List;
@@ -22,8 +20,6 @@ public class DeptRowValidator {
 
 	private static final String FIELD_PARENT_DEPT_CODE = "parentDeptCode";
 
-	private static final String FIELD_STATUS = "status";
-
 	private static final RowRule<DeptParsedRow, DeptSheetImporter.Context> DEPT_CODE_UNIQUE = RowRules.unique(
 			FIELD_DEPT_CODE, DeptParsedRow::deptCode, DeptSheetImporter.Context::duplicateDeptCodesInFile,
 			DeptSheetImporter.Context::existingDeptCodes);
@@ -39,15 +35,8 @@ public class DeptRowValidator {
 		return List.of(ImportErrors.referenceNotFound(rowNum, FIELD_PARENT_DEPT_CODE, parentDeptCode));
 	};
 
-	private static final RowRule<DeptParsedRow, DeptSheetImporter.Context> ENABLE_STATUS = (parsed, rowNum, ctx) -> {
-		if (EnableStatusLabels.parseImport(parsed.statusLabel()) == EnableStatus.UNKNOWN) {
-			return List.of(ImportErrors.invalidValue(rowNum, FIELD_STATUS, parsed.statusLabel()));
-		}
-		return List.of();
-	};
-
 	private static final List<RowRule<DeptParsedRow, DeptSheetImporter.Context>> RULES = List.of(DEPT_CODE_UNIQUE,
-			PARENT_EXISTS, ENABLE_STATUS);
+			PARENT_EXISTS);
 
 	/**
 	 * 校验已解析行

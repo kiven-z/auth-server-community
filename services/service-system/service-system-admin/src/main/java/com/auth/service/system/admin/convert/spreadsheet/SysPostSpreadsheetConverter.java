@@ -32,8 +32,6 @@ public interface SysPostSpreadsheetConverter {
 	 * @param po 持久层投影
 	 * @return 表格行
 	 */
-	@Mapping(target = "statusLabel", source = "status", qualifiedByName = "statusLabel")
-	@Mapping(target = "effectiveLabel", source = "effective", qualifiedByName = "effectiveLabel")
 	@Mapping(target = "createdAtText", source = "createdAt", qualifiedByName = "dateTimeText")
 	@Mapping(target = "updatedAtText", source = "updatedAt", qualifiedByName = "dateTimeText")
 	SysPostSpreadsheetRow toSpreadsheetRow(SysPostPageRowPO po);

@@ -3,8 +3,6 @@ package com.auth.service.system.admin.excel.dept;
 import com.auth.module.file.importer.AbstractSheetImporter;
 import com.auth.module.file.importer.model.ImportRowError;
 import com.auth.module.file.importer.model.RowOutcome;
-import com.auth.service.system.admin.excel.EnableStatus;
-import com.auth.service.system.admin.excel.EnableStatusLabels;
 import com.auth.service.system.admin.excel.ImportRowSupport;
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.model.entity.SysDeptEntity;
@@ -82,7 +80,6 @@ public class DeptSheetImporter extends AbstractSheetImporter<SysDeptImportRow, S
 		form.setParentId(Objects.requireNonNullElse(parentId, ROOT_PARENT_ID));
 		form.setDeptCode(parsed.deptCode());
 		form.setDeptName(parsed.deptName());
-		form.setStatus(EnableStatusLabels.parseImport(parsed.statusLabel()) == EnableStatus.ENABLED);
 		form.setOrderNum(parsed.orderNum());
 		form.setRemark(parsed.remark());
 		return form;

@@ -1,7 +1,6 @@
 package com.auth.service.system.admin.service.admin.impl;
 
 import com.auth.common.core.constants.BatchSizes;
-import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.authorization.DeptRelationQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
@@ -70,13 +69,12 @@ class SysDeptServiceImplTest {
 
 	private SysDeptQueryServiceImpl sysDeptQueryService;
 
-	private static SysDeptForm minimalForm(Long id, long parentId, String deptCode, String deptName, boolean status) {
+	private static SysDeptForm minimalForm(Long id, long parentId, String deptCode, String deptName) {
 		SysDeptForm form = new SysDeptForm();
 		form.setId(id);
 		form.setParentId(parentId);
 		form.setDeptCode(deptCode);
 		form.setDeptName(deptName);
-		form.setStatus(status);
 		form.setOrderNum(0);
 		return form;
 	}
@@ -87,7 +85,6 @@ class SysDeptServiceImplTest {
 		entity.setParentId(0L);
 		entity.setDeptCode(deptCode);
 		entity.setDeptName("原部门");
-		entity.setStatus(true);
 		return entity;
 	}
 
@@ -123,7 +120,7 @@ class SysDeptServiceImplTest {
 	@Test
 	@DisplayName("批量新增部门：校验通过后批量落库并维护闭包")
 	void createBatchFromImportPersistsEntitiesAndInsertsClosure() {
-		SysDeptForm form = minimalForm(null, 0L, "RD", "研发部", true);
+		SysDeptForm form = minimalForm(null, 0L, "RD", "研发部");
 		when(sysDeptMapper.selectActiveByDeptCodes(List.of("RD"))).thenReturn(List.of());
 
 		sysDeptService.createBatchFromImport(List.of(form));
@@ -138,7 +135,7 @@ class SysDeptServiceImplTest {
 	@Test
 	@DisplayName("批量新增部门：编码已存在时抛出 DATA_CODE_DUPLICATE")
 	void createBatchFromImportThrowsWhenDeptCodeExists() {
-		SysDeptForm form = minimalForm(null, 0L, "RD", "研发部", true);
+		SysDeptForm form = minimalForm(null, 0L, "RD", "研发部");
 		SysDeptEntity existing = activeDept(1L, "RD");
 		when(sysDeptMapper.selectActiveByDeptCodes(List.of("RD"))).thenReturn(List.of(existing));
 
@@ -154,8 +151,8 @@ class SysDeptServiceImplTest {
 	@Test
 	@DisplayName("批量新增部门：请求内编码重复时抛出 DATA_CODE_DUPLICATE")
 	void createBatchFromImportThrowsWhenDeptCodesDuplicatedInRequest() {
-		SysDeptForm first = minimalForm(null, 0L, "RD", "研发部", true);
-		SysDeptForm second = minimalForm(null, 0L, "RD", "另一研发", true);
+		SysDeptForm first = minimalForm(null, 0L, "RD", "研发部");
+		SysDeptForm second = minimalForm(null, 0L, "RD", "另一研发");
 
 		ThrowingCallable executable = () -> sysDeptService.createBatchFromImport(List.of(first, second));
 		assertThatThrownBy(executable).isInstanceOf(SystemBusinessException.class)
@@ -173,14 +170,12 @@ class SysDeptServiceImplTest {
 		row.setId(1L);
 		row.setDeptCode("D001");
 		row.setDeptName("研发部");
-		row.setStatus(true);
-		row.setEffective(true);
 		when(sysDeptMapper.selectListByQuery(any(SysDeptListQuery.class))).thenReturn(List.of(row));
 
 		List<SysDeptListVO> result = sysDeptQueryService.listFlat(new SysDeptListQuery());
 
 		assertEquals(1, result.size());
-		assertEquals(Boolean.TRUE, result.get(0).getEffective());
+		assertEquals("D001", result.get(0).getDeptCode());
 		verify(sysDeptMapper).selectListByQuery(argThat((SysDeptListQuery q) -> q.getKeyword() == null));
 		verify(auditUserDisplayService).enrichAuditUsernames(anyList(), isNull(), isNull());
 	}
@@ -205,27 +200,11 @@ class SysDeptServiceImplTest {
 		when(deptReferenceChecker.getExistingActive(deptId)).thenReturn(existing);
 		when(sysDeptMapper.updateById(any(SysDeptEntity.class))).thenReturn(1);
 
-		SysDeptForm form = minimalForm(deptId, 0L, "D001", "新部门名", true);
+		SysDeptForm form = minimalForm(deptId, 0L, "D001", "新部门名");
 		sysDeptService.updateMeta(form);
 
 		verify(sysDeptMapper).updateById(argThat((SysDeptEntity e) -> "新部门名".equals(e.getDeptName())));
 		verify(deptInvalidationTrigger, never()).submitByDeptIds(any(), any());
-		verify(deptClosureMaintainer, never()).moveNode(anyLong(), anyLong());
-	}
-
-	@Test
-	@DisplayName("更新元数据：状态变更时提交 USER_DEPT 授权失效")
-	void updateMetaWithStatusChangeSubmitsInvalidation() {
-		Long deptId = 2L;
-		SysDeptEntity existing = activeDept(deptId, "D002");
-		when(deptReferenceChecker.getExistingActive(deptId)).thenReturn(existing);
-		when(sysDeptMapper.updateById(any(SysDeptEntity.class))).thenReturn(1);
-
-		SysDeptForm form = minimalForm(deptId, 0L, "D002", "原部门", false);
-		sysDeptService.updateMeta(form);
-
-		verify(sysDeptMapper).updateById(argThat((SysDeptEntity e) -> e.getStatus() != null && !e.getStatus()));
-		verify(deptInvalidationTrigger).submitByDeptIds(List.of(deptId), "update");
 		verify(deptClosureMaintainer, never()).moveNode(anyLong(), anyLong());
 	}
 
@@ -239,7 +218,7 @@ class SysDeptServiceImplTest {
 		when(sysDeptMapper.countDescendantRelation(deptId, 10L)).thenReturn(0L);
 		when(sysDeptMapper.updateById(any(SysDeptEntity.class))).thenReturn(1);
 
-		SysDeptForm form = minimalForm(deptId, 10L, "D003", "原部门", true);
+		SysDeptForm form = minimalForm(deptId, 10L, "D003", "原部门");
 		sysDeptService.updateMeta(form);
 
 		verify(deptClosureMaintainer).moveNode(deptId, 10L);
@@ -302,34 +281,6 @@ class SysDeptServiceImplTest {
 
 		verify(sysDeptMapper, never()).updateById(any(SysDeptEntity.class));
 		verify(deptClosureMaintainer, never()).moveNode(anyLong(), anyLong());
-	}
-
-	@Test
-	@DisplayName("批量启停：仅更新入参 ids，不级联子部门")
-	void batchUpdateStatusUpdatesOnlyGivenIds() {
-		doReturn(true).when(sysDeptService).updateBatchById(anyList());
-
-		IdsEnableStatusForm form = new IdsEnableStatusForm();
-		form.setIds(List.of(1L, 2L));
-		form.setStatus(false);
-		sysDeptService.batchUpdateStatus(form);
-
-		verify(sysDeptService).updateBatchById(argThat((List<SysDeptEntity> list) -> list.size() == 2
-				&& list.stream().allMatch(e -> Boolean.FALSE.equals(e.getStatus()))));
-		verify(deptInvalidationTrigger).submitByDeptIds(List.of(1L, 2L), "update");
-		verify(deptClosureMaintainer, never()).moveNode(anyLong(), anyLong());
-	}
-
-	@Test
-	@DisplayName("批量启停：ids 为空时不写库")
-	void batchUpdateStatusSkipsWhenIdsEmpty() {
-		IdsEnableStatusForm form = new IdsEnableStatusForm();
-		form.setIds(List.of());
-		form.setStatus(true);
-		sysDeptService.batchUpdateStatus(form);
-
-		verify(sysDeptService, never()).updateBatchById(anyList());
-		verify(deptInvalidationTrigger, never()).submitByDeptIds(any(), any());
 	}
 
 }

@@ -197,20 +197,18 @@ class MeProfileServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("getMyOrgBindings：返回有效部门与岗位任职")
+	@DisplayName("getMyOrgBindings：返回部门与岗位任职")
 	void getMyOrgBindings_returnsDeptsAndPosts() {
 		UserEntity existing = existingUser();
 		UserDeptProfilePO dept = new UserDeptProfilePO();
 		dept.setId(20L);
 		dept.setDeptName("研发部");
 		dept.setDeptCode("RD");
-		dept.setStatus(true);
 		dept.setIsPrimary(true);
 		UserPostProfilePO post = new UserPostProfilePO();
 		post.setId(30L);
 		post.setPostName("后端工程师");
 		post.setPostCode("BE");
-		post.setStatus(true);
 		post.setIsPrimary(false);
 
 		when(userReferenceChecker.getExistingActive(USER_ID)).thenReturn(existing);

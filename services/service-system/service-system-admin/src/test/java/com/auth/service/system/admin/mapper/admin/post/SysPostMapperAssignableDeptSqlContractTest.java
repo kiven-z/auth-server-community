@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * SQL 契约：岗位可挂载部门须计算有效
+ * SQL 契约：岗位可挂载部门打 sys_dept
  */
 @DisplayName("SysPostMapper selectAssignableDeptIds SQL 契约")
 class SysPostMapperAssignableDeptSqlContractTest {
@@ -24,8 +24,8 @@ class SysPostMapperAssignableDeptSqlContractTest {
 	}
 
 	@Test
-	@DisplayName("可挂载部门：打 v_dept_effective，不按本节点 status 单独过滤")
-	void selectAssignableDeptIdsUsesDeptEffectiveView() throws IOException {
+	@DisplayName("可挂载部门：打 sys_dept，不按启用状态过滤")
+	void selectAssignableDeptIdsUsesBaseTable() throws IOException {
 		String xml = readClasspathText();
 
 		int selectStart = xml.indexOf("<select id=\"selectAssignableDeptIds\"");
@@ -34,9 +34,12 @@ class SysPostMapperAssignableDeptSqlContractTest {
 		String selectBlock = xml.substring(selectStart, selectEnd);
 
 		assertThat(selectBlock).contains("selectAssignableDeptIds")
-			.contains("v_dept_effective")
+			.contains("sys_dept d")
 			.contains("foreach")
-			.doesNotContain("sys_dept")
+			.doesNotContain("v_dept_effective")
+			.doesNotContain("v_post_effective")
+			.doesNotContain("v_user_dept_effective")
+			.doesNotContain("v_user_post_effective")
 			.doesNotContain("d.status = 1");
 	}
 

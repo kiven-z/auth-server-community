@@ -32,16 +32,6 @@ public class MapStructExportQualifiers {
 	}
 
 	/**
-	 * 计算有效 → 导出文案
-	 * @param effective 计算有效标志
-	 * @return 中文标签
-	 */
-	@Named("effectiveLabel")
-	public String effectiveLabel(Boolean effective) {
-		return effective != null && effective ? "有效" : "无效";
-	}
-
-	/**
 	 * 时间 → 导出文本
 	 * @param instant 时间
 	 * @return 格式化文本，空则返回空串

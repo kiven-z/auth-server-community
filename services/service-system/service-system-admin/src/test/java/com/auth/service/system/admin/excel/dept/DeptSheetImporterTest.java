@@ -50,7 +50,6 @@ class DeptSheetImporterTest {
 		row.setParentDeptCode(parentDeptCode);
 		row.setDeptCode(deptCode);
 		row.setDeptName(deptName);
-		row.setStatusLabel("启用");
 		row.setOrderNum(1);
 		row.setRemark("备注");
 		return row;

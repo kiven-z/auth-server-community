@@ -14,7 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * {@link PostReferenceChecker} 单元测试。
@@ -57,44 +58,6 @@ class PostReferenceCheckerTest {
 			assertThat(biz.getResultCode()).isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
 			assertThat(biz.getMessageArgs()).isEmpty();
 		});
-	}
-
-	@Test
-	@DisplayName("requireEffective：计算有效时返回实体")
-	void requireEffectiveReturnsEntityWhenInView() {
-		SysPostEntity entity = new SysPostEntity();
-		entity.setId(POST_ID);
-		when(sysPostMapper.selectById(POST_ID)).thenReturn(entity);
-		when(sysPostMapper.countEffectiveById(POST_ID)).thenReturn(1L);
-
-		assertThat(postReferenceChecker.requireEffective(POST_ID)).isSameAs(entity);
-		verify(sysPostMapper).countEffectiveById(POST_ID);
-	}
-
-	@Test
-	@DisplayName("requireEffective：岗位不存在时抛出 DATA_NOT_EXIST")
-	void requireEffectiveThrowsWhenMissing() {
-		when(sysPostMapper.selectById(POST_ID)).thenReturn(null);
-
-		assertThatThrownBy(() -> postReferenceChecker.requireEffective(POST_ID))
-			.isInstanceOf(SystemBusinessException.class)
-			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
-			.isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
-		verify(sysPostMapper, never()).countEffectiveById(POST_ID);
-	}
-
-	@Test
-	@DisplayName("requireEffective：不在有效视图时抛出 DATA_UNAVAILABLE")
-	void requireEffectiveThrowsWhenNotInView() {
-		SysPostEntity entity = new SysPostEntity();
-		entity.setId(POST_ID);
-		when(sysPostMapper.selectById(POST_ID)).thenReturn(entity);
-		when(sysPostMapper.countEffectiveById(POST_ID)).thenReturn(0L);
-
-		assertThatThrownBy(() -> postReferenceChecker.requireEffective(POST_ID))
-			.isInstanceOf(SystemBusinessException.class)
-			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
-			.isEqualTo(SystemCommonResultCode.DATA_UNAVAILABLE);
 	}
 
 }

@@ -4,8 +4,6 @@ import com.auth.module.file.importer.AbstractSheetImporter;
 import com.auth.module.file.importer.model.ImportRowError;
 import com.auth.module.file.importer.model.RowOutcome;
 import com.auth.module.file.importer.parse.ImportTextParsers;
-import com.auth.service.system.admin.excel.EnableStatus;
-import com.auth.service.system.admin.excel.EnableStatusLabels;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
 import com.auth.service.system.admin.model.form.post.SysPostForm;
 import com.auth.service.system.admin.service.admin.SysPostService;
@@ -67,7 +65,6 @@ public class PostSheetImporter extends AbstractSheetImporter<SysPostImportRow, S
 			.deptCode(deptCode.value())
 			.postCode(postCode.value())
 			.postName(postName.value())
-			.statusLabel(row.getStatusLabel())
 			.orderNum(row.getOrderNum())
 			.remark(row.getRemark())
 			.build());
@@ -111,7 +108,6 @@ public class PostSheetImporter extends AbstractSheetImporter<SysPostImportRow, S
 		form.setDeptId(deptId);
 		form.setPostCode(parsed.postCode());
 		form.setPostName(parsed.postName());
-		form.setStatus(EnableStatusLabels.parseImport(parsed.statusLabel()) == EnableStatus.ENABLED);
 		form.setOrderNum(parsed.orderNum());
 		form.setRemark(parsed.remark());
 		return form;

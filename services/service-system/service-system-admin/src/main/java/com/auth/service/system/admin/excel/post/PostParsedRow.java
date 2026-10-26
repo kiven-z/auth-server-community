@@ -20,8 +20,6 @@ public class PostParsedRow {
 
 	String postName;
 
-	String statusLabel;
-
 	Integer orderNum;
 
 	String remark;
