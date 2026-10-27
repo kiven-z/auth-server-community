@@ -2,7 +2,6 @@ package com.auth.service.system.authorization.outbox;
 
 import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
 import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
-import com.auth.module.security.contract.invalidation.RoleInvalidatePayload;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,13 +22,13 @@ class InvalidationOutboxPayloadCodecTest {
 	@Test
 	@DisplayName("ROLE Payload 序列化后可按 kind 反序列化")
 	void roundTrip_rolePayload() {
-		RoleInvalidatePayload original = new RoleInvalidatePayload(List.of("SUPER_ADMIN"));
+		AuthorizationInvalidatePayload.Role original = new AuthorizationInvalidatePayload.Role(List.of("SUPER_ADMIN"));
 		String json = codec.serialize(original);
 
 		AuthorizationInvalidatePayload restored = codec.deserialize(AuthorizationChangeKind.ROLE, json);
 
-		assertInstanceOf(RoleInvalidatePayload.class, restored);
-		assertEquals(original.roleCodes(), ((RoleInvalidatePayload) restored).roleCodes());
+		assertInstanceOf(AuthorizationInvalidatePayload.Role.class, restored);
+		assertEquals(original.roleCodes(), ((AuthorizationInvalidatePayload.Role) restored).roleCodes());
 	}
 
 }

@@ -2,8 +2,8 @@ package com.auth.service.system.authorization.dispatch.trigger;
 
 import com.auth.module.security.contract.bizcode.PlatformBizCodes;
 import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
 import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.invalidation.UserInvalidatePayload;
 import com.auth.service.system.authorization.dispatch.AuthorizationInvalidationCoordinator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,8 +58,8 @@ class UserAuthorizationInvalidationTriggerTest {
 		assertTrue(sourceBizIdCaptor.getValue().matches("update:[0-9a-f]{8}"));
 		AuthorizationInvalidateRequest request = requestCaptor.getValue();
 		assertEquals(AuthorizationChangeKind.USER, request.kind());
-		assertInstanceOf(UserInvalidatePayload.class, request.payload());
-		assertEquals(List.of(10L, 20L), ((UserInvalidatePayload) request.payload()).userIds());
+		assertInstanceOf(AuthorizationInvalidatePayload.User.class, request.payload());
+		assertEquals(List.of(10L, 20L), ((AuthorizationInvalidatePayload.User) request.payload()).userIds());
 	}
 
 }

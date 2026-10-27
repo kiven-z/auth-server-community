@@ -1,6 +1,7 @@
 package com.auth.service.auth.config;
 
-import com.auth.module.security.contract.invalidation.*;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
 import com.auth.service.auth.support.invalidation.impact.AuthorizationImpactQuerySupport;
 import com.auth.service.auth.support.invalidation.impact.ImpactResolver;
 import com.auth.service.auth.support.invalidation.impact.PortBackedImpactResolver;
@@ -23,40 +24,47 @@ public class InvalidationImpactResolverConfiguration {
 	 * @return 角色码影响面解析器
 	 */
 	@Bean
-	ImpactResolver<RoleInvalidatePayload> roleImpactResolver(AuthorizationImpactQuerySupport impactQuery) {
-		return new PortBackedImpactResolver<>(AuthorizationChangeKind.ROLE, RoleInvalidatePayload.class,
+	ImpactResolver<AuthorizationInvalidatePayload.Role> roleImpactResolver(
+			AuthorizationImpactQuerySupport impactQuery) {
+		return new PortBackedImpactResolver<>(AuthorizationChangeKind.ROLE, AuthorizationInvalidatePayload.Role.class,
 				payload -> impactQuery.findUserIdsByRoleCodes(payload.roleCodes()));
 	}
 
 	/**
-	 * 按权限码反查受影响用户 ID（P4→P1 桥接）。
+	 * 按权限码反查受影响用户 ID
 	 * @param impactQuery 授权影响面查询
 	 * @return 权限码影响面解析器
 	 */
 	@Bean
-	ImpactResolver<PermissionInvalidatePayload> permissionImpactResolver(AuthorizationImpactQuerySupport impactQuery) {
-		return new PortBackedImpactResolver<>(AuthorizationChangeKind.PERMISSION, PermissionInvalidatePayload.class,
+	ImpactResolver<AuthorizationInvalidatePayload.Permission> permissionImpactResolver(
+			AuthorizationImpactQuerySupport impactQuery) {
+		return new PortBackedImpactResolver<>(AuthorizationChangeKind.PERMISSION,
+				AuthorizationInvalidatePayload.Permission.class,
 				payload -> impactQuery.findUserIdsByPermissionCodes(payload.permissionCodes()));
 	}
 
 	/**
-	 * 按 grant_table 授权主体反查受影响用户 ID（P2）。
+	 * 按 grant_table 授权主体反查受影响用户 ID
 	 * @param impactQuery 授权影响面查询
 	 * @return 授权主体影响面解析器
 	 */
 	@Bean
-	ImpactResolver<GrantInvalidatePayload> grantSubjectImpactResolver(AuthorizationImpactQuerySupport impactQuery) {
-		return new PortBackedImpactResolver<>(AuthorizationChangeKind.GRANT, GrantInvalidatePayload.class,
+	ImpactResolver<AuthorizationInvalidatePayload.Grant> grantSubjectImpactResolver(
+			AuthorizationImpactQuerySupport impactQuery) {
+		return new PortBackedImpactResolver<>(AuthorizationChangeKind.GRANT, AuthorizationInvalidatePayload.Grant.class,
 				payload -> impactQuery.findUserIdsByGrantSubjects(payload.subjects()));
 	}
 
 	/**
-	 * 按用户 ID 直连失效（用户主档变更，无需 SQL 反查）。
+	 * 按用户 ID 直连失效
+	 * <p>
+	 * 用户主档变更，无需 SQL 反查
+	 * </p>
 	 * @return 用户直连影响面解析器
 	 */
 	@Bean
-	ImpactResolver<UserInvalidatePayload> userImpactResolver() {
-		return new PortBackedImpactResolver<>(AuthorizationChangeKind.USER, UserInvalidatePayload.class,
+	ImpactResolver<AuthorizationInvalidatePayload.User> userImpactResolver() {
+		return new PortBackedImpactResolver<>(AuthorizationChangeKind.USER, AuthorizationInvalidatePayload.User.class,
 				payload -> Set.copyOf(payload.userIds()));
 	}
 

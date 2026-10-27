@@ -36,8 +36,9 @@ class AuthorizationInvalidateRequestTest {
 
 		assertEquals("evt-role-001", request.eventId());
 		assertEquals(AuthorizationChangeKind.ROLE, request.kind());
-		assertInstanceOf(RoleInvalidatePayload.class, request.payload());
-		assertEquals(List.of("ADMIN", "OPERATOR"), ((RoleInvalidatePayload) request.payload()).roleCodes());
+		assertInstanceOf(AuthorizationInvalidatePayload.Role.class, request.payload());
+		assertEquals(List.of("ADMIN", "OPERATOR"),
+				((AuthorizationInvalidatePayload.Role) request.payload()).roleCodes());
 	}
 
 	@Test
@@ -59,7 +60,7 @@ class AuthorizationInvalidateRequestTest {
 		AuthorizationInvalidateRequest request = objectMapper.readValue(json, AuthorizationInvalidateRequest.class);
 
 		assertEquals(AuthorizationChangeKind.GRANT, request.kind());
-		GrantInvalidatePayload payload = (GrantInvalidatePayload) request.payload();
+		AuthorizationInvalidatePayload.Grant payload = (AuthorizationInvalidatePayload.Grant) request.payload();
 		assertEquals(2, payload.subjects().size());
 		assertEquals(GrantTableSubjectType.USER, payload.subjects().get(0).subjectType());
 		assertEquals(1L, payload.subjects().get(0).subjectId());
@@ -69,15 +70,15 @@ class AuthorizationInvalidateRequestTest {
 	@DisplayName("序列化后再反序列化应保持字段一致")
 	void roundTrip_rolePayload_shouldPreserveFields() throws Exception {
 		AuthorizationInvalidateRequest original = new AuthorizationInvalidateRequest("evt-rt-001",
-				AuthorizationChangeKind.ROLE, new RoleInvalidatePayload(List.of("CUSTOM_R_ONE")));
+				AuthorizationChangeKind.ROLE, new AuthorizationInvalidatePayload.Role(List.of("CUSTOM_R_ONE")));
 
 		String json = objectMapper.writeValueAsString(original);
 		AuthorizationInvalidateRequest restored = objectMapper.readValue(json, AuthorizationInvalidateRequest.class);
 
 		assertEquals(original.eventId(), restored.eventId());
 		assertEquals(original.kind(), restored.kind());
-		assertEquals(((RoleInvalidatePayload) original.payload()).roleCodes(),
-				((RoleInvalidatePayload) restored.payload()).roleCodes());
+		assertEquals(((AuthorizationInvalidatePayload.Role) original.payload()).roleCodes(),
+				((AuthorizationInvalidatePayload.Role) restored.payload()).roleCodes());
 	}
 
 	@Test
@@ -97,8 +98,8 @@ class AuthorizationInvalidateRequestTest {
 
 		assertEquals("evt-user-001", request.eventId());
 		assertEquals(AuthorizationChangeKind.USER, request.kind());
-		assertInstanceOf(UserInvalidatePayload.class, request.payload());
-		assertEquals(List.of(10L, 20L), ((UserInvalidatePayload) request.payload()).userIds());
+		assertInstanceOf(AuthorizationInvalidatePayload.User.class, request.payload());
+		assertEquals(List.of(10L, 20L), ((AuthorizationInvalidatePayload.User) request.payload()).userIds());
 	}
 
 	@Test
@@ -121,7 +122,8 @@ class AuthorizationInvalidateRequestTest {
 	@Test
 	@DisplayName("kind 与 payload 类型不一致时应拒绝构造")
 	void constructor_kindPayloadMismatch_shouldThrow() {
-		PermissionInvalidatePayload mismatchedPayload = new PermissionInvalidatePayload(List.of("sys:user:list"));
+		AuthorizationInvalidatePayload.Permission mismatchedPayload = new AuthorizationInvalidatePayload.Permission(
+				List.of("sys:user:list"));
 		assertThrows(IllegalArgumentException.class,
 				() -> new AuthorizationInvalidateRequest("evt-bad", AuthorizationChangeKind.ROLE, mismatchedPayload));
 	}
@@ -129,7 +131,7 @@ class AuthorizationInvalidateRequestTest {
 	@Test
 	@DisplayName("eventId 为空时应拒绝构造")
 	void constructor_blankEventId_shouldThrow() {
-		RoleInvalidatePayload payload = new RoleInvalidatePayload(List.of("ADMIN"));
+		AuthorizationInvalidatePayload.Role payload = new AuthorizationInvalidatePayload.Role(List.of("ADMIN"));
 		assertThrows(IllegalArgumentException.class,
 				() -> new AuthorizationInvalidateRequest("  ", AuthorizationChangeKind.ROLE, payload));
 	}

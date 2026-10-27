@@ -1,9 +1,9 @@
 package com.auth.service.auth.service;
 
 import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
 import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
 import com.auth.module.security.contract.invalidation.AuthorizationInvalidateResponse;
-import com.auth.module.security.contract.invalidation.RoleInvalidatePayload;
 import com.auth.service.auth.model.po.user.UserInvalidationStatePO;
 import com.auth.service.auth.model.value.invalidation.InvalidationIdempotencyGate;
 import com.auth.service.auth.service.impl.AuthorizationInvalidationServiceImpl;
@@ -62,7 +62,7 @@ class AuthorizationInvalidationServiceTest {
 			.thenReturn(InvalidationIdempotencyGate.Completed.builder().response(cached).build());
 
 		AuthorizationInvalidateRequest request = new AuthorizationInvalidateRequest("evt-1",
-				AuthorizationChangeKind.ROLE, new RoleInvalidatePayload(List.of("ADMIN")));
+				AuthorizationChangeKind.ROLE, new AuthorizationInvalidatePayload.Role(List.of("ADMIN")));
 		AuthorizationInvalidateResponse response = authorizationInvalidationService.invalidate(request);
 
 		assertEquals(cached, response);
@@ -77,7 +77,7 @@ class AuthorizationInvalidationServiceTest {
 		when(impactResolverRegistry.resolve(any())).thenReturn(Set.of());
 
 		AuthorizationInvalidateRequest request = new AuthorizationInvalidateRequest("evt-2",
-				AuthorizationChangeKind.ROLE, new RoleInvalidatePayload(List.of("ADMIN")));
+				AuthorizationChangeKind.ROLE, new AuthorizationInvalidatePayload.Role(List.of("ADMIN")));
 		AuthorizationInvalidateResponse response = authorizationInvalidationService.invalidate(request);
 
 		assertEquals(AuthorizationInvalidateResponse.empty(), response);
@@ -96,7 +96,7 @@ class AuthorizationInvalidationServiceTest {
 		when(authProfileMaterializationService.refreshInBatches(Set.of(1L))).thenReturn(1);
 
 		AuthorizationInvalidateRequest request = new AuthorizationInvalidateRequest("evt-3",
-				AuthorizationChangeKind.ROLE, new RoleInvalidatePayload(List.of("ADMIN")));
+				AuthorizationChangeKind.ROLE, new AuthorizationInvalidatePayload.Role(List.of("ADMIN")));
 		AuthorizationInvalidateResponse response = authorizationInvalidationService.invalidate(request);
 
 		assertEquals(new AuthorizationInvalidateResponse(1, 1, 1, 0), response);
@@ -119,7 +119,7 @@ class AuthorizationInvalidationServiceTest {
 		when(authProfileMaterializationService.evictInBatches(Set.of(99L))).thenReturn(1);
 
 		AuthorizationInvalidateRequest request = new AuthorizationInvalidateRequest("evt-4",
-				AuthorizationChangeKind.ROLE, new RoleInvalidatePayload(List.of("ADMIN")));
+				AuthorizationChangeKind.ROLE, new AuthorizationInvalidatePayload.Role(List.of("ADMIN")));
 		AuthorizationInvalidateResponse response = authorizationInvalidationService.invalidate(request);
 
 		assertEquals(new AuthorizationInvalidateResponse(1, 0, 0, 1), response);
@@ -140,7 +140,7 @@ class AuthorizationInvalidationServiceTest {
 		when(authProfileMaterializationService.evictInBatches(Set.of(99L))).thenReturn(1);
 
 		AuthorizationInvalidateRequest request = new AuthorizationInvalidateRequest("evt-7",
-				AuthorizationChangeKind.ROLE, new RoleInvalidatePayload(List.of("ADMIN")));
+				AuthorizationChangeKind.ROLE, new AuthorizationInvalidatePayload.Role(List.of("ADMIN")));
 		AuthorizationInvalidateResponse response = authorizationInvalidationService.invalidate(request);
 
 		assertEquals(new AuthorizationInvalidateResponse(2, 1, 1, 1), response);
@@ -157,7 +157,7 @@ class AuthorizationInvalidationServiceTest {
 		when(impactResolverRegistry.resolve(any())).thenThrow(new IllegalStateException("resolver error"));
 
 		AuthorizationInvalidateRequest request = new AuthorizationInvalidateRequest("evt-5",
-				AuthorizationChangeKind.ROLE, new RoleInvalidatePayload(List.of("ADMIN")));
+				AuthorizationChangeKind.ROLE, new AuthorizationInvalidatePayload.Role(List.of("ADMIN")));
 
 		try {
 			authorizationInvalidationService.invalidate(request);
@@ -177,7 +177,7 @@ class AuthorizationInvalidationServiceTest {
 			.thenReturn(InvalidationIdempotencyGate.InProgress.builder().build());
 
 		AuthorizationInvalidateRequest request = new AuthorizationInvalidateRequest("evt-6",
-				AuthorizationChangeKind.ROLE, new RoleInvalidatePayload(List.of("ADMIN")));
+				AuthorizationChangeKind.ROLE, new AuthorizationInvalidatePayload.Role(List.of("ADMIN")));
 		AuthorizationInvalidateResponse response = authorizationInvalidationService.invalidate(request);
 
 		assertEquals(AuthorizationInvalidateResponse.empty(), response);

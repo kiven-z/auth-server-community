@@ -1,8 +1,7 @@
 package com.auth.service.auth.support.invalidation.impact;
 
 import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
-import com.auth.module.security.contract.invalidation.PermissionInvalidatePayload;
-import com.auth.module.security.contract.invalidation.RoleInvalidatePayload;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,12 +30,12 @@ class ImpactResolverRegistryTest {
 	void resolve_shouldDispatchByPayloadKind() {
 		when(impactQuery.findUserIdsByRoleCodes(List.of("ADMIN"))).thenReturn(Set.of(1L));
 
-		ImpactResolver<RoleInvalidatePayload> roleResolver = new PortBackedImpactResolver<>(
-				AuthorizationChangeKind.ROLE, RoleInvalidatePayload.class,
+		ImpactResolver<AuthorizationInvalidatePayload.Role> roleResolver = new PortBackedImpactResolver<>(
+				AuthorizationChangeKind.ROLE, AuthorizationInvalidatePayload.Role.class,
 				payload -> impactQuery.findUserIdsByRoleCodes(payload.roleCodes()));
 		ImpactResolverRegistry registry = new ImpactResolverRegistry(List.of(roleResolver));
 
-		Set<Long> userIds = registry.resolve(new RoleInvalidatePayload(List.of("ADMIN")));
+		Set<Long> userIds = registry.resolve(new AuthorizationInvalidatePayload.Role(List.of("ADMIN")));
 
 		assertEquals(Set.of(1L), userIds);
 	}
@@ -44,12 +43,13 @@ class ImpactResolverRegistryTest {
 	@Test
 	@DisplayName("未注册 kind 时抛出 IllegalStateException")
 	void resolve_unregisteredKind_shouldThrow() {
-		ImpactResolver<RoleInvalidatePayload> roleResolver = new PortBackedImpactResolver<>(
-				AuthorizationChangeKind.ROLE, RoleInvalidatePayload.class,
+		ImpactResolver<AuthorizationInvalidatePayload.Role> roleResolver = new PortBackedImpactResolver<>(
+				AuthorizationChangeKind.ROLE, AuthorizationInvalidatePayload.Role.class,
 				payload -> impactQuery.findUserIdsByRoleCodes(payload.roleCodes()));
 		ImpactResolverRegistry registry = new ImpactResolverRegistry(List.of(roleResolver));
 
-		PermissionInvalidatePayload unregisteredPayload = new PermissionInvalidatePayload(List.of("sys:user:list"));
+		AuthorizationInvalidatePayload.Permission unregisteredPayload = new AuthorizationInvalidatePayload.Permission(
+				List.of("sys:user:list"));
 		assertThrows(IllegalStateException.class, () -> registry.resolve(unregisteredPayload));
 	}
 

@@ -25,10 +25,10 @@ public class AuthorizationInvalidateRequestDeserializer extends JsonDeserializer
 	private static AuthorizationInvalidatePayload resolvePayload(DeserializationContext context,
 			AuthorizationChangeKind kind, JsonNode payloadNode) throws IOException {
 		return switch (kind) {
-			case ROLE -> context.readTreeAsValue(payloadNode, RoleInvalidatePayload.class);
-			case PERMISSION -> context.readTreeAsValue(payloadNode, PermissionInvalidatePayload.class);
-			case GRANT -> context.readTreeAsValue(payloadNode, GrantInvalidatePayload.class);
-			case USER -> context.readTreeAsValue(payloadNode, UserInvalidatePayload.class);
+			case ROLE -> context.readTreeAsValue(payloadNode, AuthorizationInvalidatePayload.Role.class);
+			case PERMISSION -> context.readTreeAsValue(payloadNode, AuthorizationInvalidatePayload.Permission.class);
+			case GRANT -> context.readTreeAsValue(payloadNode, AuthorizationInvalidatePayload.Grant.class);
+			case USER -> context.readTreeAsValue(payloadNode, AuthorizationInvalidatePayload.User.class);
 		};
 	}
 

@@ -3,8 +3,8 @@ package com.auth.service.system.authorization.dispatch.trigger;
 import cn.hutool.core.collection.CollUtil;
 import com.auth.module.security.contract.bizcode.PlatformBizCodes;
 import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
 import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.invalidation.UserInvalidatePayload;
 import com.auth.service.system.authorization.dispatch.AuthorizationInvalidationCoordinator;
 import com.auth.service.system.authorization.dispatch.support.AuthorizationInvalidationSourceBizIds;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
@@ -39,7 +39,7 @@ public class UserAuthorizationInvalidationTrigger {
 
 		String sourceBizId = AuthorizationInvalidationSourceBizIds.of(operation);
 		String eventId = AuthorizationChangeKind.USER.name() + ":" + IdWorker.getId();
-		var payload = new UserInvalidatePayload(ids);
+		var payload = new AuthorizationInvalidatePayload.User(ids);
 		var request = new AuthorizationInvalidateRequest(eventId, AuthorizationChangeKind.USER, payload);
 
 		invalidationCoordinator.submit(request, PlatformBizCodes.SYS_USER, sourceBizId);

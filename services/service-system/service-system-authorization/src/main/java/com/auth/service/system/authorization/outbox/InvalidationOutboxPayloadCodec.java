@@ -1,6 +1,7 @@
 package com.auth.service.system.authorization.outbox;
 
-import com.auth.module.security.contract.invalidation.*;
+import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
@@ -42,10 +43,10 @@ public class InvalidationOutboxPayloadCodec {
 	public AuthorizationInvalidatePayload deserialize(AuthorizationChangeKind kind, String json) {
 		try {
 			return switch (kind) {
-				case ROLE -> objectMapper.readValue(json, RoleInvalidatePayload.class);
-				case PERMISSION -> objectMapper.readValue(json, PermissionInvalidatePayload.class);
-				case GRANT -> objectMapper.readValue(json, GrantInvalidatePayload.class);
-				case USER -> objectMapper.readValue(json, UserInvalidatePayload.class);
+				case ROLE -> objectMapper.readValue(json, AuthorizationInvalidatePayload.Role.class);
+				case PERMISSION -> objectMapper.readValue(json, AuthorizationInvalidatePayload.Permission.class);
+				case GRANT -> objectMapper.readValue(json, AuthorizationInvalidatePayload.Grant.class);
+				case USER -> objectMapper.readValue(json, AuthorizationInvalidatePayload.User.class);
 			};
 		}
 		catch (JsonProcessingException ex) {

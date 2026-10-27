@@ -2,8 +2,8 @@ package com.auth.service.system.authorization.dispatch.trigger;
 
 import cn.hutool.core.collection.CollUtil;
 import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
 import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.invalidation.GrantInvalidatePayload;
 import com.auth.module.security.contract.invalidation.GrantSubjectKey;
 import com.auth.service.system.authorization.dispatch.AuthorizationInvalidationCoordinator;
 import com.auth.service.system.authorization.dispatch.support.AuthorizationInvalidationSourceBizIds;
@@ -39,7 +39,7 @@ public class GrantAuthorizationInvalidationTrigger {
 
 		String sourceBizId = AuthorizationInvalidationSourceBizIds.of(operation);
 		String eventId = AuthorizationChangeKind.GRANT.name() + ":" + IdWorker.getId();
-		var payload = new GrantInvalidatePayload(keys);
+		var payload = new AuthorizationInvalidatePayload.Grant(keys);
 		var request = new AuthorizationInvalidateRequest(eventId, AuthorizationChangeKind.GRANT, payload);
 
 		invalidationCoordinator.submit(request, AuthorizationAuditBizModule.GRANT_TABLE, sourceBizId);

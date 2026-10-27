@@ -1,8 +1,8 @@
 package com.auth.service.system.authorization.dispatch;
 
 import com.auth.module.security.contract.invalidation.AuthorizationChangeKind;
+import com.auth.module.security.contract.invalidation.AuthorizationInvalidatePayload;
 import com.auth.module.security.contract.invalidation.AuthorizationInvalidateRequest;
-import com.auth.module.security.contract.invalidation.RoleInvalidatePayload;
 import com.auth.service.system.authorization.config.AuthorizationInvalidationProperties;
 import com.auth.service.system.authorization.outbox.AuthorizationInvalidationPublisher;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,7 @@ class AuthorizationInvalidationCoordinatorTest {
 		when(publisher.enqueue(org.mockito.ArgumentMatchers.any(), eq("SYS_ROLE"), eq("SUPER_ADMIN"))).thenReturn(100L);
 
 		AuthorizationInvalidateRequest request = new AuthorizationInvalidateRequest("evt-1",
-				AuthorizationChangeKind.ROLE, new RoleInvalidatePayload(List.of("SUPER_ADMIN")));
+				AuthorizationChangeKind.ROLE, new AuthorizationInvalidatePayload.Role(List.of("SUPER_ADMIN")));
 		coordinator.submit(request, "SYS_ROLE", "SUPER_ADMIN");
 
 		verify(publisher).enqueue(request, "SYS_ROLE", "SUPER_ADMIN");

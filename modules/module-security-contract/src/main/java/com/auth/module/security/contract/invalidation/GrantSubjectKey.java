@@ -18,8 +18,12 @@ public record GrantSubjectKey(GrantTableSubjectType subjectType, Long subjectId)
 	private static final long serialVersionUID = 1L;
 
 	public GrantSubjectKey {
-		InvalidationPayloadSupport.requireNonNull(subjectType, "subjectType");
-		InvalidationPayloadSupport.requireNonNull(subjectId, "subjectId");
+		if (subjectType == null) {
+			throw new IllegalArgumentException("subjectType must not be null");
+		}
+		if (subjectId == null) {
+			throw new IllegalArgumentException("subjectId must not be null");
+		}
 	}
 
 }
