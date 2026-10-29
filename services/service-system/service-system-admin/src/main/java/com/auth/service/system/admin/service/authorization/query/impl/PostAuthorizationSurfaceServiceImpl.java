@@ -42,9 +42,7 @@ public class PostAuthorizationSurfaceServiceImpl implements PostAuthorizationSur
 	@Override
 	public PageResponse<PostBoundUserReferenceVO> pageUsers(Long postId, PostUserPageQuery query) {
 		postReferenceChecker.getExistingActive(postId);
-		long total = postRelationQueryMapper.countUsersByPostId(postId, query);
-
-		Page<SysPostBoundUserPO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<SysPostBoundUserPO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<SysPostBoundUserPO> page = postRelationQueryMapper.selectUsersByPostIdPage(pageParams, postId, query);
 
 		IPage<PostBoundUserReferenceVO> convert = page
@@ -58,9 +56,7 @@ public class PostAuthorizationSurfaceServiceImpl implements PostAuthorizationSur
 	@Override
 	public PageResponse<RoleReferenceVO> pageRoles(Long postId, SubjectRolePageQuery query) {
 		postReferenceChecker.getExistingActive(postId);
-		long total = grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.POST.name(), postId, query);
-
-		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<RoleReferencePO> page = grantBindingQueryMapper.selectBoundRolesBySubjectPage(pageParams,
 				GrantTableSubjectType.POST.name(), postId, query);
 

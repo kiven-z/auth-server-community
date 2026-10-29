@@ -45,9 +45,7 @@ public class DeptAuthorizationSurfaceServiceImpl implements DeptAuthorizationSur
 	@Override
 	public PageResponse<DeptBoundUserReferenceVO> pageUsers(Long deptId, DeptUserPageQuery query) {
 		deptReferenceChecker.getExistingActive(deptId);
-		long total = deptRelationQueryMapper.countUsersByDeptId(deptId, query);
-
-		Page<SysDeptBoundUserPO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<SysDeptBoundUserPO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<SysDeptBoundUserPO> page = deptRelationQueryMapper.selectUsersByDeptIdPage(pageParams, deptId, query);
 
 		IPage<DeptBoundUserReferenceVO> convert = page
@@ -61,9 +59,7 @@ public class DeptAuthorizationSurfaceServiceImpl implements DeptAuthorizationSur
 	@Override
 	public PageResponse<PostReferenceVO> pagePosts(Long deptId, DeptPostPageQuery query) {
 		deptReferenceChecker.getExistingActive(deptId);
-		long total = deptRelationQueryMapper.countPostsByDeptId(deptId, query);
-
-		Page<PostReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<PostReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<PostReferencePO> page = deptRelationQueryMapper.selectPostsByDeptIdPage(pageParams, deptId, query);
 
 		IPage<PostReferenceVO> convert = page.convert(ReferenceConverter.INSTANCE::toPostReference);
@@ -76,9 +72,7 @@ public class DeptAuthorizationSurfaceServiceImpl implements DeptAuthorizationSur
 	@Override
 	public PageResponse<RoleReferenceVO> pageRoles(Long deptId, SubjectRolePageQuery query) {
 		deptReferenceChecker.getExistingActive(deptId);
-		long total = grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.DEPT.name(), deptId, query);
-
-		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<RoleReferencePO> page = grantBindingQueryMapper.selectBoundRolesBySubjectPage(pageParams,
 				GrantTableSubjectType.DEPT.name(), deptId, query);
 

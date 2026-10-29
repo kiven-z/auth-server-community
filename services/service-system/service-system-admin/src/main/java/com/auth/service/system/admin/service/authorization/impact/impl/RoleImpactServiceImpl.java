@@ -45,9 +45,7 @@ public class RoleImpactServiceImpl implements RoleImpactService {
 	@Transactional(readOnly = true)
 	public PageResponse<UserReferenceVO> pageImpactUsers(Long roleId, RoleImpactUserPageQuery query) {
 		rbacReferenceChecker.getExisting(roleId);
-		long total = roleImpactQueryMapper.countImpactUsersByRoleId(roleId, query);
-
-		Page<UserReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<UserReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<UserReferencePO> page = roleImpactQueryMapper.selectImpactUsersByRoleIdPage(pageParams, roleId, query);
 
 		IPage<UserReferenceVO> convert = page.convert(ReferenceConverter.INSTANCE::toUserReference);

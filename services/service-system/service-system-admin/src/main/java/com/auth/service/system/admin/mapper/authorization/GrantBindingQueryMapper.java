@@ -20,16 +20,6 @@ import java.util.List;
 public interface GrantBindingQueryMapper {
 
 	/**
-	 * 统计主体已授角色数
-	 * @param subjectType 主体类型
-	 * @param subjectId 主体 ID
-	 * @param query 过滤条件
-	 * @return 角色数
-	 */
-	long countBoundRolesBySubject(@Param("subjectType") String subjectType, @Param("subjectId") Long subjectId,
-			@Param("query") SubjectRolePageQuery query);
-
-	/**
 	 * 分页查询主体已授角色
 	 * @param page 分页参数
 	 * @param subjectType 主体类型
@@ -40,16 +30,6 @@ public interface GrantBindingQueryMapper {
 	IPage<RoleReferencePO> selectBoundRolesBySubjectPage(@Param("page") Page<?> page,
 			@Param("subjectType") String subjectType, @Param("subjectId") Long subjectId,
 			@Param("query") SubjectRolePageQuery query);
-
-	/**
-	 * 统计角色下指定类型授权对象数
-	 * @param roleId 角色 ID
-	 * @param subjectType 主体类型
-	 * @param query 过滤条件
-	 * @return 授权对象数
-	 */
-	long countSubjectsByRoleIdAndType(@Param("roleId") Long roleId, @Param("subjectType") String subjectType,
-			@Param("query") RoleGrantSubjectPageQuery query);
 
 	/**
 	 * 分页查询角色下指定类型授权对象

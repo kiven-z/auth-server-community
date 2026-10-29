@@ -18,14 +18,6 @@ import org.apache.ibatis.annotations.Param;
 public interface RolePermissionBindingQueryMapper {
 
 	/**
-	 * 统计角色已绑定权限数
-	 * @param roleId 角色 ID
-	 * @param query 过滤条件
-	 * @return 权限数
-	 */
-	long countPermissionsByRoleId(@Param("roleId") Long roleId, @Param("query") RolePermissionPageQuery query);
-
-	/**
 	 * 分页查询角色已绑定权限
 	 * @param page 分页参数
 	 * @param roleId 角色 ID
@@ -34,14 +26,6 @@ public interface RolePermissionBindingQueryMapper {
 	 */
 	IPage<PermissionReferencePO> selectPermissionsByRoleIdPage(@Param("page") Page<?> page,
 			@Param("roleId") Long roleId, @Param("query") RolePermissionPageQuery query);
-
-	/**
-	 * 统计权限已绑定角色数
-	 * @param permissionId 权限 ID
-	 * @param query 过滤条件
-	 * @return 角色数
-	 */
-	long countRolesByPermissionId(@Param("permissionId") Long permissionId, @Param("query") SubjectRolePageQuery query);
 
 	/**
 	 * 分页查询权限已绑定角色

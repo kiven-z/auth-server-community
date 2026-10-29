@@ -19,14 +19,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 public interface RoleImpactQueryMapper {
 
 	/**
-	 * 统计角色影响用户数
-	 * @param roleId 角色 ID
-	 * @param query 过滤条件（与 page 同源；摘要场景传 null）
-	 * @return 去重用户数
-	 */
-	long countImpactUsersByRoleId(@Param("roleId") Long roleId, @Param("query") RoleImpactUserPageQuery query);
-
-	/**
 	 * 分页查询角色影响用户
 	 * @param page 分页参数
 	 * @param roleId 角色 ID

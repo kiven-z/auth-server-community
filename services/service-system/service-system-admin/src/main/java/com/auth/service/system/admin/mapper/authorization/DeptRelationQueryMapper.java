@@ -18,14 +18,6 @@ import org.apache.ibatis.annotations.Param;
 public interface DeptRelationQueryMapper {
 
 	/**
-	 * 统计部门绑定用户数（基表，含已停用）
-	 * @param deptId 部门 ID
-	 * @param query 过滤条件
-	 * @return 用户数
-	 */
-	long countUsersByDeptId(@Param("deptId") Long deptId, @Param("query") DeptUserPageQuery query);
-
-	/**
 	 * 分页查询部门关联用户
 	 * @param page 分页参数
 	 * @param deptId 部门 ID
@@ -34,14 +26,6 @@ public interface DeptRelationQueryMapper {
 	 */
 	IPage<SysDeptBoundUserPO> selectUsersByDeptIdPage(@Param("page") Page<?> page, @Param("deptId") Long deptId,
 			@Param("query") DeptUserPageQuery query);
-
-	/**
-	 * 统计部门下属岗位数
-	 * @param deptId 部门 ID
-	 * @param query 过滤条件
-	 * @return 岗位数
-	 */
-	long countPostsByDeptId(@Param("deptId") Long deptId, @Param("query") DeptPostPageQuery query);
 
 	/**
 	 * 分页查询部门下属岗位

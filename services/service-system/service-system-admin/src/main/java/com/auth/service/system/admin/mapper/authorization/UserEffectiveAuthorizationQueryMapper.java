@@ -18,14 +18,6 @@ import org.apache.ibatis.annotations.Param;
 public interface UserEffectiveAuthorizationQueryMapper {
 
 	/**
-	 * 统计用户生效角色数
-	 * @param userId 用户 ID
-	 * @param query 过滤条件
-	 * @return 生效角色数
-	 */
-	long countEffectiveRolesByUserId(@Param("userId") Long userId, @Param("query") UserEffectiveRolePageQuery query);
-
-	/**
 	 * 分页查询用户生效角色
 	 * @param page 分页参数
 	 * @param userId 用户 ID
@@ -34,15 +26,6 @@ public interface UserEffectiveAuthorizationQueryMapper {
 	 */
 	IPage<RoleReferencePO> selectEffectiveRolesByUserIdPage(@Param("page") Page<?> page, @Param("userId") Long userId,
 			@Param("query") UserEffectiveRolePageQuery query);
-
-	/**
-	 * 统计用户生效权限数
-	 * @param userId 用户 ID
-	 * @param query 过滤条件
-	 * @return 生效权限数
-	 */
-	long countEffectivePermissionsByUserId(@Param("userId") Long userId,
-			@Param("query") UserEffectivePermissionPageQuery query);
 
 	/**
 	 * 分页查询用户生效权限

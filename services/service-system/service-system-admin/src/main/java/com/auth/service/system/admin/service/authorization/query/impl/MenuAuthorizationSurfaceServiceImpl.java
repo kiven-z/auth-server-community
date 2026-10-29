@@ -34,9 +34,7 @@ public class MenuAuthorizationSurfaceServiceImpl implements MenuAuthorizationSur
 	@Override
 	public PageResponse<RoleReferenceVO> pageRoles(Long menuId, SubjectRolePageQuery query) {
 		menuReferenceChecker.getExisting(menuId);
-		long total = menuRoleBindingQueryMapper.countRolesByMenuId(menuId, query);
-
-		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<RoleReferencePO> page = menuRoleBindingQueryMapper.selectRolesByMenuIdPage(pageParams, menuId, query);
 
 		IPage<RoleReferenceVO> convert = page.convert(ReferenceConverter.INSTANCE::toRoleReference);

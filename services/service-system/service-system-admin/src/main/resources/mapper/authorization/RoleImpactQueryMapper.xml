@@ -2,40 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auth.service.system.admin.mapper.authorization.RoleImpactQueryMapper">
 
-    <!-- 统计角色影响用户（去重） -->
-    <select id="countImpactUsersByRoleId" resultType="long">
-        SELECT
-            COUNT(1)
-        FROM
-            (
-                SELECT DISTINCT
-                    user_id
-                FROM
-                    (
-                        SELECT
-                            m.user_id
-                        FROM
-                            grant_table gt
-                            INNER JOIN v_user_grant_subjects m ON m.sub_type = gt.subject_type
-                            AND m.sub_id = gt.subject_id
-                        WHERE
-                            gt.role_id = #{roleId}
-                    ) impacted
-            ) i
-            INNER JOIN sys_user u ON u.id = i.user_id
-        <where>
-            <if test="query != null and query.keyword != null and query.keyword != ''">
-                AND (
-                    u.username LIKE CONCAT('%', #{query.keyword}, '%')
-                    OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
-                )
-            </if>
-            <if test="query != null and query.status != null">
-                AND u.status = #{query.status}
-            </if>
-        </where>
-    </select>
-
     <!-- 分页查询角色影响用户 -->
     <select id="selectImpactUsersByRoleIdPage"
             resultType="com.auth.service.system.admin.model.po.reference.UserReferencePO">

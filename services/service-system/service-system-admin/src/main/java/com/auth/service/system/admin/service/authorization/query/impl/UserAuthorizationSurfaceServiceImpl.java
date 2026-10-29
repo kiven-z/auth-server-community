@@ -42,9 +42,7 @@ public class UserAuthorizationSurfaceServiceImpl implements UserAuthorizationSur
 	@Override
 	public PageResponse<RoleReferenceVO> pageDirectRoles(Long userId, SubjectRolePageQuery query) {
 		userReferenceChecker.getExistingActive(userId);
-		long total = grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.USER.name(), userId, query);
-
-		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<RoleReferencePO> page = grantBindingQueryMapper.selectBoundRolesBySubjectPage(pageParams,
 				GrantTableSubjectType.USER.name(), userId, query);
 
@@ -58,9 +56,7 @@ public class UserAuthorizationSurfaceServiceImpl implements UserAuthorizationSur
 	@Override
 	public PageResponse<RoleReferenceVO> pageEffectiveRoles(Long userId, UserEffectiveRolePageQuery query) {
 		userReferenceChecker.getExistingActive(userId);
-		long total = userEffectiveAuthorizationQueryMapper.countEffectiveRolesByUserId(userId, query);
-
-		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<RoleReferencePO> page = userEffectiveAuthorizationQueryMapper.selectEffectiveRolesByUserIdPage(pageParams,
 				userId, query);
 
@@ -75,9 +71,7 @@ public class UserAuthorizationSurfaceServiceImpl implements UserAuthorizationSur
 	public PageResponse<PermissionReferenceVO> pageEffectivePermissions(Long userId,
 			UserEffectivePermissionPageQuery query) {
 		userReferenceChecker.getExistingActive(userId);
-		long total = userEffectiveAuthorizationQueryMapper.countEffectivePermissionsByUserId(userId, query);
-
-		Page<PermissionReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<PermissionReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<PermissionReferencePO> page = userEffectiveAuthorizationQueryMapper
 			.selectEffectivePermissionsByUserIdPage(pageParams, userId, query);
 

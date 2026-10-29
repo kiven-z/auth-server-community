@@ -18,14 +18,6 @@ import org.apache.ibatis.annotations.Param;
 public interface MenuRoleBindingQueryMapper {
 
 	/**
-	 * 统计角色已绑定菜单数
-	 * @param roleId 角色 ID
-	 * @param query 过滤条件
-	 * @return 菜单数
-	 */
-	long countMenusByRoleId(@Param("roleId") Long roleId, @Param("query") RoleMenuPageQuery query);
-
-	/**
 	 * 分页查询角色已绑定菜单
 	 * @param page 分页参数
 	 * @param roleId 角色 ID
@@ -34,14 +26,6 @@ public interface MenuRoleBindingQueryMapper {
 	 */
 	IPage<SysPermissionBoundMenuPO> selectMenusByRoleIdPage(@Param("page") Page<?> page, @Param("roleId") Long roleId,
 			@Param("query") RoleMenuPageQuery query);
-
-	/**
-	 * 统计菜单已绑定角色数
-	 * @param menuId 菜单 ID
-	 * @param query 过滤条件
-	 * @return 角色数
-	 */
-	long countRolesByMenuId(@Param("menuId") Long menuId, @Param("query") SubjectRolePageQuery query);
 
 	/**
 	 * 分页查询菜单已绑定角色

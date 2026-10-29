@@ -63,20 +63,19 @@ class RoleImpactServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("影响用户分页：显式 count 并转换 VO")
+	@DisplayName("影响用户分页：转换 VO")
 	void pageImpactUsersReturnsPagedRows() {
 		when(rbacReferenceChecker.getExisting(ROLE_ID)).thenReturn(role());
 		RoleImpactUserPageQuery query = new RoleImpactUserPageQuery();
 		query.setPageIndex(1);
 		query.setPageSize(10);
-		when(roleImpactQueryMapper.countImpactUsersByRoleId(ROLE_ID, query)).thenReturn(1L);
 
 		UserReferencePO po = new UserReferencePO();
 		po.setId(7L);
 		po.setUsername("alice");
 		po.setNickname("爱丽丝");
 		po.setStatus(1);
-		Page<UserReferencePO> page = new Page<>(1, 10, 1, false);
+		Page<UserReferencePO> page = new Page<>(1, 10, 1);
 		page.setRecords(List.of(po));
 		when(roleImpactQueryMapper.selectImpactUsersByRoleIdPage(any(), eq(ROLE_ID), eq(query))).thenReturn(page);
 
@@ -88,8 +87,7 @@ class RoleImpactServiceImplTest {
 
 		ArgumentCaptor<Page<?>> pageCaptor = ArgumentCaptor.captor();
 		verify(roleImpactQueryMapper).selectImpactUsersByRoleIdPage(pageCaptor.capture(), eq(ROLE_ID), eq(query));
-		assertThat(pageCaptor.getValue().searchCount()).isFalse();
-		assertThat(pageCaptor.getValue().getTotal()).isEqualTo(1L);
+		assertThat(pageCaptor.getValue().searchCount()).isTrue();
 	}
 
 	@Test

@@ -50,9 +50,7 @@ public class RoleAuthorizationSurfaceServiceImpl implements RoleAuthorizationSur
 	@Override
 	public PageResponse<PermissionReferenceVO> pagePermissions(Long roleId, RolePermissionPageQuery query) {
 		rbacReferenceChecker.getExisting(roleId);
-		long total = rolePermissionBindingQueryMapper.countPermissionsByRoleId(roleId, query);
-
-		Page<PermissionReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<PermissionReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<PermissionReferencePO> page = rolePermissionBindingQueryMapper.selectPermissionsByRoleIdPage(pageParams,
 				roleId, query);
 
@@ -66,9 +64,7 @@ public class RoleAuthorizationSurfaceServiceImpl implements RoleAuthorizationSur
 	@Override
 	public PageResponse<SysPermissionBoundMenuItemVO> pageMenus(Long roleId, RoleMenuPageQuery query) {
 		rbacReferenceChecker.getExisting(roleId);
-		long total = menuRoleBindingQueryMapper.countMenusByRoleId(roleId, query);
-
-		Page<SysPermissionBoundMenuPO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<SysPermissionBoundMenuPO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<SysPermissionBoundMenuPO> page = menuRoleBindingQueryMapper.selectMenusByRoleIdPage(pageParams, roleId,
 				query);
 
@@ -84,9 +80,7 @@ public class RoleAuthorizationSurfaceServiceImpl implements RoleAuthorizationSur
 	public PageResponse<GrantSubjectItemRow> pageGrantSubjects(Long roleId, RoleGrantSubjectPageQuery query) {
 		rbacReferenceChecker.getExisting(roleId);
 		String type = query.getSubjectType().name();
-		long total = grantBindingQueryMapper.countSubjectsByRoleIdAndType(roleId, type, query);
-
-		Page<GrantSubjectItemRow> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<GrantSubjectItemRow> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<GrantSubjectItemRow> page = grantBindingQueryMapper.selectSubjectsByRoleIdAndTypePage(pageParams, roleId,
 				type, query);
 		return PageResponse.of(page);

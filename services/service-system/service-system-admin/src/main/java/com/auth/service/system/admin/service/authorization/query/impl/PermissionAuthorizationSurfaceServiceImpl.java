@@ -43,9 +43,7 @@ public class PermissionAuthorizationSurfaceServiceImpl implements PermissionAuth
 			log.warn("permission not found: id={}", permissionId);
 			throw new SystemBusinessException(SystemCommonResultCode.DATA_NOT_EXIST);
 		}
-		long total = rolePermissionBindingQueryMapper.countRolesByPermissionId(permissionId, query);
-
-		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize(), total, false);
+		Page<RoleReferencePO> pageParams = new Page<>(query.getPageIndex(), query.getPageSize());
 		IPage<RoleReferencePO> page = rolePermissionBindingQueryMapper.selectRolesByPermissionIdPage(pageParams,
 				permissionId, query);
 
