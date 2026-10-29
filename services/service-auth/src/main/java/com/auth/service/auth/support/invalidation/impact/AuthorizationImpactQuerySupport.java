@@ -1,25 +1,14 @@
 package com.auth.service.auth.support.invalidation.impact;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.UnaryOperator;
-
-import org.springframework.stereotype.Repository;
-
+import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.constants.BatchSizes;
 import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.module.security.contract.invalidation.GrantSubjectKey;
 import com.auth.service.auth.mapper.AuthorizationImpactMapper;
 import com.auth.service.auth.util.BatchPartition;
+import org.springframework.stereotype.Repository;
 
-import cn.hutool.core.collection.CollUtil;
+import java.util.*;
 
 /**
  * 授权影响面查询：按角色、权限、授权主体反查用户 成员展开读 v_user_grant_subjects
@@ -68,8 +57,9 @@ public class AuthorizationImpactQuerySupport {
 		for (Map.Entry<GrantTableSubjectType, List<Long>> entry : idsByType.entrySet()) {
 			List<Long> ids = entry.getValue().stream().distinct().toList();
 			String subjectType = entry.getKey().name();
-			queryLongKeysInBatches(ids,
-					chunk -> authorizationImpactMapper.selectUserIdsByGrantSubjects(subjectType, chunk), userIds);
+			for (List<Long> chunk : BatchPartition.partitionIds(ids, BatchSizes.SIZE_500)) {
+				userIds.addAll(authorizationImpactMapper.selectUserIdsByGrantSubjects(subjectType, chunk));
+			}
 		}
 		return Set.copyOf(userIds);
 	}
@@ -94,12 +84,6 @@ public class AuthorizationImpactQuerySupport {
 		}
 
 		return findUserIdsByRoleCodes(roleCodes);
-	}
-
-	private void queryLongKeysInBatches(List<Long> keys, UnaryOperator<List<Long>> queryFn, Set<Long> accumulator) {
-		for (List<Long> chunk : BatchPartition.partitionIds(keys, BatchSizes.SIZE_500)) {
-			accumulator.addAll(queryFn.apply(chunk));
-		}
 	}
 
 }

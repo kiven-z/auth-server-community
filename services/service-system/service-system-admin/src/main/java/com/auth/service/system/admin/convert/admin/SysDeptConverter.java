@@ -24,22 +24,6 @@ public interface SysDeptConverter {
 	SysDeptConverter INSTANCE = Mappers.getMapper(SysDeptConverter.class);
 
 	/**
-	 * 列表行 VO
-	 * @param entity 部门实体
-	 * @return 列表 VO
-	 */
-	@Mapping(target = "createdByName", ignore = true)
-	@Mapping(target = "updatedByName", ignore = true)
-	SysDeptListVO toListVo(SysDeptEntity entity);
-
-	/**
-	 * 列表行 VO 批量
-	 * @param entities 部门实体列表
-	 * @return 列表 VO
-	 */
-	List<SysDeptListVO> toListVoList(List<SysDeptEntity> entities);
-
-	/**
 	 * 分页 PO → 列表行 VO
 	 * @param row 分页持久层投影
 	 * @return 列表 VO
