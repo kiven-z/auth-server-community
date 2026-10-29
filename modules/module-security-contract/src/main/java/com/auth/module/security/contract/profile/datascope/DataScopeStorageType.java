@@ -20,14 +20,14 @@ public enum DataScopeStorageType {
 	SELF,
 
 	/**
-	 * 指定部门（不含子部门）
+	 * 指定节点（不含下级）
 	 */
-	DEPT,
+	IDS,
 
 	/**
-	 * 指定部门及全部后代（登录解析时需展开为部门 ID 列表）
+	 * 指定节点及全部后代；values 在登录时已展开
 	 */
-	DEPT_AND_CHILD;
+	IDS_AND_CHILD;
 
 	/**
 	 * 解析库表 scope_type 或 JSON 字符串

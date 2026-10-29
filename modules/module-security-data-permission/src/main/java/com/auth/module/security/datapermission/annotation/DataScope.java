@@ -1,5 +1,6 @@
 package com.auth.module.security.datapermission.annotation;
 
+import com.auth.module.security.contract.profile.datascope.DataScopeDimension;
 import com.auth.module.security.contract.profile.datascope.DataScopeStorageType;
 import com.auth.module.security.datapermission.handler.DataScopeHandler;
 import com.auth.module.security.datapermission.handler.DefaultDataScopeHandler;
@@ -30,6 +31,11 @@ public @interface DataScope {
 	 * 表别名
 	 */
 	String alias();
+
+	/**
+	 * 数据维度，决定从 AuthProfile.dataScopes 取哪个维度的 ScopeGrant
+	 */
+	DataScopeDimension dimension() default DataScopeDimension.DEPT;
 
 	/**
 	 * 数据范围类型 强制数据范围。未写时按登录画像裁决；至多一项。

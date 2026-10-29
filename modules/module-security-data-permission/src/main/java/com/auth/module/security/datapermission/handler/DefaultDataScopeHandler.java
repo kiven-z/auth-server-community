@@ -46,12 +46,12 @@ public class DefaultDataScopeHandler implements DataScopeHandler {
 			return FAIL_CLOSE_CONDITION;
 		}
 
-		ScopeGrant grant = profile.getDeptScope();
+		ScopeGrant grant = profile.getDataScopes().get(dataScope.dimension());
 		DataScopeStorageType scopeType = resolveEffectiveScopeType(annotatedScope, grant);
 		return switch (scopeType) {
 			case ALL -> null;
 			case SELF -> safeUserColumn + " = " + profile.getUserId();
-			case DEPT, DEPT_AND_CHILD -> {
+			case IDS, IDS_AND_CHILD -> {
 				List<Long> grantValues = grant == null ? List.of() : grant.getValues();
 				List<Long> normalizeValues = Objects.requireNonNullElse(grantValues, List.<Long>of())
 					.stream()

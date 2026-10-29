@@ -2,6 +2,7 @@ package com.auth.module.security.datapermission.handler;
 
 import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.module.security.contract.profile.ScopeGrant;
+import com.auth.module.security.contract.profile.datascope.DataScopeDimension;
 import com.auth.module.security.contract.profile.datascope.DataScopeStorageType;
 import com.auth.module.security.datapermission.annotation.DataScope;
 import com.auth.module.security.datapermission.context.LoginUserProvider;
@@ -17,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
@@ -42,7 +44,8 @@ class DataScopePermissionHandlerTest {
 	private static AuthProfile selfUser(Long userId) {
 		return AuthProfile.builder()
 			.userId(userId)
-			.deptScope(ScopeGrant.builder().scopeType(DataScopeStorageType.SELF).build())
+			.dataScopes(
+					Map.of(DataScopeDimension.DEPT, ScopeGrant.builder().scopeType(DataScopeStorageType.SELF).build()))
 			.build();
 	}
 
@@ -95,7 +98,8 @@ class DataScopePermissionHandlerTest {
 	void allScope_shouldKeepWhere() throws Exception {
 		when(loginUserProvider.currentUser()).thenReturn(AuthProfile.builder()
 			.userId(10L)
-			.deptScope(ScopeGrant.builder().scopeType(DataScopeStorageType.ALL).build())
+			.dataScopes(
+					Map.of(DataScopeDimension.DEPT, ScopeGrant.builder().scopeType(DataScopeStorageType.ALL).build()))
 			.build());
 		Expression where = CCJSqlParserUtil.parseCondExpression("d.status = 1");
 		Expression merged = handler.getSqlSegment(where, statementId("annotatedDefault"));
@@ -125,7 +129,8 @@ class DataScopePermissionHandlerTest {
 	void dept_shouldReturnInExpression() {
 		when(loginUserProvider.currentUser()).thenReturn(AuthProfile.builder()
 			.userId(10L)
-			.deptScope(ScopeGrant.builder().scopeType(DataScopeStorageType.DEPT).values(List.of(1L, 2L)).build())
+			.dataScopes(Map.of(DataScopeDimension.DEPT,
+					ScopeGrant.builder().scopeType(DataScopeStorageType.IDS).values(List.of(1L, 2L)).build()))
 			.build());
 		Expression merged = handler.getSqlSegment(null, statementId("annotatedDefault"));
 		assertEquals("(d.dept_id IN (1, 2))", normalize(merged));

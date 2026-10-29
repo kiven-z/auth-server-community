@@ -9,15 +9,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
- * 将多条 {@link ScopeGrant} 宽松合并为一条，供角色级 role_scope 画像构建使用。
+ * 宽松合并为一条，供角色级 role_scope 画像构建使用
  *
  * @author Bunny
  */
 @UtilityClass
-public class DeptScopeMerger {
+public class ScopeGrantMerger {
 
 	/**
-	 * 宽松合并：ALL 优先；存在部门 ID 时取并集，若含任一条 DEPT_AND_CHILD 则结果为 DEPT_AND_CHILD，否则为 DEPT；否则 SELF。
+	 * 宽松合并为一条，优先级从高到低：
+	 * <ul>
+	 * <li>任一条 ALL → ALL</li>
+	 * <li>IDS / IDS_AND_CHILD → values 取并集；含 IDS_AND_CHILD → IDS_AND_CHILD，否则 → IDS</li>
+	 * <li>仅有 SELF → SELF</li>
+	 * </ul>
 	 * @param grants 授权片段集合
 	 * @return 合并结果；无可合并项时返回 null
 	 */
@@ -27,7 +32,7 @@ public class DeptScopeMerger {
 		}
 		boolean anyAll = false;
 		boolean anySelf = false;
-		boolean anyDeptAndChild = false;
+		boolean anyIdsAndChild = false;
 		boolean restrictiveWithoutIds = false;
 		LinkedHashSet<Long> unionIds = new LinkedHashSet<>();
 		for (ScopeGrant grant : grants) {
@@ -37,10 +42,10 @@ public class DeptScopeMerger {
 			switch (grant.getScopeType()) {
 				case ALL -> anyAll = true;
 				case SELF -> anySelf = true;
-				case DEPT -> restrictiveWithoutIds |= mergeDeptValues(grant, unionIds);
-				case DEPT_AND_CHILD -> {
-					anyDeptAndChild = true;
-					restrictiveWithoutIds |= mergeDeptValues(grant, unionIds);
+				case IDS -> restrictiveWithoutIds |= mergeValues(grant, unionIds);
+				case IDS_AND_CHILD -> {
+					anyIdsAndChild = true;
+					restrictiveWithoutIds |= mergeValues(grant, unionIds);
 				}
 				default -> anySelf = true;
 			}
@@ -50,13 +55,13 @@ public class DeptScopeMerger {
 			return ScopeGrant.builder().scopeType(DataScopeStorageType.ALL).build();
 		}
 		if (CollUtil.isNotEmpty(unionIds)) {
-			DataScopeStorageType mergedType = anyDeptAndChild ? DataScopeStorageType.DEPT_AND_CHILD
-					: DataScopeStorageType.DEPT;
+			DataScopeStorageType mergedType = anyIdsAndChild ? DataScopeStorageType.IDS_AND_CHILD
+					: DataScopeStorageType.IDS;
 			return ScopeGrant.builder().scopeType(mergedType).values(List.copyOf(unionIds)).build();
 		}
 		if (restrictiveWithoutIds) {
-			DataScopeStorageType mergedType = anyDeptAndChild ? DataScopeStorageType.DEPT_AND_CHILD
-					: DataScopeStorageType.DEPT;
+			DataScopeStorageType mergedType = anyIdsAndChild ? DataScopeStorageType.IDS_AND_CHILD
+					: DataScopeStorageType.IDS;
 			return ScopeGrant.builder().scopeType(mergedType).values(List.of()).build();
 		}
 		if (anySelf) {
@@ -66,9 +71,12 @@ public class DeptScopeMerger {
 	}
 
 	/**
-	 * @return 是否合并了非空部门 ID
+	 * 合并节点 ID；空列表记为受限且无 ID
+	 * @param grant 单条授权
+	 * @param unionIds 并集
+	 * @return values 为空时为 true
 	 */
-	private static boolean mergeDeptValues(ScopeGrant grant, LinkedHashSet<Long> unionIds) {
+	private static boolean mergeValues(ScopeGrant grant, LinkedHashSet<Long> unionIds) {
 		List<Long> vals = grant.getValues();
 		if (CollUtil.isEmpty(vals)) {
 			return true;

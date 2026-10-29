@@ -26,7 +26,7 @@ class ScopeGrantJacksonTest {
 	@DisplayName("JSON 往返保留 scopeType 与 values")
 	void readWrite_preservesScopeTypeAndValues() throws Exception {
 		ScopeGrant original = ScopeGrant.builder()
-			.scopeType(DataScopeStorageType.DEPT_AND_CHILD)
+			.scopeType(DataScopeStorageType.IDS_AND_CHILD)
 			.values(List.of(110L, 111L, 112L))
 			.build();
 
@@ -34,7 +34,7 @@ class ScopeGrantJacksonTest {
 		ScopeGrant restored = objectMapper.readValue(json, ScopeGrant.class);
 
 		assertNotNull(restored);
-		assertEquals(DataScopeStorageType.DEPT_AND_CHILD, restored.getScopeType());
+		assertEquals(DataScopeStorageType.IDS_AND_CHILD, restored.getScopeType());
 		assertEquals(List.of(110L, 111L, 112L), restored.getValues());
 	}
 
@@ -42,13 +42,13 @@ class ScopeGrantJacksonTest {
 	@DisplayName("Map convertValue 保留 scopeType（模拟 Redis LinkedHashMap）")
 	void convertValue_fromMap_preservesScopeType() {
 		Map<String, Object> raw = new LinkedHashMap<>();
-		raw.put("scopeType", "DEPT");
+		raw.put("scopeType", "IDS");
 		raw.put("values", List.of(1112));
 
 		ScopeGrant restored = objectMapper.convertValue(raw, ScopeGrant.class);
 
 		assertNotNull(restored);
-		assertEquals(DataScopeStorageType.DEPT, restored.getScopeType());
+		assertEquals(DataScopeStorageType.IDS, restored.getScopeType());
 		assertEquals(List.of(1112L), restored.getValues());
 	}
 
