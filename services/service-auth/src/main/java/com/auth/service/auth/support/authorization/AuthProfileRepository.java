@@ -6,6 +6,7 @@ import com.auth.module.platform.persistence.model.UserEntity;
 import com.auth.module.security.contract.permission.PermissionConstant;
 import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.module.security.contract.profile.ScopeGrant;
+import com.auth.module.security.contract.profile.datascope.DataScopeDimension;
 import com.auth.module.security.contract.profile.datascope.DataScopeStorageType;
 import com.auth.service.auth.exception.AuthBusinessException;
 import com.auth.service.auth.exception.AuthResultCode;
@@ -35,7 +36,7 @@ public class AuthProfileRepository {
 
 	private final UserAuthorizationGrantMapper userAuthorizationGrantMapper;
 
-	private final DeptDataScopeResolver deptDataScopeResolver;
+	private final DataScopeResolver dataScopeResolver;
 
 	private final UserMapper userMapper;
 
@@ -82,14 +83,14 @@ public class AuthProfileRepository {
 			.selectPermissionRowsByUserIds(existingUserIds);
 		Map<Long, List<String>> permissionsByUser = groupCodesByUser(permissionRows);
 
-		Map<Long, UserScopePO> userScopesByUserId = dataScopeMapper.selectByUserIds(existingUserIds)
+		Map<Long, List<UserScopePO>> userScopesByUserId = dataScopeMapper.selectByUserIds(existingUserIds)
 			.stream()
-			.collect(Collectors.toMap(UserScopeByUserPO::getUserId, this::toUserScope, (left, right) -> left));
+			.collect(Collectors.groupingBy(UserScopeByUserPO::getUserId,
+					Collectors.mapping(this::toUserScope, Collectors.toList())));
 
-		// 超管跳过；已有 user_scope 的不需要再查 role_scope
+		// 超管跳过 role_scope；user_scope 按维覆盖，不能因存在任一维而跳过角色查询
 		Set<String> roleCodesForScope = existingUserIds.stream()
 			.filter(userId -> !PermissionConstant.isSuperAdmin(userId))
-			.filter(userId -> !userScopesByUserId.containsKey(userId))
 			.flatMap(userId -> rolesByUser.getOrDefault(userId, List.of()).stream())
 			.collect(Collectors.toCollection(LinkedHashSet::new));
 		List<RoleScopePO> roleScopes = CollUtil.isEmpty(roleCodesForScope) ? List.of()
@@ -98,12 +99,12 @@ public class AuthProfileRepository {
 		List<Long> nonSuperAdminUserIds = existingUserIds.stream()
 			.filter(userId -> !PermissionConstant.isSuperAdmin(userId))
 			.toList();
-		Map<Long, ScopeGrant> deptScopeByUser = deptDataScopeResolver.resolveEffectiveGrants(nonSuperAdminUserIds,
-				rolesByUser, userScopesByUserId, roleScopes);
+		Map<Long, Map<DataScopeDimension, ScopeGrant>> dataScopesByUser = dataScopeResolver
+			.resolveEffectiveGrants(nonSuperAdminUserIds, rolesByUser, userScopesByUserId, roleScopes);
 
 		return existingUserIds.stream()
 			.map(userId -> assembleProfile(accounts.get(userId), rolesByUser.getOrDefault(userId, List.of()),
-					permissionsByUser.getOrDefault(userId, List.of()), deptScopeByUser.get(userId)))
+					permissionsByUser.getOrDefault(userId, List.of()), dataScopesByUser.get(userId)))
 			.toList();
 	}
 
@@ -111,25 +112,23 @@ public class AuthProfileRepository {
 	 * 套用超管/管理员特权后组装画像。
 	 */
 	private AuthProfile assembleProfile(UserAccountSnapshot account, List<String> roles, List<String> permissions,
-			ScopeGrant deptScope) {
+			Map<DataScopeDimension, ScopeGrant> dataScopes) {
 		long userId = account.id();
 		boolean superAdmin = PermissionConstant.isSuperAdmin(userId);
 		boolean adminRole = PermissionConstant.isAdminRole(roles);
 
 		List<String> resolvedRoles = roles;
 		List<String> resolvedPermissions = permissions;
-		ScopeGrant resolvedDeptScope = deptScope;
+		Map<DataScopeDimension, ScopeGrant> resolvedDataScopes = dataScopes;
 		if (superAdmin) {
 			resolvedRoles = PermissionConstant.ADMIN_ROLES;
 			resolvedPermissions = PermissionConstant.ADMIN_WILDCARD_PERMISSIONS;
-			resolvedDeptScope = ScopeGrant.builder().scopeType(DataScopeStorageType.ALL).values(List.of()).build();
+			resolvedDataScopes = Map.of(DataScopeDimension.DEPT,
+					ScopeGrant.builder().scopeType(DataScopeStorageType.ALL).values(List.of()).build());
 		}
 		else if (adminRole) {
 			resolvedRoles = PermissionConstant.ADMIN_ROLES;
 			resolvedPermissions = PermissionConstant.ADMIN_WILDCARD_PERMISSIONS;
-		}
-		if (!superAdmin && resolvedDeptScope == null) {
-			resolvedDeptScope = ScopeGrant.builder().scopeType(DataScopeStorageType.SELF).build();
 		}
 
 		return AuthProfile.builder()
@@ -137,7 +136,7 @@ public class AuthProfileRepository {
 			.username(account.username())
 			.roles(resolvedRoles)
 			.permissions(resolvedPermissions)
-			.deptScope(resolvedDeptScope)
+			.dataScopes(resolvedDataScopes != null ? resolvedDataScopes : Map.of())
 			.permVersion(account.permVersion())
 			.build();
 	}
@@ -155,8 +154,9 @@ public class AuthProfileRepository {
 
 	private UserScopePO toUserScope(UserScopeByUserPO row) {
 		UserScopePO scope = new UserScopePO();
+		scope.setDimension(row.getDimension());
 		scope.setScopeType(row.getScopeType());
-		scope.setScopeDeptIds(row.getScopeDeptIds());
+		scope.setScopeIds(row.getScopeIds());
 		return scope;
 	}
 

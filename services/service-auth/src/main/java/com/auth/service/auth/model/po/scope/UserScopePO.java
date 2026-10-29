@@ -19,10 +19,13 @@ public class UserScopePO implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 1L;
 
-	@Schema(title = "范围类型", description = "例如：ALL/SELF/DEPT/DEPT_AND_CHILD")
+	@Schema(title = "数据维")
+	private String dimension;
+
+	@Schema(title = "范围类型")
 	private String scopeType;
 
-	@Schema(title = "scope_dept_ids JSON 字符串")
-	private String scopeDeptIds;
+	@Schema(title = "scope_ids JSON 字符串")
+	private String scopeIds;
 
 }

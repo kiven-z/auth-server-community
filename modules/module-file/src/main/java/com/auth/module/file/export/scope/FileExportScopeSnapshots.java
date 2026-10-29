@@ -25,7 +25,7 @@ public class FileExportScopeSnapshots {
 
 		FileExportScopeSnapshot snapshot = FileExportScopeSnapshot.builder()
 			.userId(profile.getUserId())
-			.deptScope(profile.getDeptScope())
+			.deptScope(profile.getDataScopes())
 			.permVersion(profile.getPermVersion())
 			.build();
 		return JsonSupport.toJson(snapshot);

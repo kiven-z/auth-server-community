@@ -2,6 +2,7 @@ package com.auth.service.auth.support.authorization;
 
 import com.auth.module.platform.persistence.model.UserEntity;
 import com.auth.module.security.contract.profile.ScopeGrant;
+import com.auth.module.security.contract.profile.datascope.DataScopeDimension;
 import com.auth.module.security.contract.profile.datascope.DataScopeStorageType;
 import com.auth.service.auth.mapper.DataScopeMapper;
 import com.auth.service.auth.mapper.UserAuthorizationGrantMapper;
@@ -37,7 +38,7 @@ class AuthProfileRepositoryTest {
 	private DataScopeMapper dataScopeMapper;
 
 	@Mock
-	private DeptDataScopeResolver deptDataScopeResolver;
+	private DataScopeResolver dataScopeResolver;
 
 	/**
 	 * 构造授权码行（角色码与权限码共用同一 PO 结构）
@@ -51,7 +52,7 @@ class AuthProfileRepositoryTest {
 
 	@Test
 	@DisplayName("构建画像时注入生效数据权限")
-	void buildByUserId_shouldContainResolvedDeptScope() {
+	void buildByUserId_shouldContainResolvedDataScopes() {
 		stubBatchUser(10L, "u10");
 		when(userAuthorizationGrantMapper.selectRoleRowsByUserIds(List.of(10L)))
 			.thenReturn(List.of(grantCodeRow(10L, "COMMON")));
@@ -59,22 +60,22 @@ class AuthProfileRepositoryTest {
 			.thenReturn(List.of(grantCodeRow(10L, "system:user:list")));
 		when(dataScopeMapper.selectByUserIds(List.of(10L))).thenReturn(List.of());
 		when(dataScopeMapper.selectByRoleCodes(List.of("COMMON"))).thenReturn(List.of());
-		ScopeGrant grant = ScopeGrant.builder().scopeType(DataScopeStorageType.DEPT).values(List.of(2L)).build();
-		when(deptDataScopeResolver.resolveEffectiveGrants(List.of(10L), Map.of(10L, List.of("COMMON")), Map.of(),
+		ScopeGrant grant = ScopeGrant.builder().scopeType(DataScopeStorageType.IDS).values(List.of(2L)).build();
+		when(dataScopeResolver.resolveEffectiveGrants(List.of(10L), Map.of(10L, List.of("COMMON")), Map.of(),
 				List.of()))
-			.thenReturn(Map.of(10L, grant));
+			.thenReturn(Map.of(10L, Map.of(DataScopeDimension.DEPT, grant)));
 
-		AuthProfileRepository repository = new AuthProfileRepository(userAuthorizationGrantMapper,
-				deptDataScopeResolver, userMapper, dataScopeMapper);
+		AuthProfileRepository repository = new AuthProfileRepository(userAuthorizationGrantMapper, dataScopeResolver,
+				userMapper, dataScopeMapper);
 
-		assertEquals(grant, repository.buildByUserId(10L).getDeptScope());
-		verify(deptDataScopeResolver).resolveEffectiveGrants(List.of(10L), Map.of(10L, List.of("COMMON")), Map.of(),
+		assertEquals(grant, repository.buildByUserId(10L).getDataScopes().get(DataScopeDimension.DEPT));
+		verify(dataScopeResolver).resolveEffectiveGrants(List.of(10L), Map.of(10L, List.of("COMMON")), Map.of(),
 				List.of());
 	}
 
 	@Test
 	@DisplayName("管理员角色使用通配权限但数据范围仍走 resolver")
-	void adminRole_shouldResolveDeptScopeFromResolver() {
+	void adminRole_shouldResolveDataScopesFromResolver() {
 		stubBatchUser(2L, "admin");
 		when(userAuthorizationGrantMapper.selectRoleRowsByUserIds(List.of(2L)))
 			.thenReturn(List.of(grantCodeRow(2L, "ADMIN")));
@@ -82,16 +83,15 @@ class AuthProfileRepositoryTest {
 			.thenReturn(List.of(grantCodeRow(2L, "*")));
 		when(dataScopeMapper.selectByUserIds(List.of(2L))).thenReturn(List.of());
 		when(dataScopeMapper.selectByRoleCodes(List.of("ADMIN"))).thenReturn(List.of());
-		ScopeGrant grant = ScopeGrant.builder().scopeType(DataScopeStorageType.DEPT).values(List.of(9L)).build();
-		when(deptDataScopeResolver.resolveEffectiveGrants(List.of(2L), Map.of(2L, List.of("ADMIN")), Map.of(),
-				List.of()))
-			.thenReturn(Map.of(2L, grant));
+		ScopeGrant grant = ScopeGrant.builder().scopeType(DataScopeStorageType.IDS).values(List.of(9L)).build();
+		when(dataScopeResolver.resolveEffectiveGrants(List.of(2L), Map.of(2L, List.of("ADMIN")), Map.of(), List.of()))
+			.thenReturn(Map.of(2L, Map.of(DataScopeDimension.DEPT, grant)));
 
-		AuthProfileRepository repository = new AuthProfileRepository(userAuthorizationGrantMapper,
-				deptDataScopeResolver, userMapper, dataScopeMapper);
+		AuthProfileRepository repository = new AuthProfileRepository(userAuthorizationGrantMapper, dataScopeResolver,
+				userMapper, dataScopeMapper);
 
-		assertEquals(grant, repository.buildByUserId(2L).getDeptScope());
-		verify(deptDataScopeResolver).resolveEffectiveGrants(List.of(2L), Map.of(2L, List.of("ADMIN")), Map.of(),
+		assertEquals(grant, repository.buildByUserId(2L).getDataScopes().get(DataScopeDimension.DEPT));
+		verify(dataScopeResolver).resolveEffectiveGrants(List.of(2L), Map.of(2L, List.of("ADMIN")), Map.of(),
 				List.of());
 	}
 
@@ -102,11 +102,10 @@ class AuthProfileRepositoryTest {
 		when(userAuthorizationGrantMapper.selectRoleRowsByUserIds(anyList())).thenReturn(List.of());
 		when(userAuthorizationGrantMapper.selectPermissionRowsByUserIds(anyList())).thenReturn(List.of());
 		when(dataScopeMapper.selectByUserIds(anyList())).thenReturn(List.of());
-		when(deptDataScopeResolver.resolveEffectiveGrants(anyList(), anyMap(), anyMap(), anyList()))
-			.thenReturn(Map.of());
+		when(dataScopeResolver.resolveEffectiveGrants(anyList(), anyMap(), anyMap(), anyList())).thenReturn(Map.of());
 
-		AuthProfileRepository repository = new AuthProfileRepository(userAuthorizationGrantMapper,
-				deptDataScopeResolver, userMapper, dataScopeMapper);
+		AuthProfileRepository repository = new AuthProfileRepository(userAuthorizationGrantMapper, dataScopeResolver,
+				userMapper, dataScopeMapper);
 
 		assertEquals(2, repository.buildByUserIds(List.of(10L, 11L)).size());
 		verify(userAuthorizationGrantMapper).selectRoleRowsByUserIds(List.of(10L, 11L));
@@ -116,22 +115,22 @@ class AuthProfileRepositoryTest {
 
 	@Test
 	@DisplayName("超级管理员写入 ALL 数据范围；resolver 仅收到空用户列表")
-	void superAdmin_shouldReceiveAllDeptScope() {
+	void superAdmin_shouldReceiveAllDataScope() {
 		stubBatchUser(1L, "root");
 		when(userAuthorizationGrantMapper.selectRoleRowsByUserIds(List.of(1L)))
 			.thenReturn(List.of(grantCodeRow(1L, "ADMIN")));
 		when(userAuthorizationGrantMapper.selectPermissionRowsByUserIds(List.of(1L)))
 			.thenReturn(List.of(grantCodeRow(1L, "*")));
 		when(dataScopeMapper.selectByUserIds(List.of(1L))).thenReturn(List.of());
-		when(deptDataScopeResolver.resolveEffectiveGrants(List.of(), Map.of(1L, List.of("ADMIN")), Map.of(), List.of()))
+		when(dataScopeResolver.resolveEffectiveGrants(List.of(), Map.of(1L, List.of("ADMIN")), Map.of(), List.of()))
 			.thenReturn(Map.of());
 
-		AuthProfileRepository repository = new AuthProfileRepository(userAuthorizationGrantMapper,
-				deptDataScopeResolver, userMapper, dataScopeMapper);
+		AuthProfileRepository repository = new AuthProfileRepository(userAuthorizationGrantMapper, dataScopeResolver,
+				userMapper, dataScopeMapper);
 
-		assertEquals(DataScopeStorageType.ALL, repository.buildByUserId(1L).getDeptScope().getScopeType());
-		verify(deptDataScopeResolver).resolveEffectiveGrants(List.of(), Map.of(1L, List.of("ADMIN")), Map.of(),
-				List.of());
+		assertEquals(DataScopeStorageType.ALL,
+				repository.buildByUserId(1L).getDataScopes().get(DataScopeDimension.DEPT).getScopeType());
+		verify(dataScopeResolver).resolveEffectiveGrants(List.of(), Map.of(1L, List.of("ADMIN")), Map.of(), List.of());
 		verify(dataScopeMapper, never()).selectByRoleCodes(anyList());
 	}
 

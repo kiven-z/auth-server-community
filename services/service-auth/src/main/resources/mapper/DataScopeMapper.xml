@@ -6,8 +6,9 @@
     <select id="selectByUserIds" resultType="com.auth.service.auth.model.po.scope.UserScopeByUserPO">
         SELECT
         user_id AS userId,
+        dimension,
         scope_type AS scopeType,
-        scope_dept_ids AS scopeDeptIds
+        scope_ids AS scopeIds
         FROM
         user_scope
         WHERE
@@ -22,8 +23,9 @@
             resultType="com.auth.service.auth.model.po.scope.RoleScopePO">
         SELECT
         r.role_code AS roleCode,
+        rs.dimension,
         rs.scope_type AS scopeType,
-        rs.scope_dept_ids AS scopeDeptIds
+        rs.scope_ids AS scopeIds
         FROM
         role_scope rs
         INNER JOIN sys_role r ON r.id = rs.role_id

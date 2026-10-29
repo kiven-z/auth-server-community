@@ -24,13 +24,18 @@ public class UserScopeByUserPO implements Serializable {
 	private Long userId;
 
 	/**
-	 * 范围类型：ALL/SELF/DEPT/DEPT_AND_CHILD
+	 * 数据维
+	 */
+	private String dimension;
+
+	/**
+	 * 范围类型：ALL/SELF/IDS/IDS_AND_CHILD
 	 */
 	private String scopeType;
 
 	/**
-	 * scope_dept_ids JSON 字符串
+	 * scope_ids JSON 字符串
 	 */
-	private String scopeDeptIds;
+	private String scopeIds;
 
 }

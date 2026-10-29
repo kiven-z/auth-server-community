@@ -22,10 +22,13 @@ public class RoleScopePO implements Serializable {
 	@Schema(title = "角色码")
 	private String roleCode;
 
-	@Schema(title = "范围类型：ALL/SELF/DEPT/DEPT_AND_CHILD")
+	@Schema(title = "数据维")
+	private String dimension;
+
+	@Schema(title = "范围类型：ALL/SELF/IDS/IDS_AND_CHILD")
 	private String scopeType;
 
-	@Schema(title = "scope_dept_ids JSON 字符串")
-	private String scopeDeptIds;
+	@Schema(title = "scope_ids JSON 字符串")
+	private String scopeIds;
 
 }
