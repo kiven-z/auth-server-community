@@ -1,17 +1,28 @@
 package com.auth.service.auth.support.invalidation.impact;
 
-import cn.hutool.core.collection.CollUtil;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.UnaryOperator;
+
+import org.springframework.stereotype.Repository;
+
 import com.auth.common.core.constants.BatchSizes;
+import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.module.security.contract.invalidation.GrantSubjectKey;
 import com.auth.service.auth.mapper.AuthorizationImpactMapper;
 import com.auth.service.auth.util.BatchPartition;
-import org.springframework.stereotype.Repository;
 
-import java.util.*;
-import java.util.function.UnaryOperator;
+import cn.hutool.core.collection.CollUtil;
 
 /**
- * 授权影响面查询：按角色、权限、grant、部门、岗位等
+ * 授权影响面查询：按角色、权限、授权主体反查用户 成员展开读 v_user_grant_subjects
  *
  * @author Bunny
  */
@@ -43,30 +54,23 @@ public class AuthorizationImpactQuerySupport {
 	}
 
 	/**
-	 * 按 grant_table 授权主体反查受影响用户 ID。
+	 * 按授权主体反查成员用户 ID
 	 * @param subjects 授权主体键列表
 	 * @return 去重后的用户 ID 集合
 	 */
 	public Set<Long> findUserIdsByGrantSubjects(Collection<GrantSubjectKey> subjects) {
-		Set<Long> userIds = new HashSet<>();
-		List<Long> userSubjectIds = new ArrayList<>();
-		List<Long> deptSubjectIds = new ArrayList<>();
-		List<Long> postSubjectIds = new ArrayList<>();
-
+		Map<GrantTableSubjectType, List<Long>> idsByType = new EnumMap<>(GrantTableSubjectType.class);
 		for (GrantSubjectKey subject : subjects) {
-			switch (subject.subjectType()) {
-				case USER -> userSubjectIds.add(subject.subjectId());
-				case DEPT -> deptSubjectIds.add(subject.subjectId());
-				case POST -> postSubjectIds.add(subject.subjectId());
-				default -> {
-					// 规划中的主体类型尚未落地
-				}
-			}
+			idsByType.computeIfAbsent(subject.subjectType(), type -> new ArrayList<>()).add(subject.subjectId());
 		}
 
-		queryLongKeysInBatches(userSubjectIds, authorizationImpactMapper::selectUserIdsByGrantUserSubjectIds, userIds);
-		queryLongKeysInBatches(deptSubjectIds, authorizationImpactMapper::selectUserIdsByDeptIds, userIds);
-		queryLongKeysInBatches(postSubjectIds, authorizationImpactMapper::selectUserIdsByPostIds, userIds);
+		Set<Long> userIds = new HashSet<>();
+		for (Map.Entry<GrantTableSubjectType, List<Long>> entry : idsByType.entrySet()) {
+			List<Long> ids = entry.getValue().stream().distinct().toList();
+			String subjectType = entry.getKey().name();
+			queryLongKeysInBatches(ids,
+					chunk -> authorizationImpactMapper.selectUserIdsByGrantSubjects(subjectType, chunk), userIds);
+		}
 		return Set.copyOf(userIds);
 	}
 
@@ -90,23 +94,6 @@ public class AuthorizationImpactQuerySupport {
 		}
 
 		return findUserIdsByRoleCodes(roleCodes);
-	}
-
-	/**
-	 * 按 Long 型键分批反查用户 ID 并去重。
-	 * @param keys 查询键
-	 * @param queryFn 分批查询函数
-	 * @return 去重后的用户 ID 集合
-	 */
-	public Set<Long> findUserIdsByLongKeys(Collection<Long> keys, UnaryOperator<List<Long>> queryFn) {
-		List<Long> ids = keys.stream().filter(Objects::nonNull).distinct().toList();
-		if (ids.isEmpty()) {
-			return Set.of();
-		}
-
-		Set<Long> userIds = new HashSet<>();
-		queryLongKeysInBatches(ids, queryFn, userIds);
-		return Set.copyOf(userIds);
 	}
 
 	private void queryLongKeysInBatches(List<Long> keys, UnaryOperator<List<Long>> queryFn, Set<Long> accumulator) {

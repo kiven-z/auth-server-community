@@ -56,21 +56,25 @@ class AuthorizationImpactQuerySupportTest {
 	}
 
 	@Test
-	@DisplayName("按 grant 主体分组后分别调用对应 Mapper")
-	void findUserIdsByGrantSubjects_shouldGroupBySubjectType() {
-		when(authorizationImpactMapper.selectUserIdsByGrantUserSubjectIds(List.of(10L))).thenReturn(List.of(10L));
-		when(authorizationImpactMapper.selectUserIdsByDeptIds(List.of(20L))).thenReturn(List.of(21L));
-		when(authorizationImpactMapper.selectUserIdsByPostIds(List.of(30L))).thenReturn(List.of(31L));
+	@DisplayName("按主体类型分别查成员视图，同类型主体 ID 去重")
+	void findUserIdsByGrantSubjects_shouldQueryBySubjectType() {
+		when(authorizationImpactMapper.selectUserIdsByGrantSubjects(GrantTableSubjectType.USER.name(), List.of(10L)))
+			.thenReturn(List.of(10L));
+		when(authorizationImpactMapper.selectUserIdsByGrantSubjects(GrantTableSubjectType.DEPT.name(), List.of(20L)))
+			.thenReturn(List.of(21L));
+		when(authorizationImpactMapper.selectUserIdsByGrantSubjects(GrantTableSubjectType.POST.name(), List.of(30L)))
+			.thenReturn(List.of(31L));
 
 		Set<Long> userIds = impactQuery
 			.findUserIdsByGrantSubjects(List.of(new GrantSubjectKey(GrantTableSubjectType.USER, 10L),
+					new GrantSubjectKey(GrantTableSubjectType.USER, 10L),
 					new GrantSubjectKey(GrantTableSubjectType.DEPT, 20L),
 					new GrantSubjectKey(GrantTableSubjectType.POST, 30L)));
 
 		assertEquals(Set.of(10L, 21L, 31L), userIds);
-		verify(authorizationImpactMapper).selectUserIdsByGrantUserSubjectIds(List.of(10L));
-		verify(authorizationImpactMapper).selectUserIdsByDeptIds(List.of(20L));
-		verify(authorizationImpactMapper).selectUserIdsByPostIds(List.of(30L));
+		verify(authorizationImpactMapper).selectUserIdsByGrantSubjects(GrantTableSubjectType.USER.name(), List.of(10L));
+		verify(authorizationImpactMapper).selectUserIdsByGrantSubjects(GrantTableSubjectType.DEPT.name(), List.of(20L));
+		verify(authorizationImpactMapper).selectUserIdsByGrantSubjects(GrantTableSubjectType.POST.name(), List.of(30L));
 	}
 
 	@Test
@@ -87,20 +91,23 @@ class AuthorizationImpactQuerySupportTest {
 	}
 
 	@Test
-	@DisplayName("部门 ID 超过分片大小时应分批查询并合并去重")
-	void findUserIdsByDeptIds_largeInput_shouldQueryInChunks() {
-		List<Long> deptIds = IntStream.rangeClosed(1, BatchSizes.SIZE_500 * 2 + 200).mapToObj(Long::valueOf).toList();
+	@DisplayName("同一主体类型超过分片大小时应分批查询并合并去重")
+	void findUserIdsByGrantSubjects_largeInput_shouldQueryInChunks() {
+		List<GrantSubjectKey> subjects = IntStream.rangeClosed(1, BatchSizes.SIZE_500 * 2 + 200)
+			.mapToObj(id -> new GrantSubjectKey(GrantTableSubjectType.DEPT, (long) id))
+			.toList();
 
-		when(authorizationImpactMapper.selectUserIdsByDeptIds(anyList())).thenAnswer(invocation -> {
-			List<Long> chunk = invocation.getArgument(0);
-			return List.of(chunk.get(0));
-		});
+		when(authorizationImpactMapper.selectUserIdsByGrantSubjects(eq(GrantTableSubjectType.DEPT.name()), anyList()))
+			.thenAnswer(invocation -> {
+				List<Long> chunk = invocation.getArgument(1);
+				return List.of(chunk.get(0));
+			});
 
-		Set<Long> userIds = impactQuery.findUserIdsByLongKeys(deptIds,
-				authorizationImpactMapper::selectUserIdsByDeptIds);
+		Set<Long> userIds = impactQuery.findUserIdsByGrantSubjects(subjects);
 
 		assertEquals(3, userIds.size());
-		verify(authorizationImpactMapper, times(3)).selectUserIdsByDeptIds(anyList());
+		verify(authorizationImpactMapper, times(3)).selectUserIdsByGrantSubjects(eq(GrantTableSubjectType.DEPT.name()),
+				anyList());
 	}
 
 	@Test

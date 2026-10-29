@@ -2,42 +2,32 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auth.service.system.admin.mapper.authorization.RoleImpactQueryMapper">
 
-    <!-- USER + DEPT 闭包 + POST 展开 -->
-    <sql id="impactUserIdsByRoleId">
-        SELECT gt.subject_id AS user_id
-        FROM grant_table gt
-        WHERE gt.role_id = #{roleId}
-          AND gt.subject_type = 'USER'
-        UNION
-        SELECT ud.user_id
-        FROM grant_table gt
-                 INNER JOIN user_dept ud ON gt.subject_type = 'DEPT'
-                 INNER JOIN dept_closure dc ON ud.dept_id = dc.descendant_id
-            AND dc.ancestor_id = gt.subject_id
-        WHERE gt.role_id = #{roleId}
-        UNION
-        SELECT up.user_id
-        FROM grant_table gt
-                 INNER JOIN user_post up ON gt.subject_type = 'POST'
-            AND up.post_id = gt.subject_id
-        WHERE gt.role_id = #{roleId}
-    </sql>
-
     <!-- 统计角色影响用户（去重） -->
     <select id="countImpactUsersByRoleId" resultType="long">
-        SELECT COUNT(1)
-        FROM (
-        SELECT DISTINCT user_id
-        FROM (
-        <include refid="impactUserIdsByRoleId"/>
-        ) impacted
-        ) i
-        INNER JOIN sys_user u ON u.id = i.user_id
+        SELECT
+            COUNT(1)
+        FROM
+            (
+                SELECT DISTINCT
+                    user_id
+                FROM
+                    (
+                        SELECT
+                            m.user_id
+                        FROM
+                            grant_table gt
+                            INNER JOIN v_user_grant_subjects m ON m.sub_type = gt.subject_type
+                            AND m.sub_id = gt.subject_id
+                        WHERE
+                            gt.role_id = #{roleId}
+                    ) impacted
+            ) i
+            INNER JOIN sys_user u ON u.id = i.user_id
         <where>
             <if test="query != null and query.keyword != null and query.keyword != ''">
                 AND (
-                u.username LIKE CONCAT('%', #{query.keyword}, '%')
-                OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
+                    u.username LIKE CONCAT('%', #{query.keyword}, '%')
+                    OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
                 )
             </if>
             <if test="query != null and query.status != null">
@@ -50,25 +40,35 @@
     <select id="selectImpactUsersByRoleIdPage"
             resultType="com.auth.service.system.admin.model.po.reference.UserReferencePO">
         SELECT
-        u.id,
-        u.username,
-        u.status,
-        u.nickname,
-        u.avatar,
-        u.gender,
-        u.employee_no
-        FROM (
-        SELECT DISTINCT user_id
-        FROM (
-        <include refid="impactUserIdsByRoleId"/>
-        ) impacted
-        ) i
-        INNER JOIN sys_user u ON u.id = i.user_id
+            u.id,
+            u.username,
+            u.status,
+            u.nickname,
+            u.avatar,
+            u.gender,
+            u.employee_no
+        FROM
+            (
+                SELECT DISTINCT
+                    user_id
+                FROM
+                    (
+                        SELECT
+                            m.user_id
+                        FROM
+                            grant_table gt
+                            INNER JOIN v_user_grant_subjects m ON m.sub_type = gt.subject_type
+                            AND m.sub_id = gt.subject_id
+                        WHERE
+                            gt.role_id = #{roleId}
+                    ) impacted
+            ) i
+            INNER JOIN sys_user u ON u.id = i.user_id
         <where>
             <if test="query != null and query.keyword != null and query.keyword != ''">
                 AND (
-                u.username LIKE CONCAT('%', #{query.keyword}, '%')
-                OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
+                    u.username LIKE CONCAT('%', #{query.keyword}, '%')
+                    OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
                 )
             </if>
             <if test="query != null and query.status != null">
@@ -76,15 +76,24 @@
             </if>
         </where>
         ORDER BY
-        u.username
+            u.username
     </select>
 
     <!-- 列出角色全部影响用户 ID -->
     <select id="selectImpactUserIdsByRoleId" resultType="java.lang.Long">
-        SELECT DISTINCT user_id
-        FROM (
-        <include refid="impactUserIdsByRoleId"/>
-        ) impacted
+        SELECT DISTINCT
+            user_id
+        FROM
+            (
+                SELECT
+                    m.user_id
+                FROM
+                    grant_table gt
+                    INNER JOIN v_user_grant_subjects m ON m.sub_type = gt.subject_type
+                    AND m.sub_id = gt.subject_id
+                WHERE
+                    gt.role_id = #{roleId}
+            ) impacted
     </select>
 
 </mapper>

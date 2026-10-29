@@ -6,7 +6,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * grant_table 授权主体键（USER / DEPT / POST + 主键）。
+ * grant_table 授权主体键
  *
  * @param subjectType 主体类型
  * @param subjectId 主体 ID

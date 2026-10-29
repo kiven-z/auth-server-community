@@ -1,13 +1,14 @@
 package com.auth.service.system.admin.mapper.authorization;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
 import com.auth.service.system.admin.model.po.reference.UserReferencePO;
 import com.auth.service.system.admin.model.query.authorization.RoleImpactUserPageQuery;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 /**
  * 角色影响用户只读查询
@@ -18,7 +19,7 @@ import java.util.List;
 public interface RoleImpactQueryMapper {
 
 	/**
-	 * 统计角色影响用户数（USER/DEPT/POST 展开后去重）
+	 * 统计角色影响用户数
 	 * @param roleId 角色 ID
 	 * @param query 过滤条件（与 page 同源；摘要场景传 null）
 	 * @return 去重用户数

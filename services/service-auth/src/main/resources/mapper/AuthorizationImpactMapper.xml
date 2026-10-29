@@ -3,13 +3,20 @@
 <mapper namespace="com.auth.service.auth.mapper.AuthorizationImpactMapper">
     <!--
         反向影响面：业务键 → userId。
-        DEPT/POST 的 GRANT 主体反查直接调用 selectUserIdsByDeptIds / selectUserIdsByPostIds，
-        不依赖 grant_table 现存行（失效提交时 grant 行可能已删除）。
-        按角色码反查（selectUserIdsByRoleCodes）仍经 grant_table，因角色变更时行通常仍在。
+        成员展开只读 v_user_grant_subjects。
+        失效执行时该主体的授权行可能已删除。
+        按角色码反查仍经 grant_table，再 JOIN 同一视图。
     -->
 
-    <!-- 角色码 IN 条件（grant_table 反查复用） -->
-    <sql id="roleCodesInCondition">
+    <!-- 按角色码反查受影响用户 ID -->
+    <select id="selectUserIdsByRoleCodes" resultType="java.lang.Long">
+        SELECT DISTINCT
+        m.user_id
+        FROM
+        grant_table gt
+        INNER JOIN v_user_grant_subjects m ON m.sub_type = gt.subject_type
+        AND m.sub_id = gt.subject_id
+        WHERE
         gt.role_id IN (
         SELECT r.id
         FROM sys_role r
@@ -18,90 +25,32 @@
             #{roleCode}
         </foreach>
         )
-    </sql>
-
-    <!-- 按角色码反查受影响用户 ID（grant_table USER/DEPT/POST） -->
-    <select id="selectUserIdsByRoleCodes" resultType="java.lang.Long">
-        SELECT DISTINCT user_id
-        FROM (
-        SELECT gt.subject_id AS user_id
-        FROM grant_table gt
-        WHERE gt.subject_type = 'USER'
-        AND
-        <include refid="roleCodesInCondition"/>
-        UNION
-        SELECT
-        ud.user_id
-        FROM
-        grant_table gt
-        INNER JOIN user_dept ud ON gt.subject_type = 'DEPT'
-        INNER JOIN dept_closure dc ON ud.dept_id = dc.descendant_id
-        AND dc.ancestor_id = gt.subject_id
-        WHERE
-        <include refid="roleCodesInCondition"/>
-        UNION
-        SELECT
-        up.user_id
-        FROM
-        grant_table gt
-        INNER JOIN user_post up ON gt.subject_type = 'POST'
-        AND up.post_id = gt.subject_id
-        WHERE
-        <include refid="roleCodesInCondition"/>
-        ) impacted
     </select>
 
-    <!-- 按 grant_table USER 主体反查用户 ID -->
-    <select id="selectUserIdsByGrantUserSubjectIds" resultType="java.lang.Long">
+    <!-- 按授权主体反查成员用户 ID -->
+    <select id="selectUserIdsByGrantSubjects" resultType="java.lang.Long">
         SELECT DISTINCT
-        gt.subject_id AS user_id
+            m.user_id
         FROM
-        grant_table gt
+            v_user_grant_subjects m
         WHERE
-        gt.subject_type = 'USER'
-        AND gt.subject_id IN
+            m.sub_type = #{subjectType}
+            AND m.sub_id IN
         <foreach collection="subjectIds" item="subjectId" open="(" separator="," close=")">
             #{subjectId}
-        </foreach>
-    </select>
-
-    <!-- 按部门 ID 反查部门成员（含子部门） -->
-    <select id="selectUserIdsByDeptIds" resultType="java.lang.Long">
-        SELECT DISTINCT
-        ud.user_id
-        FROM
-        user_dept ud
-        INNER JOIN dept_closure dc ON ud.dept_id = dc.descendant_id
-        WHERE
-        dc.ancestor_id IN
-        <foreach collection="deptIds" item="deptId" open="(" separator="," close=")">
-            #{deptId}
-        </foreach>
-    </select>
-
-    <!-- 按岗位 ID 反查岗位成员 -->
-    <select id="selectUserIdsByPostIds" resultType="java.lang.Long">
-        SELECT DISTINCT
-        up.user_id
-        FROM
-        user_post up
-        WHERE
-        up.post_id IN
-        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
-            #{postId}
         </foreach>
     </select>
 
     <!-- 权限码桥接：查询关联角色码 -->
     <select id="selectRoleCodesByPermissionCodes" resultType="java.lang.String">
         SELECT DISTINCT
-        r.role_code
+            r.role_code
         FROM
-        sys_role_permission rp
-        INNER JOIN sys_permission p ON p.id = rp.permission_id
-        INNER JOIN sys_role r ON r.id = rp.role_id
+            sys_role_permission rp
+            INNER JOIN sys_permission p ON p.id = rp.permission_id
+            INNER JOIN sys_role r ON r.id = rp.role_id
         WHERE
-        p.permission_code IN
+            p.permission_code IN
         <foreach collection="permissionCodes" item="permissionCode" open="(" separator="," close=")">
             #{permissionCode}
         </foreach>
