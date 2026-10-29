@@ -3,14 +3,11 @@ package com.auth.service.system.admin.service.authorization.impact.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.constants.BatchSizes;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
-import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.RoleImpactQueryMapper;
 import com.auth.service.system.admin.model.po.reference.UserReferencePO;
 import com.auth.service.system.admin.model.query.authorization.RoleImpactUserPageQuery;
 import com.auth.service.system.admin.model.vo.authorization.RoleImpactRefreshResultVO;
-import com.auth.service.system.admin.model.vo.authorization.RoleImpactSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.UserReferenceVO;
 import com.auth.service.system.admin.service.authorization.impact.RoleImpactService;
 import com.auth.service.system.admin.support.grant.RbacReferenceChecker;
@@ -37,30 +34,9 @@ public class RoleImpactServiceImpl implements RoleImpactService {
 
 	private final RbacReferenceChecker rbacReferenceChecker;
 
-	private final GrantBindingQueryMapper grantBindingQueryMapper;
-
 	private final RoleImpactQueryMapper roleImpactQueryMapper;
 
 	private final UserProfileRefreshTrigger userProfileRefreshTrigger;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	@Transactional(readOnly = true)
-	public RoleImpactSummaryVO getImpactSummary(Long roleId) {
-		rbacReferenceChecker.getExisting(roleId);
-
-		RoleImpactSummaryVO summary = new RoleImpactSummaryVO();
-		summary.setGrantUserCount(
-				grantBindingQueryMapper.countSubjectsByRoleIdAndType(roleId, GrantTableSubjectType.USER.name(), null));
-		summary.setGrantDeptCount(
-				grantBindingQueryMapper.countSubjectsByRoleIdAndType(roleId, GrantTableSubjectType.DEPT.name(), null));
-		summary.setGrantPostCount(
-				grantBindingQueryMapper.countSubjectsByRoleIdAndType(roleId, GrantTableSubjectType.POST.name(), null));
-		summary.setImpactedUserCount(roleImpactQueryMapper.countImpactUsersByRoleId(roleId, null));
-		return summary;
-	}
 
 	/**
 	 * {@inheritDoc}

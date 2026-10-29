@@ -18,20 +18,6 @@ import org.apache.ibatis.annotations.Param;
 public interface UserEffectiveAuthorizationQueryMapper {
 
 	/**
-	 * 统计用户关联部门数（与 user-dept 分页无过滤条件同源）
-	 * @param userId 用户 ID
-	 * @return 部门关联数
-	 */
-	long countDeptsByUserId(@Param("userId") Long userId);
-
-	/**
-	 * 统计用户关联岗位数（与 user-post 分页无过滤条件同源）
-	 * @param userId 用户 ID
-	 * @return 岗位关联数
-	 */
-	long countPostsByUserId(@Param("userId") Long userId);
-
-	/**
 	 * 统计用户生效角色数
 	 * @param userId 用户 ID
 	 * @param query 过滤条件

@@ -8,7 +8,6 @@ import com.auth.module.security.contract.audit.operationlog.OperationLogKind;
 import com.auth.module.security.contract.bizcode.PlatformBizCodes;
 import com.auth.service.system.admin.model.query.authorization.RoleImpactUserPageQuery;
 import com.auth.service.system.admin.model.vo.authorization.RoleImpactRefreshResultVO;
-import com.auth.service.system.admin.model.vo.authorization.RoleImpactSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.UserReferenceVO;
 import com.auth.service.system.admin.service.authorization.impact.RoleImpactService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,21 +25,13 @@ import static com.auth.service.system.common.exception.code.SystemCommonResultCo
  *
  * @author Bunny
  */
-@Tag(name = "角色影响面", description = "影响摘要、影响用户分页、刷新受影响用户画像")
+@Tag(name = "角色影响面", description = "影响用户分页、刷新受影响用户画像")
 @RequiredArgsConstructor
 @RequestMapping("/api/system/role")
 @RestController
 public class RoleImpactController {
 
 	private final RoleImpactService roleImpactService;
-
-	@Operation(summary = "查询角色影响面摘要")
-	@PreAuthorize("@auth.decide('sys:role:query')")
-	@GetMapping("/{roleId}/impact/summary")
-	public Result<RoleImpactSummaryVO> impactSummary(@PathVariable("roleId") Long roleId) {
-		RoleImpactSummaryVO summary = roleImpactService.getImpactSummary(roleId);
-		return Result.success(summary);
-	}
 
 	@Operation(summary = "分页查询角色影响用户")
 	@PreAuthorize("@auth.decide('sys:role:query')")

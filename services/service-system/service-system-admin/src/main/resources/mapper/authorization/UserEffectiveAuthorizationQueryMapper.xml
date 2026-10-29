@@ -2,20 +2,6 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auth.service.system.admin.mapper.authorization.UserEffectiveAuthorizationQueryMapper">
 
-    <!-- 用户部门关联数 -->
-    <select id="countDeptsByUserId" resultType="long">
-        SELECT COUNT(1)
-        FROM user_dept ud
-        WHERE ud.user_id = #{userId}
-    </select>
-
-    <!-- 用户岗位关联数 -->
-    <select id="countPostsByUserId" resultType="long">
-        SELECT COUNT(1)
-        FROM user_post up
-        WHERE up.user_id = #{userId}
-    </select>
-
     <!-- 统计用户生效角色（仅启用） -->
     <select id="countEffectiveRolesByUserId" resultType="long">
         SELECT COUNT(1)

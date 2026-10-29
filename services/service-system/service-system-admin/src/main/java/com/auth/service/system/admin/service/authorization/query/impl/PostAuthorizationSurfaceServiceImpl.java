@@ -10,7 +10,6 @@ import com.auth.service.system.admin.model.po.post.SysPostBoundUserPO;
 import com.auth.service.system.admin.model.po.reference.RoleReferencePO;
 import com.auth.service.system.admin.model.query.authorization.PostUserPageQuery;
 import com.auth.service.system.admin.model.query.authorization.SubjectRolePageQuery;
-import com.auth.service.system.admin.model.vo.authorization.PostAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.ext.PostBoundUserReferenceVO;
 import com.auth.service.system.admin.service.authorization.query.PostAuthorizationSurfaceService;
@@ -67,20 +66,6 @@ public class PostAuthorizationSurfaceServiceImpl implements PostAuthorizationSur
 
 		IPage<RoleReferenceVO> convert = page.convert(ReferenceConverter.INSTANCE::toRoleReference);
 		return PageResponse.of(convert);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public PostAuthorizationSummaryVO getAuthorizationSummary(Long postId) {
-		postReferenceChecker.getExistingActive(postId);
-
-		PostAuthorizationSummaryVO summary = new PostAuthorizationSummaryVO();
-		summary.setBoundUserCount(postRelationQueryMapper.countUsersByPostId(postId, null));
-		summary.setBoundRoleCount(
-				grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.POST.name(), postId, null));
-		return summary;
 	}
 
 }

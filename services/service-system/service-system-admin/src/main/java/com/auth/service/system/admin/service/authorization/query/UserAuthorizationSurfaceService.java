@@ -4,7 +4,6 @@ import com.auth.common.data.model.PageResponse;
 import com.auth.service.system.admin.model.query.authorization.SubjectRolePageQuery;
 import com.auth.service.system.admin.model.query.authorization.UserEffectivePermissionPageQuery;
 import com.auth.service.system.admin.model.query.authorization.UserEffectiveRolePageQuery;
-import com.auth.service.system.admin.model.vo.authorization.UserAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.PermissionReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 
@@ -38,12 +37,5 @@ public interface UserAuthorizationSurfaceService {
 	 * @return 分页数据
 	 */
 	PageResponse<PermissionReferenceVO> pageEffectivePermissions(Long userId, UserEffectivePermissionPageQuery query);
-
-	/**
-	 * 获取用户授权面摘要
-	 * @param userId 用户 ID
-	 * @return 授权面摘要
-	 */
-	UserAuthorizationSummaryVO getAuthorizationSummary(Long userId);
 
 }

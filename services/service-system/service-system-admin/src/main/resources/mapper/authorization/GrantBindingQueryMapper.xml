@@ -50,19 +50,6 @@
         r.role_code
     </select>
 
-    <!-- 授权对象展示过滤：状态只作用于视图中 status 非空的主体（当前为用户） -->
-    <sql id="grantSubjectFilters">
-        <if test="query != null and query.keyword != null and query.keyword != ''">
-            AND (
-            s.keyword_code LIKE CONCAT('%', #{query.keyword}, '%')
-            OR s.keyword_name LIKE CONCAT('%', #{query.keyword}, '%')
-            )
-        </if>
-        <if test="query != null and query.status != null">
-            AND (s.status IS NULL OR s.status = #{query.status})
-        </if>
-    </sql>
-
     <!-- 统计角色下指定类型授权对象 -->
     <select id="countSubjectsByRoleIdAndType" resultType="long">
         SELECT
@@ -74,7 +61,16 @@
         WHERE
         gt.role_id = #{roleId}
         AND gt.subject_type = #{subjectType}
-        <include refid="grantSubjectFilters"/>
+        <if test="query != null and query.keyword != null and query.keyword != ''">
+            AND (
+            s.keyword_code LIKE CONCAT('%', #{query.keyword}, '%')
+            OR s.keyword_name LIKE CONCAT('%', #{query.keyword}, '%')
+            )
+        </if>
+        <!-- 状态只作用于视图中 status 非空的主体（当前为用户） -->
+        <if test="query != null and query.status != null">
+            AND (s.status IS NULL OR s.status = #{query.status})
+        </if>
     </select>
 
     <!-- 分页查询角色下指定类型授权对象 -->
@@ -90,7 +86,16 @@
         WHERE
         gt.role_id = #{roleId}
         AND gt.subject_type = #{subjectType}
-        <include refid="grantSubjectFilters"/>
+        <if test="query != null and query.keyword != null and query.keyword != ''">
+            AND (
+            s.keyword_code LIKE CONCAT('%', #{query.keyword}, '%')
+            OR s.keyword_name LIKE CONCAT('%', #{query.keyword}, '%')
+            )
+        </if>
+        <!-- 状态只作用于视图中 status 非空的主体（当前为用户） -->
+        <if test="query != null and query.status != null">
+            AND (s.status IS NULL OR s.status = #{query.status})
+        </if>
         ORDER BY
         s.sort_key
     </select>

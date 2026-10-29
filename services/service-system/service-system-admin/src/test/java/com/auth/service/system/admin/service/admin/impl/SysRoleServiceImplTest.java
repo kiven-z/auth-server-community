@@ -7,9 +7,7 @@ import com.auth.service.system.admin.mapper.admin.role.SysRoleMapper;
 import com.auth.service.system.admin.model.entity.SysRoleEntity;
 import com.auth.service.system.admin.model.form.role.SysRoleForm;
 import com.auth.service.system.admin.model.po.reference.RoleReferencePO;
-import com.auth.service.system.admin.model.vo.authorization.RoleAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.role.SysRoleDetailVO;
-import com.auth.service.system.admin.service.authorization.query.RoleAuthorizationSurfaceService;
 import com.auth.service.system.authorization.dispatch.trigger.RoleAuthorizationInvalidationTrigger;
 import com.auth.service.system.common.exception.SystemBusinessException;
 import com.auth.service.system.common.exception.code.SystemCommonResultCode;
@@ -52,9 +50,6 @@ class SysRoleServiceImplTest {
 	@Mock
 	private GrantTableMapper grantTableMapper;
 
-	@Mock
-	private RoleAuthorizationSurfaceService roleAuthorizationSurfaceService;
-
 	private SysRoleServiceImpl sysRoleService;
 
 	private static SysRoleForm updateForm(Long id, String roleCode, boolean status) {
@@ -76,20 +71,10 @@ class SysRoleServiceImplTest {
 		return entity;
 	}
 
-	private static RoleAuthorizationSummaryVO summary() {
-		RoleAuthorizationSummaryVO value = new RoleAuthorizationSummaryVO();
-		value.setPermissionCount(3L);
-		value.setMenuCount(2L);
-		value.setGrantUserCount(5L);
-		value.setGrantDeptCount(1L);
-		value.setGrantPostCount(0L);
-		return value;
-	}
-
 	@BeforeEach
 	void setUp() throws Exception {
-		sysRoleService = spy(new SysRoleServiceImpl(auditUserDisplayService, roleInvalidationTrigger, grantTableMapper,
-				roleAuthorizationSurfaceService));
+		sysRoleService = spy(
+				new SysRoleServiceImpl(auditUserDisplayService, roleInvalidationTrigger, grantTableMapper));
 		Field baseMapperField = CrudRepository.class.getDeclaredField("baseMapper");
 		baseMapperField.setAccessible(true);
 		baseMapperField.set(sysRoleService, sysRoleMapper);
@@ -165,25 +150,16 @@ class SysRoleServiceImplTest {
 		assertThatThrownBy(() -> sysRoleService.getDetail(9L)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.DATA_NOT_EXIST);
-
-		verifyNoInteractions(roleAuthorizationSurfaceService);
 	}
 
 	@Test
-	@DisplayName("角色详情：复用授权面摘要填充计数")
-	void getDetailShouldIncludeAuthorizationCounts() {
+	@DisplayName("角色详情：返回角色字段并补全审计用户名")
+	void getDetailReturnsRoleFields() {
 		when(sysRoleMapper.selectById(1L)).thenReturn(roleEntity(1L, "ADMIN"));
-		when(roleAuthorizationSurfaceService.getAuthorizationSummary(1L)).thenReturn(summary());
 
 		SysRoleDetailVO detail = sysRoleService.getDetail(1L);
 
 		assertThat(detail.getRoleCode()).isEqualTo("ADMIN");
-		assertThat(detail.getPermissionCount()).isEqualTo(3L);
-		assertThat(detail.getMenuCount()).isEqualTo(2L);
-		assertThat(detail.getGrantUserCount()).isEqualTo(5L);
-		assertThat(detail.getGrantDeptCount()).isEqualTo(1L);
-		assertThat(detail.getGrantPostCount()).isZero();
-		verify(roleAuthorizationSurfaceService).getAuthorizationSummary(1L);
 		verifyNoInteractions(grantTableMapper);
 		verify(auditUserDisplayService).enrichAuditUsernames(anyList(), isNull(), isNull());
 	}

@@ -1,26 +1,18 @@
 package com.auth.service.system.admin.service.authorization.impact;
 
+import java.util.List;
+
 import com.auth.common.data.model.PageResponse;
 import com.auth.service.system.admin.model.query.authorization.RoleImpactUserPageQuery;
 import com.auth.service.system.admin.model.vo.authorization.RoleImpactRefreshResultVO;
-import com.auth.service.system.admin.model.vo.authorization.RoleImpactSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.UserReferenceVO;
 
-import java.util.List;
-
 /**
- * 角色影响面：摘要、影响用户分页与画像刷新
+ * 角色影响面
  *
  * @author Bunny
  */
 public interface RoleImpactService {
-
-	/**
-	 * 查询角色影响面摘要
-	 * @param roleId 角色 ID
-	 * @return 授权对象分项与影响用户总数
-	 */
-	RoleImpactSummaryVO getImpactSummary(Long roleId);
 
 	/**
 	 * 分页查询角色影响用户

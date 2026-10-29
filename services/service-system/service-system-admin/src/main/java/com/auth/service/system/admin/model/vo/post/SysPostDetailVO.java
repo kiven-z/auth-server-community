@@ -40,10 +40,4 @@ public class SysPostDetailVO extends BaseResponse {
 	@Schema(title = "所属部门快照")
 	private DeptReferenceVO boundDept;
 
-	@Schema(title = "绑定用户数")
-	private Long boundUserCount;
-
-	@Schema(title = "已授角色数")
-	private Long boundRoleCount;
-
 }

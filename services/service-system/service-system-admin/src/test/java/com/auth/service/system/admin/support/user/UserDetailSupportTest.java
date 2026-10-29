@@ -4,9 +4,7 @@ import com.auth.module.platform.persistence.model.UserEntity;
 import com.auth.service.system.admin.mapper.admin.user.SysUserMapper;
 import com.auth.service.system.admin.mapper.admin.user.UserDeptMapper;
 import com.auth.service.system.admin.model.po.user.UserPrimaryDeptPO;
-import com.auth.service.system.admin.model.vo.authorization.UserAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.user.SysUserDetailVO;
-import com.auth.service.system.admin.service.authorization.query.UserAuthorizationSurfaceService;
 import com.auth.service.system.common.service.AuditUserDisplayService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,33 +35,19 @@ class UserDetailSupportTest {
 	private AuditUserDisplayService auditUserDisplayService;
 
 	@Mock
-	private UserAuthorizationSurfaceService userAuthorizationSurfaceService;
-
-	@Mock
 	private UserDeptMapper userDeptMapper;
 
 	private UserDetailSupport userDetailSupport;
 
-	private static UserAuthorizationSummaryVO summary() {
-		UserAuthorizationSummaryVO value = new UserAuthorizationSummaryVO();
-		value.setDeptCount(1L);
-		value.setPostCount(1L);
-		value.setDirectRoleCount(3L);
-		value.setEffectiveRoleCount(5L);
-		value.setEffectivePermissionCount(12L);
-		return value;
-	}
-
 	@BeforeEach
 	void setUp() {
 		UserReferenceChecker userReferenceChecker = new UserReferenceChecker(sysUserMapper);
-		userDetailSupport = new UserDetailSupport(auditUserDisplayService, userAuthorizationSurfaceService,
-				userReferenceChecker, userDeptMapper);
+		userDetailSupport = new UserDetailSupport(auditUserDisplayService, userReferenceChecker, userDeptMapper);
 	}
 
 	@Test
-	@DisplayName("用户详情：主部门摘要与授权面计数一并填充")
-	void getDetailReturnsPersonalFieldsPrimaryDeptAndCounts() {
+	@DisplayName("用户详情：个人字段与主部门一并填充")
+	void getDetailReturnsPersonalFieldsAndPrimaryDept() {
 		UserEntity user = new UserEntity();
 		user.setId(1L);
 		user.setUsername("alice");
@@ -84,7 +68,6 @@ class UserDetailSupportTest {
 
 		when(sysUserMapper.selectById(1L)).thenReturn(user);
 		when(userDeptMapper.selectPrimaryDeptByUserId(1L)).thenReturn(primaryDept);
-		when(userAuthorizationSurfaceService.getAuthorizationSummary(1L)).thenReturn(summary());
 
 		SysUserDetailVO detail = userDetailSupport.getDetail(1L);
 
@@ -96,13 +79,7 @@ class UserDetailSupportTest {
 		assertThat(detail.getRemark()).isEqualTo("note");
 		assertThat(detail.getPrimaryDeptId()).isEqualTo(20L);
 		assertThat(detail.getPrimaryDeptName()).isEqualTo("研发部");
-		assertThat(detail.getDeptCount()).isEqualTo(1L);
-		assertThat(detail.getPostCount()).isEqualTo(1L);
-		assertThat(detail.getDirectRoleCount()).isEqualTo(3L);
-		assertThat(detail.getEffectiveRoleCount()).isEqualTo(5L);
-		assertThat(detail.getEffectivePermissionCount()).isEqualTo(12L);
 		verify(userDeptMapper).selectPrimaryDeptByUserId(1L);
-		verify(userAuthorizationSurfaceService).getAuthorizationSummary(1L);
 		verify(auditUserDisplayService).enrichAuditUsernames(anyList(), isNull(), isNull());
 	}
 

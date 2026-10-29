@@ -34,19 +34,4 @@ public class SysRoleDetailVO extends BaseResponse {
 	@Schema(title = "备注")
 	private String remark;
 
-	@Schema(title = "绑定权限数")
-	private Long permissionCount;
-
-	@Schema(title = "绑定菜单数")
-	private Long menuCount;
-
-	@Schema(title = "授权对象用户数")
-	private Long grantUserCount;
-
-	@Schema(title = "授权对象部门数")
-	private Long grantDeptCount;
-
-	@Schema(title = "授权对象岗位数")
-	private Long grantPostCount;
-
 }

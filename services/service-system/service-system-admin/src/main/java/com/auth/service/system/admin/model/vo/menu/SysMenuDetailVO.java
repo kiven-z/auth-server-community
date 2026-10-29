@@ -59,7 +59,4 @@ public class SysMenuDetailVO extends SysMenuListVO {
 	@Schema(title = "激活路径")
 	private String activePath;
 
-	@Schema(title = "已绑定角色数")
-	private Long boundRoleCount;
-
 }

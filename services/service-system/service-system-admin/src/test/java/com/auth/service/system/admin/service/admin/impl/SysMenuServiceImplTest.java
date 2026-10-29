@@ -2,7 +2,6 @@ package com.auth.service.system.admin.service.admin.impl;
 
 import com.auth.service.system.admin.mapper.admin.menu.SysMenuMapper;
 import com.auth.service.system.admin.mapper.admin.menu.SysMenuRoleMapper;
-import com.auth.service.system.admin.mapper.authorization.MenuRoleBindingQueryMapper;
 import com.auth.service.system.admin.model.entity.SysMenuEntity;
 import com.auth.service.system.admin.model.form.menu.SysMenuAssignRoleForm;
 import com.auth.service.system.admin.model.form.menu.SysMenuMoveForm;
@@ -59,9 +58,6 @@ class SysMenuServiceImplTest {
 	private SysMenuRoleMapper sysMenuRoleMapper;
 
 	@Mock
-	private MenuRoleBindingQueryMapper menuRoleBindingQueryMapper;
-
-	@Mock
 	private RbacReferenceChecker rbacReferenceChecker;
 
 	private SysMenuServiceImpl sysMenuService;
@@ -76,8 +72,7 @@ class SysMenuServiceImplTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		sysMenuService = new SysMenuServiceImpl(auditUserDisplayService, userEffectiveCodesResolver,
-				menuWebRouteTreeAssembler, menuReferenceChecker, sysMenuRoleMapper, menuRoleBindingQueryMapper,
-				rbacReferenceChecker);
+				menuWebRouteTreeAssembler, menuReferenceChecker, sysMenuRoleMapper, rbacReferenceChecker);
 		Field baseMapperField = CrudRepository.class.getDeclaredField("baseMapper");
 		baseMapperField.setAccessible(true);
 		baseMapperField.set(sysMenuService, sysMenuMapper);
@@ -160,19 +155,16 @@ class SysMenuServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("菜单详情：填充已绑定角色计数")
-	void getDetailShouldIncludeBoundRoles() {
+	@DisplayName("菜单详情：返回菜单字段并补全审计用户名")
+	void getDetailReturnsMenuFields() {
 		SysMenuEntity entity = menuEntity(5L);
 		entity.setName("SystemUser");
 		entity.setTitle("用户管理");
 		when(menuReferenceChecker.getExisting(5L)).thenReturn(entity);
-		when(menuRoleBindingQueryMapper.countRolesByMenuId(5L, null)).thenReturn(1L);
 
 		SysMenuDetailVO detail = sysMenuService.getDetail(5L);
 
 		assertThat(detail.getName()).isEqualTo("SystemUser");
-		assertThat(detail.getBoundRoleCount()).isEqualTo(1L);
-		verify(menuRoleBindingQueryMapper).countRolesByMenuId(5L, null);
 		verify(auditUserDisplayService).enrichAuditUsernames(anyList(), isNull(), isNull());
 	}
 

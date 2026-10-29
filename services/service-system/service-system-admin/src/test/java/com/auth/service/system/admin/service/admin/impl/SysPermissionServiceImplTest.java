@@ -4,7 +4,6 @@ import com.auth.common.core.constants.BatchSizes;
 import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.service.system.admin.mapper.admin.permission.SysPermissionMapper;
 import com.auth.service.system.admin.mapper.admin.role.SysRolePermissionMapper;
-import com.auth.service.system.admin.mapper.authorization.RolePermissionBindingQueryMapper;
 import com.auth.service.system.admin.model.entity.SysPermissionEntity;
 import com.auth.service.system.admin.model.form.permission.SysPermissionForm;
 import com.auth.service.system.admin.model.po.reference.PermissionReferencePO;
@@ -58,9 +57,6 @@ class SysPermissionServiceImplTest {
 	@Mock
 	private SysRolePermissionMapper sysRolePermissionMapper;
 
-	@Mock
-	private RolePermissionBindingQueryMapper rolePermissionBindingQueryMapper;
-
 	private SysPermissionServiceImpl sysPermissionService;
 
 	private static SysPermissionEntity permissionEntity(Long id) {
@@ -86,7 +82,7 @@ class SysPermissionServiceImplTest {
 	@BeforeEach
 	void setUp() throws Exception {
 		sysPermissionService = spy(new SysPermissionServiceImpl(auditUserDisplayService, permissionInvalidationTrigger,
-				roleInvalidationTrigger, sysRolePermissionMapper, rolePermissionBindingQueryMapper));
+				roleInvalidationTrigger, sysRolePermissionMapper));
 		Field baseMapperField = CrudRepository.class.getDeclaredField("baseMapper");
 		baseMapperField.setAccessible(true);
 		baseMapperField.set(sysPermissionService, sysPermissionMapper);
@@ -237,31 +233,11 @@ class SysPermissionServiceImplTest {
 		entity.setPermissionName("部门查询");
 		entity.setStatus(true);
 		when(sysPermissionMapper.selectById(3L)).thenReturn(entity);
-		when(rolePermissionBindingQueryMapper.countRolesByPermissionId(3L, null)).thenReturn(0L);
 
 		SysPermissionDetailVO detail = sysPermissionService.getDetail(3L);
 
 		assertThat(detail.getPermissionCode()).isEqualTo("sys:dept:query");
-		assertThat(detail.getBoundRoleCount()).isZero();
-		verify(rolePermissionBindingQueryMapper).countRolesByPermissionId(3L, null);
 		verify(auditUserDisplayService).enrichAuditUsernames(anyList(), isNull(), isNull());
-	}
-
-	@Test
-	@DisplayName("权限详情：按钮权限填充绑定角色计数")
-	void getDetailShouldIncludeBoundRolesForButtonPermission() {
-		SysPermissionEntity entity = new SysPermissionEntity();
-		entity.setId(7L);
-		entity.setPermissionCode("sys:user:create");
-		entity.setPermissionName("新增用户");
-		entity.setStatus(true);
-		when(sysPermissionMapper.selectById(7L)).thenReturn(entity);
-		when(rolePermissionBindingQueryMapper.countRolesByPermissionId(7L, null)).thenReturn(1L);
-
-		SysPermissionDetailVO detail = sysPermissionService.getDetail(7L);
-
-		assertThat(detail.getBoundRoleCount()).isEqualTo(1L);
-		verify(rolePermissionBindingQueryMapper).countRolesByPermissionId(7L, null);
 	}
 
 	@Test

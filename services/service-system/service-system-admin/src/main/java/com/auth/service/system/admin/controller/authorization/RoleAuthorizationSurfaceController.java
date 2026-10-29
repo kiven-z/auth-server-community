@@ -7,7 +7,6 @@ import com.auth.service.system.admin.model.query.authorization.RoleGrantSubjectP
 import com.auth.service.system.admin.model.query.authorization.RoleMenuPageQuery;
 import com.auth.service.system.admin.model.query.authorization.RolePermissionPageQuery;
 import com.auth.service.system.admin.model.vo.authorization.GrantSubjectItemRow;
-import com.auth.service.system.admin.model.vo.authorization.RoleAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.permission.SysPermissionBoundMenuItemVO;
 import com.auth.service.system.admin.model.vo.reference.PermissionReferenceVO;
 import com.auth.service.system.admin.service.authorization.query.RoleAuthorizationSurfaceService;
@@ -34,14 +33,6 @@ import java.util.List;
 public class RoleAuthorizationSurfaceController {
 
 	private final RoleAuthorizationSurfaceService roleAuthorizationSurfaceService;
-
-	@Operation(summary = "查询角色授权面摘要")
-	@PreAuthorize("@auth.decide('sys:role:query')")
-	@GetMapping("/{roleId}/authorization-summary")
-	public Result<RoleAuthorizationSummaryVO> authorizationSummary(@PathVariable("roleId") Long roleId) {
-		RoleAuthorizationSummaryVO summary = roleAuthorizationSurfaceService.getAuthorizationSummary(roleId);
-		return Result.success(summary);
-	}
 
 	@Operation(summary = "分页查询角色已绑定权限")
 	@PreAuthorize("@auth.decide('sys:role:query')")

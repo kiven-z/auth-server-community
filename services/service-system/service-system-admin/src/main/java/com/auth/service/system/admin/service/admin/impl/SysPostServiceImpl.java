@@ -3,14 +3,11 @@ package com.auth.service.system.admin.service.admin.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.auth.common.core.constants.BatchSizes;
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.grant.GrantTableSubjectType;
 import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.convert.admin.SysPostConverter;
 import com.auth.service.system.admin.exception.SystemAdminResultCode;
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.admin.post.SysPostMapper;
-import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
-import com.auth.service.system.admin.mapper.authorization.PostRelationQueryMapper;
 import com.auth.service.system.admin.model.entity.SysPostEntity;
 import com.auth.service.system.admin.model.form.post.SysPostForm;
 import com.auth.service.system.admin.model.po.post.SysPostPageRowPO;
@@ -59,10 +56,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 
 	private final SysDeptMapper sysDeptMapper;
 
-	private final PostRelationQueryMapper postRelationQueryMapper;
-
-	private final GrantBindingQueryMapper grantBindingQueryMapper;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,9 +94,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPostEntity
 		SysPostDetailVO detail = SysPostConverter.INSTANCE.toDetailVo(entity);
 		DeptReferencePO boundDept = baseMapper.selectBoundDeptByPostId(id);
 		detail.setBoundDept(ReferenceConverter.INSTANCE.toDeptReference(boundDept));
-		detail.setBoundUserCount(postRelationQueryMapper.countUsersByPostId(id, null));
-		detail.setBoundRoleCount(
-				grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.POST.name(), id, null));
 
 		auditUserDisplayService.enrichAuditUsernames(Collections.singletonList(detail), null, null);
 		return detail;

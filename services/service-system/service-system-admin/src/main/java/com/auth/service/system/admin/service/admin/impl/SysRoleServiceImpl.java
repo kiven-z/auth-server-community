@@ -13,12 +13,10 @@ import com.auth.service.system.admin.model.entity.SysRoleEntity;
 import com.auth.service.system.admin.model.form.role.SysRoleForm;
 import com.auth.service.system.admin.model.po.reference.RoleReferencePO;
 import com.auth.service.system.admin.model.query.role.SysRoleQuery;
-import com.auth.service.system.admin.model.vo.authorization.RoleAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.role.SysRoleDetailVO;
 import com.auth.service.system.admin.model.vo.role.SysRoleOptionVO;
 import com.auth.service.system.admin.model.vo.role.SysRolePageVO;
 import com.auth.service.system.admin.service.admin.SysRoleService;
-import com.auth.service.system.admin.service.authorization.query.RoleAuthorizationSurfaceService;
 import com.auth.service.system.admin.support.sqlbuild.SysRolePageOrderSqlBuilder;
 import com.auth.service.system.authorization.dispatch.trigger.RoleAuthorizationInvalidationTrigger;
 import com.auth.service.system.common.exception.SystemBusinessException;
@@ -53,8 +51,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleEntity
 
 	private final GrantTableMapper grantTableMapper;
 
-	private final RoleAuthorizationSurfaceService roleAuthorizationSurfaceService;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -83,12 +79,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRoleEntity
 		}
 
 		SysRoleDetailVO detail = SysRoleConverter.INSTANCE.toDetailVo(entity);
-		RoleAuthorizationSummaryVO summary = roleAuthorizationSurfaceService.getAuthorizationSummary(id);
-		detail.setPermissionCount(summary.getPermissionCount());
-		detail.setMenuCount(summary.getMenuCount());
-		detail.setGrantUserCount(summary.getGrantUserCount());
-		detail.setGrantDeptCount(summary.getGrantDeptCount());
-		detail.setGrantPostCount(summary.getGrantPostCount());
 
 		auditUserDisplayService.enrichAuditUsernames(Collections.singletonList(detail), null, null);
 		return detail;

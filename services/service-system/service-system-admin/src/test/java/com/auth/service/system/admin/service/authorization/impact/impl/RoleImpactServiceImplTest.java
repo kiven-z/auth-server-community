@@ -1,14 +1,11 @@
 package com.auth.service.system.admin.service.authorization.impact.impl;
 
 import com.auth.common.data.model.PageResponse;
-import com.auth.module.security.contract.grant.GrantTableSubjectType;
-import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.mapper.authorization.RoleImpactQueryMapper;
 import com.auth.service.system.admin.model.entity.SysRoleEntity;
 import com.auth.service.system.admin.model.po.reference.UserReferencePO;
 import com.auth.service.system.admin.model.query.authorization.RoleImpactUserPageQuery;
 import com.auth.service.system.admin.model.vo.authorization.RoleImpactRefreshResultVO;
-import com.auth.service.system.admin.model.vo.authorization.RoleImpactSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.UserReferenceVO;
 import com.auth.service.system.admin.support.grant.RbacReferenceChecker;
 import com.auth.service.system.authorization.dispatch.trigger.UserProfileRefreshTrigger;
@@ -46,9 +43,6 @@ class RoleImpactServiceImplTest {
 	private RbacReferenceChecker rbacReferenceChecker;
 
 	@Mock
-	private GrantBindingQueryMapper grantBindingQueryMapper;
-
-	@Mock
 	private RoleImpactQueryMapper roleImpactQueryMapper;
 
 	@Mock
@@ -65,28 +59,7 @@ class RoleImpactServiceImplTest {
 
 	@BeforeEach
 	void setUp() {
-		service = new RoleImpactServiceImpl(rbacReferenceChecker, grantBindingQueryMapper, roleImpactQueryMapper,
-				userProfileRefreshTrigger);
-	}
-
-	@Test
-	@DisplayName("摘要：聚合授权对象分项与影响用户总数")
-	void getImpactSummaryReturnsAggregatedCounts() {
-		when(rbacReferenceChecker.getExisting(ROLE_ID)).thenReturn(role());
-		when(grantBindingQueryMapper.countSubjectsByRoleIdAndType(ROLE_ID, GrantTableSubjectType.USER.name(), null))
-			.thenReturn(2L);
-		when(grantBindingQueryMapper.countSubjectsByRoleIdAndType(ROLE_ID, GrantTableSubjectType.DEPT.name(), null))
-			.thenReturn(1L);
-		when(grantBindingQueryMapper.countSubjectsByRoleIdAndType(ROLE_ID, GrantTableSubjectType.POST.name(), null))
-			.thenReturn(3L);
-		when(roleImpactQueryMapper.countImpactUsersByRoleId(ROLE_ID, null)).thenReturn(10L);
-
-		RoleImpactSummaryVO summary = service.getImpactSummary(ROLE_ID);
-
-		assertThat(summary.getGrantUserCount()).isEqualTo(2L);
-		assertThat(summary.getGrantDeptCount()).isEqualTo(1L);
-		assertThat(summary.getGrantPostCount()).isEqualTo(3L);
-		assertThat(summary.getImpactedUserCount()).isEqualTo(10L);
+		service = new RoleImpactServiceImpl(rbacReferenceChecker, roleImpactQueryMapper, userProfileRefreshTrigger);
 	}
 
 	@Test

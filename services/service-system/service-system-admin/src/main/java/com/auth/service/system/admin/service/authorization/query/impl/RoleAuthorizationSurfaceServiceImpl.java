@@ -14,7 +14,6 @@ import com.auth.service.system.admin.model.query.authorization.RoleGrantSubjectP
 import com.auth.service.system.admin.model.query.authorization.RoleMenuPageQuery;
 import com.auth.service.system.admin.model.query.authorization.RolePermissionPageQuery;
 import com.auth.service.system.admin.model.vo.authorization.GrantSubjectItemRow;
-import com.auth.service.system.admin.model.vo.authorization.RoleAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.permission.SysPermissionBoundMenuItemVO;
 import com.auth.service.system.admin.model.vo.reference.PermissionReferenceVO;
 import com.auth.service.system.admin.service.authorization.query.RoleAuthorizationSurfaceService;
@@ -44,25 +43,6 @@ public class RoleAuthorizationSurfaceServiceImpl implements RoleAuthorizationSur
 	private final MenuRoleBindingQueryMapper menuRoleBindingQueryMapper;
 
 	private final GrantBindingQueryMapper grantBindingQueryMapper;
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public RoleAuthorizationSummaryVO getAuthorizationSummary(Long roleId) {
-		rbacReferenceChecker.getExisting(roleId);
-
-		RoleAuthorizationSummaryVO summary = new RoleAuthorizationSummaryVO();
-		summary.setPermissionCount(rolePermissionBindingQueryMapper.countPermissionsByRoleId(roleId, null));
-		summary.setMenuCount(menuRoleBindingQueryMapper.countMenusByRoleId(roleId, null));
-		summary.setGrantUserCount(
-				grantBindingQueryMapper.countSubjectsByRoleIdAndType(roleId, GrantTableSubjectType.USER.name(), null));
-		summary.setGrantDeptCount(
-				grantBindingQueryMapper.countSubjectsByRoleIdAndType(roleId, GrantTableSubjectType.DEPT.name(), null));
-		summary.setGrantPostCount(
-				grantBindingQueryMapper.countSubjectsByRoleIdAndType(roleId, GrantTableSubjectType.POST.name(), null));
-		return summary;
-	}
 
 	/**
 	 * {@inheritDoc}

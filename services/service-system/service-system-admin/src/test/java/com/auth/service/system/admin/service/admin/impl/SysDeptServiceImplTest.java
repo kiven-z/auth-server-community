@@ -2,8 +2,6 @@ package com.auth.service.system.admin.service.admin.impl;
 
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.mapper.admin.user.UserDeptMapper;
-import com.auth.service.system.admin.mapper.authorization.DeptRelationQueryMapper;
-import com.auth.service.system.admin.mapper.authorization.GrantBindingQueryMapper;
 import com.auth.service.system.admin.model.entity.SysDeptEntity;
 import com.auth.service.system.admin.model.form.dept.SysDeptForm;
 import com.auth.service.system.admin.model.form.dept.SysDeptMoveForm;
@@ -62,12 +60,6 @@ class SysDeptServiceImplTest {
 	@Mock
 	private UserAuthorizationInvalidationTrigger userAuthorizationInvalidationTrigger;
 
-	@Mock
-	private DeptRelationQueryMapper deptRelationQueryMapper;
-
-	@Mock
-	private GrantBindingQueryMapper grantBindingQueryMapper;
-
 	private SysDeptServiceImpl sysDeptService;
 
 	private SysDeptQueryServiceImpl sysDeptQueryService;
@@ -95,8 +87,7 @@ class SysDeptServiceImplTest {
 	void setUp() throws Exception {
 		sysDeptService = spy(new SysDeptServiceImpl(deptReferenceChecker, deptClosureMaintainer, userDeptMapper,
 				userAuthorizationInvalidationTrigger));
-		sysDeptQueryService = new SysDeptQueryServiceImpl(auditUserDisplayService, deptReferenceChecker,
-				deptRelationQueryMapper, grantBindingQueryMapper);
+		sysDeptQueryService = new SysDeptQueryServiceImpl(auditUserDisplayService, deptReferenceChecker);
 		Field baseMapperField = CrudRepository.class.getDeclaredField("baseMapper");
 		baseMapperField.setAccessible(true);
 		baseMapperField.set(sysDeptService, sysDeptMapper);

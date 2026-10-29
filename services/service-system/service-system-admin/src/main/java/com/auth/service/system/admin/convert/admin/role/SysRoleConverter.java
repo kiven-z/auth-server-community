@@ -53,11 +53,6 @@ public interface SysRoleConverter {
 	 * @param entity 角色实体
 	 * @return 详情 VO
 	 */
-	@Mapping(target = "permissionCount", ignore = true)
-	@Mapping(target = "menuCount", ignore = true)
-	@Mapping(target = "grantUserCount", ignore = true)
-	@Mapping(target = "grantDeptCount", ignore = true)
-	@Mapping(target = "grantPostCount", ignore = true)
 	@Mapping(target = "createdByName", ignore = true)
 	@Mapping(target = "updatedByName", ignore = true)
 	SysRoleDetailVO toDetailVo(SysRoleEntity entity);

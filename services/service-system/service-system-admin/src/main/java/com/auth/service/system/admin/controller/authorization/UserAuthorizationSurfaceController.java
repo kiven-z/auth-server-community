@@ -4,7 +4,6 @@ import com.auth.common.core.model.response.Result;
 import com.auth.common.data.model.PageResponse;
 import com.auth.service.system.admin.model.query.authorization.UserEffectivePermissionPageQuery;
 import com.auth.service.system.admin.model.query.authorization.UserEffectiveRolePageQuery;
-import com.auth.service.system.admin.model.vo.authorization.UserAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.PermissionReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 import com.auth.service.system.admin.service.authorization.query.UserAuthorizationSurfaceService;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Bunny
  */
-@Tag(name = "用户授权面", description = "直连角色 / 生效角色权限分页与授权摘要")
+@Tag(name = "用户授权面", description = "直连角色 / 生效角色权限分页")
 @RequiredArgsConstructor
 @RequestMapping("/api/system/user")
 @RestController
@@ -47,14 +46,6 @@ public class UserAuthorizationSurfaceController {
 		PageResponse<PermissionReferenceVO> response = userAuthorizationSurfaceService.pageEffectivePermissions(userId,
 				query);
 		return Result.success(response);
-	}
-
-	@Operation(summary = "查询用户授权面摘要")
-	@PreAuthorize("@auth.decide('sys:user:query')")
-	@GetMapping("/{userId}/authorization-summary")
-	public Result<UserAuthorizationSummaryVO> authorizationSummary(@PathVariable("userId") Long userId) {
-		UserAuthorizationSummaryVO summary = userAuthorizationSurfaceService.getAuthorizationSummary(userId);
-		return Result.success(summary);
 	}
 
 }

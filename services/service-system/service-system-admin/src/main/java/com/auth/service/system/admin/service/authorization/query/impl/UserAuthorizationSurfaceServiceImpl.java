@@ -10,7 +10,6 @@ import com.auth.service.system.admin.model.po.reference.RoleReferencePO;
 import com.auth.service.system.admin.model.query.authorization.SubjectRolePageQuery;
 import com.auth.service.system.admin.model.query.authorization.UserEffectivePermissionPageQuery;
 import com.auth.service.system.admin.model.query.authorization.UserEffectiveRolePageQuery;
-import com.auth.service.system.admin.model.vo.authorization.UserAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.PermissionReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 import com.auth.service.system.admin.service.authorization.query.UserAuthorizationSurfaceService;
@@ -84,24 +83,6 @@ public class UserAuthorizationSurfaceServiceImpl implements UserAuthorizationSur
 
 		IPage<PermissionReferenceVO> convert = page.convert(ReferenceConverter.INSTANCE::toPermissionReference);
 		return PageResponse.of(convert);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public UserAuthorizationSummaryVO getAuthorizationSummary(Long userId) {
-		userReferenceChecker.getExistingActive(userId);
-
-		UserAuthorizationSummaryVO summary = new UserAuthorizationSummaryVO();
-		summary.setDeptCount(userEffectiveAuthorizationQueryMapper.countDeptsByUserId(userId));
-		summary.setPostCount(userEffectiveAuthorizationQueryMapper.countPostsByUserId(userId));
-		summary.setDirectRoleCount(
-				grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.USER.name(), userId, null));
-		summary.setEffectiveRoleCount(userEffectiveAuthorizationQueryMapper.countEffectiveRolesByUserId(userId, null));
-		summary.setEffectivePermissionCount(
-				userEffectiveAuthorizationQueryMapper.countEffectivePermissionsByUserId(userId, null));
-		return summary;
 	}
 
 }

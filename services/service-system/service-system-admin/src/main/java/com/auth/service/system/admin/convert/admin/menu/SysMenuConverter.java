@@ -28,7 +28,6 @@ public interface SysMenuConverter {
 	 */
 	@Mapping(target = "createdByName", ignore = true)
 	@Mapping(target = "updatedByName", ignore = true)
-	@Mapping(target = "boundRoleCount", ignore = true)
 	SysMenuDetailVO toDetailVo(SysMenuEntity entity);
 
 	/**

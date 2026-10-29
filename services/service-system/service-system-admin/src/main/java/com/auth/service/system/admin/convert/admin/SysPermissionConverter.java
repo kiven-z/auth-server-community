@@ -62,7 +62,6 @@ public interface SysPermissionConverter {
 	 */
 	@Mapping(target = "createdByName", ignore = true)
 	@Mapping(target = "updatedByName", ignore = true)
-	@Mapping(target = "boundRoleCount", ignore = true)
 	SysPermissionDetailVO toDetailVo(SysPermissionEntity entity);
 
 	/**

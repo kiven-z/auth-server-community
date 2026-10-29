@@ -64,19 +64,4 @@ public class SysUserDetailVO extends BaseResponse {
 	@Schema(title = "备注")
 	private String remark;
 
-	@Schema(title = "任职部门数")
-	private Long deptCount;
-
-	@Schema(title = "任职岗位数")
-	private Long postCount;
-
-	@Schema(title = "直连角色数")
-	private Long directRoleCount;
-
-	@Schema(title = "生效角色数")
-	private Long effectiveRoleCount;
-
-	@Schema(title = "生效权限数")
-	private Long effectivePermissionCount;
-
 }

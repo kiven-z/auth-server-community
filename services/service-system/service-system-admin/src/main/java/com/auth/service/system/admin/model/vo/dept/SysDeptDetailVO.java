@@ -36,13 +36,4 @@ public class SysDeptDetailVO extends BaseResponse {
 	@Schema(title = "备注")
 	private String remark;
 
-	@Schema(title = "关联用户数", description = "含用户已停用")
-	private Long boundUserCount;
-
-	@Schema(title = "下属岗位数")
-	private Long boundPostCount;
-
-	@Schema(title = "已授角色数")
-	private Long boundRoleCount;
-
 }

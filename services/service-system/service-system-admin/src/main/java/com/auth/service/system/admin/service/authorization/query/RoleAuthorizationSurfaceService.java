@@ -6,7 +6,6 @@ import com.auth.service.system.admin.model.query.authorization.RoleGrantSubjectP
 import com.auth.service.system.admin.model.query.authorization.RoleMenuPageQuery;
 import com.auth.service.system.admin.model.query.authorization.RolePermissionPageQuery;
 import com.auth.service.system.admin.model.vo.authorization.GrantSubjectItemRow;
-import com.auth.service.system.admin.model.vo.authorization.RoleAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.permission.SysPermissionBoundMenuItemVO;
 import com.auth.service.system.admin.model.vo.reference.PermissionReferenceVO;
 
@@ -18,13 +17,6 @@ import java.util.List;
  * @author Bunny
  */
 public interface RoleAuthorizationSurfaceService {
-
-	/**
-	 * 查询角色授权面摘要
-	 * @param roleId 角色 ID
-	 * @return 关系计数摘要
-	 */
-	RoleAuthorizationSummaryVO getAuthorizationSummary(Long roleId);
 
 	/**
 	 * 分页查询角色已绑定权限

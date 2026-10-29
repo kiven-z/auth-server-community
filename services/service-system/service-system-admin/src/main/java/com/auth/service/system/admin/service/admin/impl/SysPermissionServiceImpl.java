@@ -10,7 +10,6 @@ import com.auth.common.data.support.BusinessKeyAssert;
 import com.auth.service.system.admin.convert.admin.SysPermissionConverter;
 import com.auth.service.system.admin.mapper.admin.permission.SysPermissionMapper;
 import com.auth.service.system.admin.mapper.admin.role.SysRolePermissionMapper;
-import com.auth.service.system.admin.mapper.authorization.RolePermissionBindingQueryMapper;
 import com.auth.service.system.admin.model.entity.SysPermissionEntity;
 import com.auth.service.system.admin.model.form.permission.SysPermissionForm;
 import com.auth.service.system.admin.model.po.reference.PermissionReferencePO;
@@ -56,8 +55,6 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
 
 	private final SysRolePermissionMapper sysRolePermissionMapper;
 
-	private final RolePermissionBindingQueryMapper rolePermissionBindingQueryMapper;
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -86,7 +83,6 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
 		}
 
 		SysPermissionDetailVO detail = SysPermissionConverter.INSTANCE.toDetailVo(entity);
-		detail.setBoundRoleCount(rolePermissionBindingQueryMapper.countRolesByPermissionId(id, null));
 
 		auditUserDisplayService.enrichAuditUsernames(Collections.singletonList(detail), null, null);
 		return detail;

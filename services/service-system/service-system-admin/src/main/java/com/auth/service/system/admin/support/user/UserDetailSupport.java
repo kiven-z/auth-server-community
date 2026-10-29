@@ -4,9 +4,7 @@ import com.auth.module.platform.persistence.model.UserEntity;
 import com.auth.service.system.admin.convert.admin.user.SysUserConverter;
 import com.auth.service.system.admin.mapper.admin.user.UserDeptMapper;
 import com.auth.service.system.admin.model.po.user.UserPrimaryDeptPO;
-import com.auth.service.system.admin.model.vo.authorization.UserAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.user.SysUserDetailVO;
-import com.auth.service.system.admin.service.authorization.query.UserAuthorizationSurfaceService;
 import com.auth.service.system.common.service.AuditUserDisplayService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,8 +24,6 @@ public class UserDetailSupport {
 
 	private final AuditUserDisplayService auditUserDisplayService;
 
-	private final UserAuthorizationSurfaceService userAuthorizationSurfaceService;
-
 	private final UserReferenceChecker userReferenceChecker;
 
 	private final UserDeptMapper userDeptMapper;
@@ -46,13 +42,6 @@ public class UserDetailSupport {
 			detail.setPrimaryDeptId(primaryDept.getDeptId());
 			detail.setPrimaryDeptName(primaryDept.getDeptName());
 		}
-
-		UserAuthorizationSummaryVO summary = userAuthorizationSurfaceService.getAuthorizationSummary(userId);
-		detail.setDeptCount(summary.getDeptCount());
-		detail.setPostCount(summary.getPostCount());
-		detail.setDirectRoleCount(summary.getDirectRoleCount());
-		detail.setEffectiveRoleCount(summary.getEffectiveRoleCount());
-		detail.setEffectivePermissionCount(summary.getEffectivePermissionCount());
 
 		auditUserDisplayService.enrichAuditUsernames(Collections.singletonList(detail), null, null);
 		return detail;

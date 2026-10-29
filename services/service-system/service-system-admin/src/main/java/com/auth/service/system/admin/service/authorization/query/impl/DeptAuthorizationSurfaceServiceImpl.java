@@ -12,7 +12,6 @@ import com.auth.service.system.admin.model.po.reference.RoleReferencePO;
 import com.auth.service.system.admin.model.query.authorization.DeptPostPageQuery;
 import com.auth.service.system.admin.model.query.authorization.DeptUserPageQuery;
 import com.auth.service.system.admin.model.query.authorization.SubjectRolePageQuery;
-import com.auth.service.system.admin.model.vo.authorization.DeptAuthorizationSummaryVO;
 import com.auth.service.system.admin.model.vo.reference.PostReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.RoleReferenceVO;
 import com.auth.service.system.admin.model.vo.reference.ext.DeptBoundUserReferenceVO;
@@ -85,21 +84,6 @@ public class DeptAuthorizationSurfaceServiceImpl implements DeptAuthorizationSur
 
 		IPage<RoleReferenceVO> convert = page.convert(ReferenceConverter.INSTANCE::toRoleReference);
 		return PageResponse.of(convert);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public DeptAuthorizationSummaryVO getAuthorizationSummary(Long deptId) {
-		deptReferenceChecker.getExistingActive(deptId);
-
-		DeptAuthorizationSummaryVO summary = new DeptAuthorizationSummaryVO();
-		summary.setBoundUserCount(deptRelationQueryMapper.countUsersByDeptId(deptId, null));
-		summary.setBoundPostCount(deptRelationQueryMapper.countPostsByDeptId(deptId, null));
-		summary.setBoundRoleCount(
-				grantBindingQueryMapper.countBoundRolesBySubject(GrantTableSubjectType.DEPT.name(), deptId, null));
-		return summary;
 	}
 
 }

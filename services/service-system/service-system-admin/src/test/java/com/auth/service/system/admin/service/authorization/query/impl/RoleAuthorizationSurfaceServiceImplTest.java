@@ -6,7 +6,6 @@ import com.auth.service.system.admin.mapper.authorization.MenuRoleBindingQueryMa
 import com.auth.service.system.admin.mapper.authorization.RolePermissionBindingQueryMapper;
 import com.auth.service.system.admin.model.entity.SysRoleEntity;
 import com.auth.service.system.admin.model.vo.authorization.GrantSubjectItemRow;
-import com.auth.service.system.admin.model.vo.authorization.RoleAuthorizationSummaryVO;
 import com.auth.service.system.admin.support.grant.RbacReferenceChecker;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -50,29 +49,6 @@ class RoleAuthorizationSurfaceServiceImplTest {
 	void setUp() {
 		service = new RoleAuthorizationSurfaceServiceImpl(rbacReferenceChecker, rolePermissionBindingQueryMapper,
 				menuRoleBindingQueryMapper, grantBindingQueryMapper);
-	}
-
-	@Test
-	@DisplayName("授权面摘要：汇总权限菜单与授权对象计数")
-	void getAuthorizationSummaryReturnsCounts() {
-		when(rbacReferenceChecker.getExisting(ROLE_ID)).thenReturn(new SysRoleEntity());
-		when(rolePermissionBindingQueryMapper.countPermissionsByRoleId(ROLE_ID, null)).thenReturn(4L);
-		when(menuRoleBindingQueryMapper.countMenusByRoleId(ROLE_ID, null)).thenReturn(3L);
-		when(grantBindingQueryMapper.countSubjectsByRoleIdAndType(ROLE_ID, GrantTableSubjectType.USER.name(), null))
-			.thenReturn(6L);
-		when(grantBindingQueryMapper.countSubjectsByRoleIdAndType(ROLE_ID, GrantTableSubjectType.DEPT.name(), null))
-			.thenReturn(2L);
-		when(grantBindingQueryMapper.countSubjectsByRoleIdAndType(ROLE_ID, GrantTableSubjectType.POST.name(), null))
-			.thenReturn(1L);
-
-		RoleAuthorizationSummaryVO summary = service.getAuthorizationSummary(ROLE_ID);
-
-		assertThat(summary.getPermissionCount()).isEqualTo(4L);
-		assertThat(summary.getMenuCount()).isEqualTo(3L);
-		assertThat(summary.getGrantUserCount()).isEqualTo(6L);
-		assertThat(summary.getGrantDeptCount()).isEqualTo(2L);
-		assertThat(summary.getGrantPostCount()).isEqualTo(1L);
-		verify(rbacReferenceChecker).getExisting(ROLE_ID);
 	}
 
 	@Test

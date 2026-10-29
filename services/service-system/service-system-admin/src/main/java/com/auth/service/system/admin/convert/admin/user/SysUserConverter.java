@@ -71,17 +71,12 @@ public interface SysUserConverter {
 	void applyUpdateForm(SysUserForm form, @org.mapstruct.MappingTarget UserEntity entity);
 
 	/**
-	 * 用户实体 → 详情 VO（主部门与关系计数由 Service 补全）
+	 * 用户实体 → 详情 VO（主部门由 Service 补全）
 	 * @param user 用户实体
 	 * @return 详情 VO
 	 */
 	@Mapping(target = "primaryDeptId", ignore = true)
 	@Mapping(target = "primaryDeptName", ignore = true)
-	@Mapping(target = "deptCount", ignore = true)
-	@Mapping(target = "postCount", ignore = true)
-	@Mapping(target = "directRoleCount", ignore = true)
-	@Mapping(target = "effectiveRoleCount", ignore = true)
-	@Mapping(target = "effectivePermissionCount", ignore = true)
 	@Mapping(target = "createdByName", ignore = true)
 	@Mapping(target = "updatedByName", ignore = true)
 	SysUserDetailVO toDetailVo(UserEntity user);

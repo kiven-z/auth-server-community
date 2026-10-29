@@ -34,7 +34,4 @@ public class SysPermissionDetailVO extends BaseResponse {
 	@Schema(title = "备注")
 	private String remark;
 
-	@Schema(title = "已绑定角色数")
-	private Long boundRoleCount;
-
 }

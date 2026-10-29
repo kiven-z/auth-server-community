@@ -9,7 +9,6 @@ import com.auth.service.system.admin.convert.admin.ReferenceConverter;
 import com.auth.service.system.admin.convert.admin.menu.SysMenuConverter;
 import com.auth.service.system.admin.mapper.admin.menu.SysMenuMapper;
 import com.auth.service.system.admin.mapper.admin.menu.SysMenuRoleMapper;
-import com.auth.service.system.admin.mapper.authorization.MenuRoleBindingQueryMapper;
 import com.auth.service.system.admin.model.entity.SysMenuEntity;
 import com.auth.service.system.admin.model.form.menu.SysMenuAssignRoleForm;
 import com.auth.service.system.admin.model.form.menu.SysMenuMoveForm;
@@ -61,8 +60,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuEntity
 	private final MenuReferenceChecker menuReferenceChecker;
 
 	private final SysMenuRoleMapper sysMenuRoleMapper;
-
-	private final MenuRoleBindingQueryMapper menuRoleBindingQueryMapper;
 
 	private final RbacReferenceChecker rbacReferenceChecker;
 
@@ -126,7 +123,6 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenuEntity
 	public SysMenuDetailVO getDetail(Long id) {
 		SysMenuEntity entity = menuReferenceChecker.getExisting(id);
 		SysMenuDetailVO detail = SysMenuConverter.INSTANCE.toDetailVo(entity);
-		detail.setBoundRoleCount(menuRoleBindingQueryMapper.countRolesByMenuId(id, null));
 		auditUserDisplayService.enrichAuditUsernames(Collections.singletonList(detail), null, null);
 		return detail;
 	}
