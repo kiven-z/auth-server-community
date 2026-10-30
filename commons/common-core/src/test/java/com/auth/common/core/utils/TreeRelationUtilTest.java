@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 
 /**
- * {@link TreeRelationUtil} 单元测试。
+ * {@link TreeRelationUtil} 单元测试
  */
 @DisplayName("TreeRelationUtil 树关系判定与移动校验")
 class TreeRelationUtilTest {

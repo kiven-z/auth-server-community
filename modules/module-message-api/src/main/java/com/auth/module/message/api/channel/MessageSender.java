@@ -3,7 +3,7 @@ package com.auth.module.message.api.channel;
 import com.auth.module.message.api.command.TemplateMessageCommand;
 
 /**
- * 消息发送渠道 SPI：新增渠道时实现本接口并注册为 Spring Bean。
+ * 消息发送渠道 SPI：新增渠道时实现本接口并注册为 Spring Bean
  *
  * @author Bunny
  */

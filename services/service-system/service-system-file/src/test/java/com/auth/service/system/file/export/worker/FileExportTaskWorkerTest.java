@@ -10,6 +10,7 @@ import com.auth.module.security.autoconfigure.pipeline.authenticate.AuthProfileS
 import com.auth.module.security.autoconfigure.web.SecurityUserUtils;
 import com.auth.module.security.contract.profile.AuthProfile;
 import com.auth.module.security.contract.profile.ScopeGrant;
+import com.auth.module.security.contract.profile.datascope.DataScopeDimension;
 import com.auth.module.security.contract.profile.datascope.DataScopeStorageType;
 import com.auth.service.system.file.config.properties.FileExportTaskProperties;
 import com.auth.service.system.file.export.notify.FileExportTaskNotifier;
@@ -33,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -139,9 +141,9 @@ class FileExportTaskWorkerTest {
 		assertThat(captor.getValue().getProcessedRows()).isEqualTo(12L);
 		assertThat(profileDuringExport.get()).isNotNull();
 		assertThat(profileDuringExport.get().getUserId()).isEqualTo(9001L);
-		assertThat(profileDuringExport.get().getDeptScope()).isNotNull();
-		assertThat(profileDuringExport.get().getDeptScope().getScopeType())
-			.isEqualTo(DataScopeStorageType.DEPT_AND_CHILD);
+		assertThat(profileDuringExport.get().getDataScopes().get(DataScopeDimension.DEPT)).isNotNull();
+		assertThat(profileDuringExport.get().getDataScopes().get(DataScopeDimension.DEPT).getScopeType())
+			.isEqualTo(DataScopeStorageType.IDS_AND_CHILD);
 		assertThat(SecurityUserUtils.currentAuthProfile()).isNull();
 		assertThat(artifactPath.get()).isNotNull();
 		assertThat(Files.exists(artifactPath.get())).isFalse();
@@ -466,8 +468,8 @@ class FileExportTaskWorkerTest {
 		task.setStatus("RUNNING");
 		task.setScopeSnapshotJson(FileExportScopeSnapshots.toJson(AuthProfile.builder()
 			.userId(9001L)
-			.deptScope(
-					ScopeGrant.builder().scopeType(DataScopeStorageType.DEPT_AND_CHILD).values(List.of(110L)).build())
+			.dataScopes(Map.of(DataScopeDimension.DEPT,
+					ScopeGrant.builder().scopeType(DataScopeStorageType.IDS_AND_CHILD).values(List.of(110L)).build()))
 			.permVersion(1L)
 			.build()));
 		return task;

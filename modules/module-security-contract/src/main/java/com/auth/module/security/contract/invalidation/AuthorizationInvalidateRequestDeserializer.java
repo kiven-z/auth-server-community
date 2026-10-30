@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 
 /**
- * {@link AuthorizationInvalidateRequest} 反序列化：按外层 kind 解析 payload。
+ * {@link AuthorizationInvalidateRequest} 反序列化：按外层 kind 解析 payload
  *
  * @author Bunny
  */

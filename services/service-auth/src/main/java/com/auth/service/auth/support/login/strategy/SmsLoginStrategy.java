@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 /**
- * 短信验证码登录策略。
+ * 短信验证码登录策略
  *
  * @author Bunny
  */

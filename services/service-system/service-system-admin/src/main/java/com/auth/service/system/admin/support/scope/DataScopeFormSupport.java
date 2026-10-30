@@ -1,6 +1,7 @@
 package com.auth.service.system.admin.support.scope;
 
 import cn.hutool.core.collection.CollUtil;
+import com.auth.module.security.contract.profile.datascope.DataScopeDimension;
 import com.auth.module.security.contract.profile.datascope.DataScopeStorageType;
 import com.auth.service.system.admin.mapper.admin.dept.SysDeptMapper;
 import com.auth.service.system.admin.model.entity.SysDeptEntity;
@@ -28,34 +29,38 @@ public class DataScopeFormSupport {
 	private final SysDeptMapper sysDeptMapper;
 
 	/**
-	 * 解析范围类型并规范化部门 ID
+	 * 解析维度、范围类型并规范化节点 ID
 	 * @param form 数据范围表单
-	 * @return 已解析类型与部门 ID
+	 * @return 已解析维度、类型与节点 ID
 	 */
 	public ResolvedDataScope resolve(SysDataScopeForm form) {
+		DataScopeDimension dimension = DataScopeDimension.parse(form.getDimension());
 		DataScopeStorageType scopeType = DataScopeStorageType.parse(form.getScopeType());
-		if (scopeType == null) {
+		if (dimension == null || scopeType == null) {
 			throw new SystemBusinessException(SystemCommonResultCode.DATA_INVALID);
 		}
-		List<Long> scopeDeptIds = normalizeDeptIds(scopeType, form.getScopeDeptIds());
-		return new ResolvedDataScope(scopeType, scopeDeptIds);
+		List<Long> scopeIds = normalizeIds(dimension, scopeType, form.getScopeIds());
+		return new ResolvedDataScope(dimension, scopeType, scopeIds);
 	}
 
 	/**
-	 * 规范化部门 ID：DEPT* 必填且须存在；ALL/SELF 清空
+	 * 规范化节点 ID：IDS / IDS_AND_CHILD 必填； 树形维校验节点存在； ALL/SELF 清空
+	 * @param dimension 数据维度
 	 * @param scopeType 范围类型
-	 * @param rawDeptIds 表单部门 ID
-	 * @return 去重后的部门 ID；非部门维为空列表
+	 * @param rawIds 表单节点 ID
+	 * @return 去重后的节点 ID；ALL/SELF 为空列表
 	 */
-	private List<Long> normalizeDeptIds(DataScopeStorageType scopeType, List<Long> rawDeptIds) {
-		if (scopeType != DataScopeStorageType.DEPT && scopeType != DataScopeStorageType.DEPT_AND_CHILD) {
+	private List<Long> normalizeIds(DataScopeDimension dimension, DataScopeStorageType scopeType, List<Long> rawIds) {
+		if (scopeType != DataScopeStorageType.IDS && scopeType != DataScopeStorageType.IDS_AND_CHILD) {
 			return List.of();
 		}
-		if (CollUtil.isEmpty(rawDeptIds)) {
+		if (CollUtil.isEmpty(rawIds)) {
 			throw new SystemBusinessException(SystemCommonResultCode.PARAM_REQUIRED);
 		}
-		List<Long> distinctIds = rawDeptIds.stream().distinct().toList();
-		requireExistingDeptIds(distinctIds);
+		List<Long> distinctIds = rawIds.stream().distinct().toList();
+		if (dimension.isTree()) {
+			requireExistingDeptIds(distinctIds);
+		}
 		return distinctIds;
 	}
 
@@ -79,10 +84,11 @@ public class DataScopeFormSupport {
 	/**
 	 * 表单解析结果
 	 *
+	 * @param dimension 已解析的数据维度
 	 * @param scopeType 已解析的范围类型
-	 * @param scopeDeptIds 已规范化的部门 ID（ALL/SELF 为空列表）
+	 * @param scopeIds 已规范化的节点 ID（ALL/SELF 为空列表）
 	 */
-	public record ResolvedDataScope(DataScopeStorageType scopeType, List<Long> scopeDeptIds) {
+	public record ResolvedDataScope(DataScopeDimension dimension, DataScopeStorageType scopeType, List<Long> scopeIds) {
 	}
 
 }

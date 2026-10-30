@@ -39,7 +39,7 @@ public enum DataScopeStorageType {
 			return null;
 		}
 		try {
-			return valueOf(raw.strip().toUpperCase(Locale.ROOT));
+			return valueOf(raw.toUpperCase(Locale.ROOT));
 		}
 		catch (IllegalArgumentException ex) {
 			return null;

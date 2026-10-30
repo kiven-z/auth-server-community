@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 集合分批切片工具，用于规避 SQL IN 子句过长。
+ * 集合分批切片工具，用于规避 SQL IN 子句过长
  *
  * @author Bunny
  */
@@ -17,7 +17,7 @@ import java.util.Objects;
 public class BatchPartition {
 
 	/**
-	 * 过滤 null、去重后按固定批次大小切片。
+	 * 过滤 null、去重后按固定批次大小切片
 	 * @param ids 待处理 ID 集合
 	 * @param batchSize 每批大小，须 &gt; 0
 	 * @return 分批结果；batchSize <= 0 或集合为空时返回空列表
@@ -33,7 +33,7 @@ public class BatchPartition {
 	}
 
 	/**
-	 * 过滤 blank、去重后按固定批次大小切片。
+	 * 过滤 blank、去重后按固定批次大小切片
 	 * @param values 待处理字符串集合
 	 * @param batchSize 每批大小，须 &gt; 0
 	 * @return 分批结果；batchSize <= 0 或集合为空时返回空列表
@@ -55,7 +55,7 @@ public class BatchPartition {
 	}
 
 	/**
-	 * 按固定批次大小切片。
+	 * 按固定批次大小切片
 	 * @param normalized 待处理集合
 	 * @param batchSize 每批大小，须 &gt; 0
 	 * @return 分批结果；batchSize <= 0 或集合为空时返回空列表

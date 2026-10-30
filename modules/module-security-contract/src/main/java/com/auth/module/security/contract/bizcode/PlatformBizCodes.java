@@ -3,9 +3,9 @@ package com.auth.module.security.contract.bizcode;
 import lombok.experimental.UtilityClass;
 
 /**
- * 跨能力共享的平台资源身份码。
+ * 跨能力共享的平台资源身份码
  * <p>
- * 仅收录会被审计、导出、授权失效等 ≥2 个能力复用的稳定资源码；服务域专有编码仍由各服务本地常量维护。
+ * 仅收录会被审计、导出、授权失效等 ≥2 个能力复用的稳定资源码；服务域专有编码仍由各服务本地常量维护
  * </p>
  *
  * @author Bunny

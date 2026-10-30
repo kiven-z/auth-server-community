@@ -15,7 +15,7 @@ import static com.auth.service.system.common.exception.code.SystemCommonResultCo
 import static com.auth.service.system.common.exception.code.SystemCommonResultCode.SERVICE_UNAVAILABLE;
 
 /**
- * 经 auth 内部接口查询与踢出用户会话。
+ * 经 auth 内部接口查询与踢出用户会话
  *
  * @author Bunny
  */
@@ -26,7 +26,7 @@ public class UserSessionQueryOperations {
 	private final MeSessionInternalFeignClient meSessionInternalFeignClient;
 
 	/**
-	 * 查询用户活跃会话列表。
+	 * 查询用户活跃会话列表
 	 * @param userId 用户 ID
 	 * @return 活跃会话快照列表
 	 */
@@ -53,7 +53,7 @@ public class UserSessionQueryOperations {
 	}
 
 	/**
-	 * 踢出用户指定会话。
+	 * 踢出用户指定会话
 	 * @param userId 用户 ID
 	 * @param sessionId 会话 ID（jti）
 	 */

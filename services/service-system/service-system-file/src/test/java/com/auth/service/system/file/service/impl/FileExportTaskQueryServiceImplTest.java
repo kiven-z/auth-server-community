@@ -56,7 +56,7 @@ class FileExportTaskQueryServiceImplTest {
 		entity.setBizType("SYS_USER");
 		entity.setExportFormat("XLSX");
 		entity.setQuerySnapshotJson("{\"username\":\"alice\"}");
-		entity.setScopeSnapshotJson("{\"userId\":9,\"deptScope\":null}");
+		entity.setScopeSnapshotJson("{\"userId\":9,\"dataScopes\":null}");
 		entity.setStatus(FileExportTaskStatus.FAILED.name());
 		entity.setErrorCode("EXPORT_FAILED");
 		entity.setErrorMessage("boom");

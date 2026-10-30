@@ -1,7 +1,7 @@
 package com.auth.module.security.contract.audit.operationlog;
 
 /**
- * 操作审计大模块，用于 {@link OperationLog#serviceDomain()}。
+ * 操作审计大模块，用于 {@link OperationLog#serviceDomain()}
  *
  * @author Bunny
  */

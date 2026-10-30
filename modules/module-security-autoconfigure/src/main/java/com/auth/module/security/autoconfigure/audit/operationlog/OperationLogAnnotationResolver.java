@@ -10,7 +10,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import java.lang.reflect.Method;
 
 /**
- * 从 AOP 连接点解析 {@link OperationLog} 元数据（方法优先，其次类级别）。
+ * 从 AOP 连接点解析 {@link OperationLog} 元数据（方法优先，其次类级别）
  *
  * @author Bunny
  */
@@ -18,7 +18,7 @@ import java.lang.reflect.Method;
 public class OperationLogAnnotationResolver {
 
 	/**
-	 * 解析 {@link OperationLog}：先取目标方法（含 CGLIB 场景），再回退到目标类上的类级别注解。
+	 * 解析 {@link OperationLog}：先取目标方法（含 CGLIB 场景），再回退到目标类上的类级别注解
 	 * @param joinPoint 当前连接点
 	 * @return 注解实例；无法解析时 null
 	 */

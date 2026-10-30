@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 部门闭包表一致性诊断（只读）。
+ * 部门闭包表一致性诊断（只读）
  *
  * @author Bunny
  */

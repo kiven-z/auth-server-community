@@ -1,7 +1,7 @@
 package com.auth.module.security.contract.audit.operationlog;
 
 /**
- * 操作日志类型。
+ * 操作日志类型
  *
  * @author Bunny
  */

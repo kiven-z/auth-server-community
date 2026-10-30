@@ -7,7 +7,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
 /**
- * 在带 {@link OperationLog} 的 Web 控制器方法周围委托 {@link OperationLogPayloadAssembler} 发布审计负载。
+ * 在带 {@link OperationLog} 的 Web 控制器方法周围委托 {@link OperationLogPayloadAssembler} 发布审计负载
  *
  * @author Bunny
  */
@@ -21,7 +21,7 @@ public class OperationLogAspect {
 	}
 
 	/**
-	 * 使用全限定名绑定，避免 @annotation(x)||@within(x) 对同一形参绑定在 Spring AOP 下出现 null。
+	 * 使用全限定名绑定，避免 @annotation(x)||@within(x) 对同一形参绑定在 Spring AOP 下出现 null
 	 */
 	@Around("@annotation(com.auth.module.security.contract.audit.operationlog.OperationLog) "
 			+ "|| @within(com.auth.module.security.contract.audit.operationlog.OperationLog)")

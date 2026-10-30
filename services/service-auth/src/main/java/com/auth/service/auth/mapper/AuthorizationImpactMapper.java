@@ -1,9 +1,9 @@
 package com.auth.service.auth.mapper;
 
-import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * 授权影响面
@@ -30,7 +30,7 @@ public interface AuthorizationImpactMapper {
 			@Param("subjectIds") List<Long> subjectIds);
 
 	/**
-	 * 按权限码桥接查询关联角色码。
+	 * 按权限码桥接查询关联角色码
 	 * @param permissionCodes 权限码列表，非空
 	 * @return 角色码列表
 	 */

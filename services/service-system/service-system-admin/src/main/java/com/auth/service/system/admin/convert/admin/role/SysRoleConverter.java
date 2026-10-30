@@ -13,7 +13,7 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 
 /**
- * 系统角色实体、表单与 VO 转换。
+ * 系统角色实体、表单与 VO 转换
  *
  * @author Bunny
  */
@@ -36,7 +36,7 @@ public interface SysRoleConverter {
 	SysRoleEntity toEntity(SysRoleForm form);
 
 	/**
-	 * 更新表单字段合并到已有实体（不覆盖主键与审计字段）。
+	 * 更新表单字段合并到已有实体（不覆盖主键与审计字段）
 	 * @param form 更新表单
 	 * @param entity 已有实体
 	 */

@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 /**
- * 平台 Capability SPI 行为差异测试。
+ * 平台 Capability SPI 行为差异测试
  *
  * @author Bunny
  */
@@ -29,7 +29,7 @@ class StoragePlatformCapabilityTest {
 	@Test
 	@DisplayName("MinIO facade：未实现的能力返回 Optional.empty")
 	void minioCapability_returnsEmptyForUnimplementedType() {
-		// 验证 MinIO 不实现图片样式能力时通过默认方法返回空。
+		// 验证 MinIO 不实现图片样式能力时通过默认方法返回空
 		MinioStoragePlatformFacade facade = new MinioStoragePlatformFacade(mock(S3CompatibleFileStorageProvider.class),
 				mock(MinioConfigValidator.class), mock(MinioBucketInitializer.class),
 				mock(StorageExceptionClassifier.class));
@@ -42,7 +42,7 @@ class StoragePlatformCapabilityTest {
 	@Test
 	@DisplayName("Aliyun facade：图片样式能力可用且能拼出 x-oss-process 参数")
 	void aliyunCapability_returnsImageStyleUrlBuilder() {
-		// 验证 OSS 侧实现按预期拼接样式参数，覆盖有/无查询串两种情形。
+		// 验证 OSS 侧实现按预期拼接样式参数，覆盖有/无查询串两种情形
 		AliyunImageStyleUrlCapability imageStyle = new AliyunImageStyleUrlCapability();
 		AliyunOssStoragePlatformFacade facade = new AliyunOssStoragePlatformFacade(
 				mock(S3CompatibleFileStorageProvider.class), mock(AliyunOssConfigValidator.class),

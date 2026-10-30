@@ -5,7 +5,7 @@ import lombok.Value;
 import lombok.experimental.Accessors;
 
 /**
- * 岗位导入行解析结果（Extract 阶段产物）。
+ * 岗位导入行解析结果（Extract 阶段产物）
  *
  * @author Bunny
  */

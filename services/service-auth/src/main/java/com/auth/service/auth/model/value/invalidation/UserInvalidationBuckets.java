@@ -1,7 +1,6 @@
 package com.auth.service.auth.model.value.invalidation;
 
 import lombok.Builder;
-import lombok.Value;
 import lombok.experimental.Accessors;
 
 import java.util.HashSet;
@@ -11,24 +10,15 @@ import java.util.Set;
 /**
  * 用户失效分桶
  *
+ * @param versionBumpUserIds 需要 perm_version + 1 并刷新画像的用户 ID
+ * @param evictOnlyUserIds 仅需驱逐 Redis 画像的用户 ID
  * @author Bunny
  */
-@Value
 @Accessors(fluent = true)
-public class UserInvalidationBuckets {
+public record UserInvalidationBuckets(Set<Long> versionBumpUserIds, Set<Long> evictOnlyUserIds) {
 
 	/**
-	 * 需要 perm_version + 1 并刷新画像的用户 ID
-	 */
-	Set<Long> versionBumpUserIds;
-
-	/**
-	 * 仅需驱逐 Redis 画像的用户 ID
-	 */
-	Set<Long> evictOnlyUserIds;
-
-	/**
-	 * 构建分桶并规范化集合为不可变副本。
+	 * 构建分桶并规范化集合为不可变副本
 	 * @param versionBumpUserIds 版本递增用户 ID
 	 * @param evictOnlyUserIds 仅驱逐用户 ID
 	 */

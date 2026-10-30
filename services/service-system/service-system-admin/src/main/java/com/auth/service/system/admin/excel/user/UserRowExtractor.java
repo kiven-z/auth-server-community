@@ -14,7 +14,7 @@ import java.time.format.DateTimeParseException;
 import java.util.Map;
 
 /**
- * 用户导入 Extract 阶段：trim、必填与类型解析。
+ * 用户导入 Extract 阶段：trim、必填与类型解析
  *
  * @author Bunny
  */

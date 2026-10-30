@@ -16,7 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link StorageBucketBootstrapRunner} 单元测试。
+ * {@link StorageBucketBootstrapRunner} 单元测试
  *
  * @author Bunny
  */
@@ -39,7 +39,7 @@ class StorageBucketBootstrapRunnerTest {
 	@Test
 	@DisplayName("onApplicationReady：平台已配置时执行初始化")
 	void onApplicationReady_runsInitializerWhenPlatformConfigured() {
-		// 验证默认平台配置完整时会触发对应初始化器。
+		// 验证默认平台配置完整时会触发对应初始化器
 		FileUploadProperties properties = new FileUploadProperties();
 		properties.setDefaultPlatform(StoragePlatformEnum.MINIO);
 		StorageBucketBootstrapRunner runner = new StorageBucketBootstrapRunner(properties, facadeRegistry);
@@ -60,7 +60,7 @@ class StorageBucketBootstrapRunnerTest {
 	@Test
 	@DisplayName("onApplicationReady：平台未配置时跳过初始化")
 	void onApplicationReady_skipsInitializerWhenPlatformNotConfigured() {
-		// 验证默认平台配置缺失时不会触发初始化器避免无效失败。
+		// 验证默认平台配置缺失时不会触发初始化器避免无效失败
 		FileUploadProperties properties = new FileUploadProperties();
 		properties.setDefaultPlatform(StoragePlatformEnum.MINIO);
 		StorageBucketBootstrapRunner runner = new StorageBucketBootstrapRunner(properties, facadeRegistry);
@@ -80,7 +80,7 @@ class StorageBucketBootstrapRunnerTest {
 	@Test
 	@DisplayName("onApplicationReady：默认平台为空时直接跳过")
 	void onApplicationReady_skipsWhenDefaultPlatformMissing() {
-		// 验证未配置默认平台时不会进入门面解析和初始化流程。
+		// 验证未配置默认平台时不会进入门面解析和初始化流程
 		FileUploadProperties properties = new FileUploadProperties();
 		properties.setDefaultPlatform(null);
 		StorageBucketBootstrapRunner runner = new StorageBucketBootstrapRunner(properties, facadeRegistry);

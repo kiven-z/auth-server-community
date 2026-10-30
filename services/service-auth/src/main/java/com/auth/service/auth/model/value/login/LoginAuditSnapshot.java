@@ -45,7 +45,7 @@ public class LoginAuditSnapshot {
 	String browserType;
 
 	/**
-	 * 无 HTTP 请求时的空快照（字段均为 null）。
+	 * 无 HTTP 请求时的空快照（字段均为 null）
 	 * @return 空快照
 	 */
 	public static LoginAuditSnapshot empty() {

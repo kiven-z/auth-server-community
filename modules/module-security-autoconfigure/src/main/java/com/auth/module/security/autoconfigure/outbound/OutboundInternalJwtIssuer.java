@@ -7,7 +7,7 @@ import com.auth.module.security.core.token.provider.InternalTokenProvider;
 import java.util.UUID;
 
 /**
- * 出站内部 JWT 签发：按当前安全上下文选择 USER 或 SERVICE 身份。
+ * 出站内部 JWT 签发：按当前安全上下文选择 USER 或 SERVICE 身份
  *
  * @author Bunny
  */

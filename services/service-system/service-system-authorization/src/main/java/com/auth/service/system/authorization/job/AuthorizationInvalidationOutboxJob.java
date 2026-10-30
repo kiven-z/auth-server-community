@@ -15,7 +15,7 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * 授权失效 Outbox 补偿任务：扫描 PENDING / FAILED 并重试投递 auth。
+ * 授权失效 Outbox 补偿任务：扫描 PENDING / FAILED 并重试投递 auth
  *
  * @author Bunny
  */
@@ -42,7 +42,7 @@ public class AuthorizationInvalidationOutboxJob {
 	private String applicationName;
 
 	/**
-	 * 定时扫描并补偿投递失败的 Outbox 记录。
+	 * 定时扫描并补偿投递失败的 Outbox 记录
 	 */
 	@Scheduled(fixedDelayString = "${auth.authorization.poll-interval-ms:30000}")
 	public void pollAndDispatch() {

@@ -7,7 +7,7 @@ import com.auth.service.system.file.storage.core.s3.S3CompatibleFileStorageProvi
 import com.auth.service.system.file.storage.core.validator.StoragePlatformConfigValidator;
 
 /**
- * S3 兼容存储平台门面模板，聚合同类平台的通用能力委托。
+ * S3 兼容存储平台门面模板，聚合同类平台的通用能力委托
  *
  * @author Bunny
  */

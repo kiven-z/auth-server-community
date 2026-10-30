@@ -7,7 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 用户数据范围配置（部门维；有行则覆盖 role_scope）
+ * 用户数据范围配置
+ * <p>
+ * 按数据维；有行则覆盖同维 role_scope
+ * </p>
  *
  * @author Bunny
  */
@@ -20,10 +23,13 @@ public class UserScopeEntity extends BaseEntity {
 	@Schema(title = "用户 ID")
 	private Long userId;
 
-	@Schema(title = "范围类型：ALL/SELF/DEPT/DEPT_AND_CHILD")
+	@Schema(title = "数据维度")
+	private String dimension;
+
+	@Schema(title = "范围类型", description = "ALL/SELF/IDS/IDS_AND_CHILD")
 	private String scopeType;
 
-	@Schema(title = "部门 ID 列表 JSON")
-	private String scopeDeptIds;
+	@Schema(title = "节点 ID 列表 JSON")
+	private String scopeIds;
 
 }

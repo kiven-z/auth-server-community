@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * 调用 service-system 内部接口：持久化授权审计与操作日志。
+ * 调用 service-system 内部接口：持久化授权审计与操作日志
  *
  * @author Bunny
  */
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface SystemSecurityIngestFeignClient {
 
 	/**
-	 * 追加一条授权审计记录。
+	 * 追加一条授权审计记录
 	 * @param body 上报负载
 	 * @return 统一响应
 	 */
@@ -24,7 +24,7 @@ public interface SystemSecurityIngestFeignClient {
 	Result<Void> appendAuthorizationAudit(@RequestBody AuthorizationAuditIngestRequest body);
 
 	/**
-	 * 追加一条操作日志。
+	 * 追加一条操作日志
 	 * @param body 上报负载
 	 * @return 统一响应
 	 */

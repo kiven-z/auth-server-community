@@ -113,7 +113,7 @@ public enum SecurityResultCodeEnum {
 	}
 
 	/**
-	 * 从稳定 error 子码解析为枚举；无法识别时返回 {@link #UNKNOWN}。
+	 * 从稳定 error 子码解析为枚举；无法识别时返回 {@link #UNKNOWN}
 	 * @param error 错误子码（与 {@link #getError()} 一致）
 	 * @return 对应枚举
 	 */

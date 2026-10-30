@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.mock;
 
 /**
- * 内置 {@link QuartzTask#example()} 应与载荷校验规则一致。
+ * 内置 {@link QuartzTask#example()} 应与载荷校验规则一致
  *
  * @author Bunny
  */

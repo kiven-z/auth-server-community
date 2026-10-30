@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 授权失效业务键（密封类型）：不同 {@link AuthorizationChangeKind} 使用不同子类型。
+ * 授权失效业务键（密封类型）：不同 {@link AuthorizationChangeKind} 使用不同子类型
  *
  * @author Bunny
  */
@@ -14,7 +14,7 @@ public sealed interface AuthorizationInvalidatePayload extends Serializable
 		AuthorizationInvalidatePayload.Grant, AuthorizationInvalidatePayload.User {
 
 	/**
-	 * 校验列表非 null 且非空，并返回不可变拷贝。
+	 * 校验列表非 null 且非空，并返回不可变拷贝
 	 * @param values 待校验列表
 	 * @param fieldName 字段名
 	 * @param <T> 元素类型
@@ -28,7 +28,7 @@ public sealed interface AuthorizationInvalidatePayload extends Serializable
 	}
 
 	/**
-	 * 本负载对应的变更维度。
+	 * 本负载对应的变更维度
 	 * @return 变更维度
 	 */
 	AuthorizationChangeKind kind();

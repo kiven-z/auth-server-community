@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * 岗位导入器：Extract → Validate → Map 三阶段编排。
+ * 岗位导入器：Extract → Validate → Map 三阶段编排
  *
  * @author Bunny
  */

@@ -14,7 +14,7 @@ import java.math.RoundingMode;
 import java.util.Objects;
 
 /**
- * 授权失效运维统计转换器；含 null 默认值与失败率计算，不使用 MapStruct。
+ * 授权失效运维统计转换器；含 null 默认值与失败率计算，不使用 MapStruct
  *
  * @author Bunny
  */

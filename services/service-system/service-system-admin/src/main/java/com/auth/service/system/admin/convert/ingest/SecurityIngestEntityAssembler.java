@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 操作日志事件到持久化实体的映射。
+ * 操作日志事件到持久化实体的映射
  *
  * @author Bunny
  */
@@ -38,7 +38,7 @@ public class SecurityIngestEntityAssembler {
 	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
 	/**
-	 * 将操作日志负载映射为待插入实体。
+	 * 将操作日志负载映射为待插入实体
 	 * @param payload 操作日志负载
 	 * @param principalUserId 操作用户 ID；匿名或未认证时为 null
 	 * @return 持久化实体
@@ -65,7 +65,7 @@ public class SecurityIngestEntityAssembler {
 	}
 
 	/**
-	 * 将授权审计负载映射为待插入实体。
+	 * 将授权审计负载映射为待插入实体
 	 * @param event 授权审计负载
 	 * @return 持久化实体
 	 */

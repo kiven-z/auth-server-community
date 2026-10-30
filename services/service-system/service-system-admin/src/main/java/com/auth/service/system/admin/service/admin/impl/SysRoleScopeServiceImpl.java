@@ -40,11 +40,11 @@ public class SysRoleScopeServiceImpl extends ServiceImpl<RoleScopeMapper, RoleSc
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SysRoleScopeVO getByRoleId(Long roleId) {
+	public List<SysRoleScopeVO> getByRoleId(Long roleId) {
 		rbacReferenceChecker.getExisting(roleId);
-		RoleScopeEntity entity = super.getOne(
-				Wrappers.<RoleScopeEntity>lambdaQuery().eq(RoleScopeEntity::getRoleId, roleId));
-		return SysRoleScopeConverter.toVo(entity);
+		return super.list(Wrappers.<RoleScopeEntity>lambdaQuery().eq(RoleScopeEntity::getRoleId, roleId)).stream()
+			.map(SysRoleScopeConverter::toVo)
+			.toList();
 	}
 
 	/**
@@ -56,13 +56,15 @@ public class SysRoleScopeServiceImpl extends ServiceImpl<RoleScopeMapper, RoleSc
 		SysRoleEntity role = rbacReferenceChecker.getExisting(roleId);
 		DataScopeFormSupport.ResolvedDataScope resolved = dataScopeFormSupport.resolve(form);
 
-		RoleScopeEntity existing = super.getOne(
-				Wrappers.<RoleScopeEntity>lambdaQuery().eq(RoleScopeEntity::getRoleId, roleId));
+		RoleScopeEntity existing = super.getOne(Wrappers.<RoleScopeEntity>lambdaQuery()
+			.eq(RoleScopeEntity::getRoleId, roleId)
+			.eq(RoleScopeEntity::getDimension, resolved.dimension().name()));
 		RoleScopeEntity entity = existing != null ? existing : new RoleScopeEntity();
 		if (existing == null) {
 			entity.setRoleId(roleId);
 		}
-		SysRoleScopeConverter.applyForm(entity, form, resolved.scopeType().name(), resolved.scopeDeptIds());
+		SysRoleScopeConverter.applyForm(entity, form, resolved.dimension().name(), resolved.scopeType().name(),
+				resolved.scopeIds());
 		super.saveOrUpdate(entity);
 
 		roleInvalidationTrigger.submitByRoleCodes(List.of(role.getRoleCode()), "upsert-role-scope");

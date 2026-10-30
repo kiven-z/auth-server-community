@@ -26,7 +26,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 授权画像查询：聚合用户快照、角色权限与数据范围，构建 {@link AuthProfile}。
+ * 授权画像查询：聚合用户快照、角色权限与数据范围，构建 {@link AuthProfile}
  *
  * @author Bunny
  */
@@ -43,7 +43,7 @@ public class AuthProfileRepository {
 	private final DataScopeMapper dataScopeMapper;
 
 	/**
-	 * 根据用户 ID 构建授权画像。
+	 * 根据用户 ID 构建授权画像
 	 * @param userId 用户 ID
 	 * @return 授权画像
 	 */
@@ -54,7 +54,7 @@ public class AuthProfileRepository {
 	}
 
 	/**
-	 * 批量构建授权画像（存在且可加载的用户）。
+	 * 批量构建授权画像（存在且可加载的用户）
 	 * @param userIds 用户 ID
 	 * @return 授权画像列表
 	 */
@@ -109,7 +109,7 @@ public class AuthProfileRepository {
 	}
 
 	/**
-	 * 套用超管/管理员特权后组装画像。
+	 * 套用超管/管理员特权后组装画像
 	 */
 	private AuthProfile assembleProfile(UserAccountSnapshot account, List<String> roles, List<String> permissions,
 			Map<DataScopeDimension, ScopeGrant> dataScopes) {

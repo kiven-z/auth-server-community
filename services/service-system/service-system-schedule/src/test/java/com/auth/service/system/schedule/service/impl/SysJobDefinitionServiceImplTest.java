@@ -50,7 +50,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link SysJobDefinitionServiceImpl} 单元测试。
+ * {@link SysJobDefinitionServiceImpl} 单元测试
  *
  * @author Bunny
  */

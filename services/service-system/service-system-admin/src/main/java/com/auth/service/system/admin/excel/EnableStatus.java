@@ -1,7 +1,7 @@
 package com.auth.service.system.admin.excel;
 
 /**
- * Excel 导入启用状态解析结果（启用 / 禁用 / 未知）。
+ * Excel 导入启用状态解析结果（启用 / 禁用 / 未知）
  *
  * @author Bunny
  */

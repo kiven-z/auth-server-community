@@ -5,6 +5,8 @@ import com.auth.service.system.admin.model.form.scope.SysDataScopeForm;
 import com.auth.service.system.admin.model.vo.role.SysRoleScopeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * 角色数据范围服务
  *
@@ -13,11 +15,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface SysRoleScopeService extends IService<RoleScopeEntity> {
 
 	/**
-	 * 按角色查询数据范围配置；无配置行时返回 null（画像侧兜底 SELF）
+	 * 按角色查询数据范围配置
+	 * <p>
+	 * 无配置行时返回空列表（画像侧兜底 SELF）
+	 * </p>
 	 * @param roleId 角色 ID
-	 * @return 范围配置；未配置为 null
+	 * @return 各维范围配置；未配置为空列表
 	 */
-	SysRoleScopeVO getByRoleId(Long roleId);
+	List<SysRoleScopeVO> getByRoleId(Long roleId);
 
 	/**
 	 * 保存角色数据范围（写后触发授权失效）

@@ -5,7 +5,7 @@ import lombok.experimental.UtilityClass;
 import java.util.Set;
 
 /**
- * 上传 MIME 白名单常量组，供 {@link FileBizType} 组合复用。
+ * 上传 MIME 白名单常量组，供 {@link FileBizType} 组合复用
  *
  * @author Bunny
  */

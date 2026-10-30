@@ -4,9 +4,9 @@ import com.auth.module.security.contract.bizcode.PlatformBizCodes;
 import lombok.experimental.UtilityClass;
 
 /**
- * authorization / admin 域专有操作审计「小模块」编码。
+ * authorization / admin 域专有操作审计「小模块」编码
  * <p>
- * 跨能力共享资源码见 {@link PlatformBizCodes}。
+ * 跨能力共享资源码见 {@link PlatformBizCodes}
  * </p>
  *
  * @author Bunny

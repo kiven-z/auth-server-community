@@ -6,7 +6,7 @@ import com.auth.module.security.contract.audit.operationlog.OperationLog;
 import lombok.experimental.UtilityClass;
 
 /**
- * 根据注解策略与调用结果生成操作日志中的响应消息摘要。
+ * 根据注解策略与调用结果生成操作日志中的响应消息摘要
  *
  * @author Bunny
  */

@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 import java.util.List;
 
 /**
- * 岗位导入 Validate 阶段。
+ * 岗位导入 Validate 阶段
  *
  * @author Bunny
  */

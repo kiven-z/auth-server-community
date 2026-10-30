@@ -12,7 +12,7 @@ import java.util.Objects;
  * 按分片阈值拆分落盘的导出会话
  *
  * <p>
- * 写入完成后调用 {@link #finish()} 获取所有分片路径；任何失败路径均应调用 {@link #abortQuietly()} 清理临时文件。
+ * 写入完成后调用 {@link #finish()} 获取所有分片路径；任何失败路径均应调用 {@link #abortQuietly()} 清理临时文件
  *
  * @param <R> 导出行类型
  * @author Bunny

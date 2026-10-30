@@ -15,7 +15,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link MybatisPlusAuditFillAutoConfiguration} 审计字段自动填充测试。
+ * {@link MybatisPlusAuditFillAutoConfiguration} 审计字段自动填充测试
  */
 @DisplayName("MybatisPlusAuditFillAutoConfiguration 审计字段填充")
 class MybatisPlusAuditFillAutoConfigurationTest {

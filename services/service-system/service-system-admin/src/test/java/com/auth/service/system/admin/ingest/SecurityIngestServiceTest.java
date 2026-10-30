@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
 /**
- * {@link SecurityIngestService} 单元测试。
+ * {@link SecurityIngestService} 单元测试
  *
  * @author Bunny
  */

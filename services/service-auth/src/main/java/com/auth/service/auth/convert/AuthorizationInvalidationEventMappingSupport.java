@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 /**
- * 授权失效幂等事件写侧投影组装与 MapStruct 辅助映射。
+ * 授权失效幂等事件写侧投影组装与 MapStruct 辅助映射
  *
  * @author Bunny
  */
@@ -20,9 +20,9 @@ import java.util.Objects;
 public class AuthorizationInvalidationEventMappingSupport {
 
 	/**
-	 * 构建处理中占位投影行。
+	 * 构建处理中占位投影行
 	 * <p>
-	 * 复杂度否决：含 IdWorker、多计数占位与审计时间，不适合 MapStruct。
+	 * 复杂度否决：含 IdWorker、多计数占位与审计时间，不适合 MapStruct
 	 * </p>
 	 * @param eventId 事件 ID
 	 * @param kind 变更类型
@@ -43,9 +43,9 @@ public class AuthorizationInvalidationEventMappingSupport {
 	}
 
 	/**
-	 * 投影行 → 失效处理结果 DTO。
+	 * 投影行 → 失效处理结果 DTO
 	 * <p>
-	 * 复杂度否决：含 null 安全默认值，字段少且读侧专用，手写更清晰。
+	 * 复杂度否决：含 null 安全默认值，字段少且读侧专用，手写更清晰
 	 * </p>
 	 * @param projection 持久化投影
 	 * @return 失效处理结果
@@ -58,9 +58,9 @@ public class AuthorizationInvalidationEventMappingSupport {
 	}
 
 	/**
-	 * 失效处理结果 DTO → 待更新的完成态投影。
+	 * 失效处理结果 DTO → 待更新的完成态投影
 	 * <p>
-	 * 复杂度否决：Response record → Projection 更新载荷，无对称 MapStruct 源类型。
+	 * 复杂度否决：Response record → Projection 更新载荷，无对称 MapStruct 源类型
 	 * </p>
 	 * @param eventId 事件 ID
 	 * @param kind 变更类型

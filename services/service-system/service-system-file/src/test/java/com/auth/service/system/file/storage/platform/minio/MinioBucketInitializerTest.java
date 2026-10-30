@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link MinioBucketInitializer} 单元测试。
+ * {@link MinioBucketInitializer} 单元测试
  *
  * @author Bunny
  */
@@ -52,7 +52,7 @@ class MinioBucketInitializerTest {
 	@Test
 	@DisplayName("ensureBucketReady：桶存在时跳过创建与策略")
 	void ensureBucketReady_skipsWhenBucketExists() {
-		// 验证 headBucket 成功即视为存在，不再重复创建或覆盖策略。
+		// 验证 headBucket 成功即视为存在，不再重复创建或覆盖策略
 		when(s3Client.headBucket(any(HeadBucketRequest.class))).thenReturn(HeadBucketResponse.builder().build());
 
 		assertThatCode(() -> initializer.ensureBucketReady()).doesNotThrowAnyException();
@@ -64,7 +64,7 @@ class MinioBucketInitializerTest {
 	@Test
 	@DisplayName("ensureBucketReady：桶不存在时创建并应用公开前缀策略")
 	void ensureBucketReady_createsBucketAndAppliesPolicy() {
-		// 验证 NoSuchBucket 时按 create + putBucketPolicy 顺序补齐。
+		// 验证 NoSuchBucket 时按 create + putBucketPolicy 顺序补齐
 		when(s3Client.headBucket(any(HeadBucketRequest.class)))
 			.thenThrow(NoSuchBucketException.builder().statusCode(404).message("not found").build());
 
@@ -77,7 +77,7 @@ class MinioBucketInitializerTest {
 	@Test
 	@DisplayName("ensureBucketReady：非 not-found 错误抛业务异常")
 	void ensureBucketReady_throwsOnOtherError() {
-		// 验证 AccessDenied 等错误不会静默吞掉，会向外抛出业务异常。
+		// 验证 AccessDenied 等错误不会静默吞掉，会向外抛出业务异常
 		S3Exception denied = (S3Exception) S3Exception.builder()
 			.statusCode(403)
 			.awsErrorDetails(AwsErrorDetails.builder().errorCode("AccessDenied").build())

@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link LoginService} 单元测试：策略路由、会话签发委托与登出。
+ * {@link LoginService} 单元测试：策略路由、会话签发委托与登出
  *
  * @author Bunny
  */

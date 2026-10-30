@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 文件业务类型枚举（含上传类型/大小策略）。
+ * 文件业务类型枚举（含上传类型/大小策略）
  *
  * @author Bunny
  */

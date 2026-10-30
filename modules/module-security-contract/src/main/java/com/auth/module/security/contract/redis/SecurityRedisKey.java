@@ -7,7 +7,7 @@ import java.time.Duration;
 /**
  * Security 模块 Redis Key 枚举定义（跨服务约定）
  * <p>
- * 每个枚举常量封装了 Redis Key 前缀与默认过期时间， 通过 {@link #key(String)} / {@link #key(long)} 构建完整 Key。
+ * 每个枚举常量封装了 Redis Key 前缀与默认过期时间， 通过 {@link #key(String)} / {@link #key(long)} 构建完整 Key
  *
  * @author Bunny
  */

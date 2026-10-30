@@ -11,7 +11,7 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noMethods;
 
 /**
  * auth-gateway 模块架构约束（ArchUnit）。 网关为 WebFlux 响应式栈，全局错误由 AbstractErrorWebExceptionHandler
- * 处理，无 @RestControllerAdvice。
+ * 处理，无 @RestControllerAdvice
  *
  * @author Bunny
  */

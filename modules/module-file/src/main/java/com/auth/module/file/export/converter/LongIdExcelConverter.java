@@ -8,7 +8,7 @@ import com.alibaba.excel.metadata.data.WriteCellData;
 import com.alibaba.excel.metadata.property.ExcelContentProperty;
 
 /**
- * 长整型主键导出为 Excel 文本，避免 Snowflake ID 被数值格式截断或显示为科学计数法。
+ * 长整型主键导出为 Excel 文本，避免 Snowflake ID 被数值格式截断或显示为科学计数法
  *
  * @author Bunny
  */

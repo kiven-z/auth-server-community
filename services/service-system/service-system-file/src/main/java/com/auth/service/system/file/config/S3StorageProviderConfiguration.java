@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
  *
  * <p>
  * {@link S3CompatibleFileStorageProvider} 需要绑定具体平台后才有意义，因此以工厂方式为每个平台产出独立实例， 并按平台命名 Bean
- * 供各自 Facade 通过 @Qualifier 装配。
+ * 供各自 Facade 通过 @Qualifier 装配
  * </p>
  *
  * @author Bunny

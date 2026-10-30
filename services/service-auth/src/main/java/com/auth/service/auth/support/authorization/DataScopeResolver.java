@@ -40,18 +40,6 @@ public class DataScopeResolver {
 		return ScopeGrant.builder().scopeType(DataScopeStorageType.SELF).build();
 	}
 
-	private static DataScopeDimension parseDimension(String raw) {
-		if (raw == null || raw.isBlank()) {
-			return null;
-		}
-		try {
-			return DataScopeDimension.valueOf(raw.strip().toUpperCase(Locale.ROOT));
-		}
-		catch (IllegalArgumentException ex) {
-			return null;
-		}
-	}
-
 	private static List<Long> parseIds(String raw) {
 		if (raw == null || raw.isBlank()) {
 			return List.of();
@@ -145,7 +133,7 @@ public class DataScopeResolver {
 			if (scope == null) {
 				continue;
 			}
-			DataScopeDimension dimension = parseDimension(scope.getDimension());
+			DataScopeDimension dimension = DataScopeDimension.parse(scope.getDimension());
 			if (dimension != null) {
 				indexed.putIfAbsent(dimension, scope);
 			}
@@ -162,7 +150,7 @@ public class DataScopeResolver {
 			if (scope == null) {
 				continue;
 			}
-			DataScopeDimension dimension = parseDimension(scope.getDimension());
+			DataScopeDimension dimension = DataScopeDimension.parse(scope.getDimension());
 			if (dimension == null) {
 				continue;
 			}
@@ -182,7 +170,7 @@ public class DataScopeResolver {
 			}
 			List<RoleScopePO> roleScopes = filterRoleScopes(rolesByUser.getOrDefault(userId, List.of()), allRoleScopes);
 			for (RoleScopePO scope : roleScopes) {
-				DataScopeDimension dimension = parseDimension(scope.getDimension());
+				DataScopeDimension dimension = DataScopeDimension.parse(scope.getDimension());
 				if (dimension != null && userByDimension.containsKey(dimension)) {
 					continue;
 				}
@@ -193,7 +181,7 @@ public class DataScopeResolver {
 	}
 
 	private void collectAnchors(String dimensionRaw, String scopeTypeRaw, String scopeIdsRaw, Set<Long> anchors) {
-		DataScopeDimension dimension = parseDimension(dimensionRaw);
+		DataScopeDimension dimension = DataScopeDimension.parse(dimensionRaw);
 		if (dimension == null || !dimension.isTree()) {
 			return;
 		}

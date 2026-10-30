@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * {@link StoragePlatformFacadeRegistry} 单元测试。
+ * {@link StoragePlatformFacadeRegistry} 单元测试
  *
  * @author Bunny
  */
@@ -28,7 +28,7 @@ class StoragePlatformFacadeRegistryTest {
 	@Test
 	@DisplayName("resolve：返回匹配平台的 facade")
 	void resolveReturnsMatchedFacade() {
-		// 验证注册表能够按平台返回对应门面实现。
+		// 验证注册表能够按平台返回对应门面实现
 		StoragePlatformFacade minioFacade = new StubFacade(StoragePlatformEnum.MINIO);
 		StoragePlatformFacade aliyunFacade = new StubFacade(StoragePlatformEnum.ALIYUN_OSS);
 		StoragePlatformFacadeRegistry registry = new StoragePlatformFacadeRegistry(List.of(minioFacade, aliyunFacade));
@@ -40,7 +40,7 @@ class StoragePlatformFacadeRegistryTest {
 	@Test
 	@DisplayName("resolve：平台未注册时抛出业务异常")
 	void resolveThrowsWhenFacadeMissing() {
-		// 验证未注册平台会抛统一业务异常码，避免门面为空。
+		// 验证未注册平台会抛统一业务异常码，避免门面为空
 		StoragePlatformFacadeRegistry registry = new StoragePlatformFacadeRegistry(
 				List.of(new StubFacade(StoragePlatformEnum.MINIO)));
 
@@ -53,7 +53,7 @@ class StoragePlatformFacadeRegistryTest {
 	@Test
 	@DisplayName("resolve：平台为空时抛出配置缺失异常")
 	void resolveThrowsWhenPlatformMissing() {
-		// 验证未配置默认平台时返回统一配置缺失错误。
+		// 验证未配置默认平台时返回统一配置缺失错误
 		StoragePlatformFacadeRegistry registry = new StoragePlatformFacadeRegistry(
 				List.of(new StubFacade(StoragePlatformEnum.MINIO)));
 
@@ -65,7 +65,7 @@ class StoragePlatformFacadeRegistryTest {
 	@Test
 	@DisplayName("registry：同平台重复注册时抛出业务异常")
 	void constructorThrowsWhenPlatformDuplicated() {
-		// 验证同一平台出现多个门面实现时，构造阶段立刻失败。
+		// 验证同一平台出现多个门面实现时，构造阶段立刻失败
 		StoragePlatformFacade firstFacade = new StubFacade(StoragePlatformEnum.MINIO);
 		StoragePlatformFacade secondFacade = new StubFacade(StoragePlatformEnum.MINIO);
 
@@ -76,7 +76,7 @@ class StoragePlatformFacadeRegistryTest {
 	}
 
 	/**
-	 * 测试桩平台门面。
+	 * 测试桩平台门面
 	 */
 	private record StubFacade(StoragePlatformEnum platform) implements StoragePlatformFacade {
 

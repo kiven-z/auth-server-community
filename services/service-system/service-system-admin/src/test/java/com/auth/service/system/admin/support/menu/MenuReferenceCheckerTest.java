@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link MenuReferenceChecker} 单元测试。
+ * {@link MenuReferenceChecker} 单元测试
  */
 @DisplayName("MenuReferenceChecker 菜单引用校验")
 @ExtendWith(MockitoExtension.class)

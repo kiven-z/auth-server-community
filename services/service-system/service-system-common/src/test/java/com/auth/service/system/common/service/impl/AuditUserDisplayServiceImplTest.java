@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link AuditUserDisplayServiceImpl} 单元测试。
+ * {@link AuditUserDisplayServiceImpl} 单元测试
  *
  * @author Bunny
  */

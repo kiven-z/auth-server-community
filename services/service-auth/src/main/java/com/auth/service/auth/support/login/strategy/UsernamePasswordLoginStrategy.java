@@ -16,7 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 /**
- * 用户名密码认证策略：查询用户并用 {@link PasswordEncoder} 校验密码。
+ * 用户名密码认证策略：查询用户并用 {@link PasswordEncoder} 校验密码
  *
  * @author Bunny
  */

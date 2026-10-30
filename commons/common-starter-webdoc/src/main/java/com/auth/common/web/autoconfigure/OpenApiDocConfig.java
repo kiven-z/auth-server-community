@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
 /**
- * SpringDoc OpenAPI 自动配置。
+ * SpringDoc OpenAPI 自动配置
  *
  * @author Bunny
  */

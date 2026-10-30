@@ -22,7 +22,7 @@ public class UserOrgRelationBatchRemoveSupport {
 	private final UserAuthorizationInvalidationTrigger userAuthorizationInvalidationTrigger;
 
 	/**
-	 * 校验用户可写后批量删除关联，并触发权限失效。
+	 * 校验用户可写后批量删除关联，并触发权限失效
 	 * @param userId 用户主键
 	 * @param ids 关联主键列表
 	 * @param removeByIds 实际删除动作

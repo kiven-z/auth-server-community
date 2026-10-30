@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
 import java.util.Optional;
 
 /**
- * 登录前会话数量上限校验与淘汰策略。
+ * 登录前会话数量上限校验与淘汰策略
  *
  * @author Bunny
  */
@@ -27,7 +27,7 @@ public class SessionLimitGuard {
 	}
 
 	/**
-	 * 校验用户活跃会话是否超过配置上限；必要时按策略淘汰最旧会话。
+	 * 校验用户活跃会话是否超过配置上限；必要时按策略淘汰最旧会话
 	 * @param userId 用户 ID
 	 */
 	public void assertSessionLimit(Long userId) {

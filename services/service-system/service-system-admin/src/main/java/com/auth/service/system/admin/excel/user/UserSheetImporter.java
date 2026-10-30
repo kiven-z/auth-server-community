@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 用户导入器：Extract → Validate → Map 三阶段编排。
+ * 用户导入器：Extract → Validate → Map 三阶段编排
  *
  * @author Bunny
  */

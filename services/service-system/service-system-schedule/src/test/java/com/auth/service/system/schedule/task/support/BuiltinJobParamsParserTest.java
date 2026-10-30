@@ -17,7 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link BuiltinJobParamsParser} 单元测试。
+ * {@link BuiltinJobParamsParser} 单元测试
  *
  * @author Bunny
  */

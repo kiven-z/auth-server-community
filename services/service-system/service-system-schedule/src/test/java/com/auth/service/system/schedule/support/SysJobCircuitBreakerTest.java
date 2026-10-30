@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link SysJobCircuitBreaker} 单元测试。
+ * {@link SysJobCircuitBreaker} 单元测试
  */
 @DisplayName("SysJobCircuitBreaker 连续失败熔断")
 @ExtendWith(MockitoExtension.class)

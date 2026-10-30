@@ -9,7 +9,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * 上传内容策略校验：后缀黑名单、大小上限、魔数 MIME 白名单。
+ * 上传内容策略校验：后缀黑名单、大小上限、魔数 MIME 白名单
  *
  * @author Bunny
  */

@@ -14,7 +14,7 @@ import org.mapstruct.factory.Mappers;
 import java.util.List;
 
 /**
- * 部门实体与列表 VO 转换。
+ * 部门实体与列表 VO 转换
  *
  * @author Bunny
  */

@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link SysRolePermissionServiceImpl} 单元测试。
+ * {@link SysRolePermissionServiceImpl} 单元测试
  */
 @DisplayName("SysRolePermissionServiceImpl 角色权限分配")
 @ExtendWith(MockitoExtension.class)

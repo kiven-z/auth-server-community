@@ -20,7 +20,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 /**
- * Outbox 投递执行：调用 auth /invalidate 并更新 Outbox 状态。
+ * Outbox 投递执行：调用 auth /invalidate 并更新 Outbox 状态
  *
  * @author Bunny
  */
@@ -38,7 +38,7 @@ public class AuthorizationInvalidationOutboxProcessor {
 	private final AuthorizationInvalidationProperties properties;
 
 	/**
-	 * 处理单条 Outbox（同步或补偿 Job 共用）。
+	 * 处理单条 Outbox（同步或补偿 Job 共用）
 	 * @param outboxId Outbox 主键
 	 * @return 是否处理成功
 	 */
@@ -55,7 +55,7 @@ public class AuthorizationInvalidationOutboxProcessor {
 	}
 
 	/**
-	 * 补偿 Job：抢占后处理。
+	 * 补偿 Job：抢占后处理
 	 * @param row 已查询的 Outbox 行
 	 * @param lockedBy 抢占实例标识
 	 */
@@ -73,7 +73,7 @@ public class AuthorizationInvalidationOutboxProcessor {
 	}
 
 	/**
-	 * 处理 Outbox 行。
+	 * 处理 Outbox 行
 	 * @param row 已查询的 Outbox 行
 	 * @return 是否处理成功
 	 */
@@ -104,7 +104,7 @@ public class AuthorizationInvalidationOutboxProcessor {
 	}
 
 	/**
-	 * 处理失败情况。
+	 * 处理失败情况
 	 * @param row 已查询的 Outbox 行
 	 * @param errorMessage 错误消息
 	 */

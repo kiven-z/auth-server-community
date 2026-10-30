@@ -1,6 +1,6 @@
 name: auth-app
 
-# 运行时定义（本地 / 服务器同一份）。不含 build，可单独拷到任意目录启动。
+# 运行时定义（本地 / 服务器同一份）。不含 build，可单独拷到任意目录启动
 #
 # 变量：
 #   IMAGE_PREFIX              镜像仓库前缀，例：registry.cn-hangzhou.aliyuncs.com/kiven-z-auth（默认 auth，本地构建）

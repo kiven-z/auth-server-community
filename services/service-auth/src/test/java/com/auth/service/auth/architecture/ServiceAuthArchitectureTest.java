@@ -11,9 +11,9 @@ import org.springframework.web.client.RestTemplate;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 
 /**
- * service-auth 模块轻量架构约束（ArchUnit）。
+ * service-auth 模块轻量架构约束（ArchUnit）
  * <p>
- * 仅保留与跨模块契约、统一 API 响应相关的底线检查，不强制分层与目录目标态。
+ * 仅保留与跨模块契约、统一 API 响应相关的底线检查，不强制分层与目录目标态
  * </p>
  *
  * @author Bunny
@@ -74,7 +74,7 @@ class ServiceAuthArchitectureTest {
 	private static final String DATA_SCOPE_ANNOTATION = "com.auth.module.security.datapermission.annotation.DataScope";
 
 	/**
-	 * @DataScope 按 MappedStatement ID 解析，仅 Mapper 方法生效。
+	 * @DataScope 按 MappedStatement ID 解析，仅 Mapper 方法生效
 	 */
 	@ArchTest
 	static final ArchRule data_scope_only_on_mapper_methods = methods().that()

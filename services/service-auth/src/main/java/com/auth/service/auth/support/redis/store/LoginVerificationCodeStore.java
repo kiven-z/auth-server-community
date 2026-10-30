@@ -14,7 +14,7 @@ import static com.auth.module.security.contract.redis.SecurityRedisKey.EMAIL_COD
 import static com.auth.module.security.contract.redis.SecurityRedisKey.SMS_CODE;
 
 /**
- * 登录验证码 Redis 存储。
+ * 登录验证码 Redis 存储
  *
  * @author Bunny
  */
@@ -28,7 +28,7 @@ public class LoginVerificationCodeStore {
 	}
 
 	/**
-	 * 按 Redis key 校验验证码并在成功后删除。
+	 * 按 Redis key 校验验证码并在成功后删除
 	 * @param key 验证码 Redis key
 	 * @param code 用户输入的验证码
 	 */
@@ -45,7 +45,7 @@ public class LoginVerificationCodeStore {
 	}
 
 	/**
-	 * 存储验证码摘要。
+	 * 存储验证码摘要
 	 * @param dimension 凭证维度
 	 * @param target 凭证值
 	 * @param digestHex16 MD5 摘要（hex16）

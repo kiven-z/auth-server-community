@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 文件对象键工具。
+ * 文件对象键工具
  *
  * @author Bunny
  */
@@ -35,7 +35,7 @@ public class FileObjectKeyUtil {
 	private static final Pattern OBJECT_KEY_PATH = Pattern.compile("/(?:public|private)/");
 
 	/**
-	 * 生成对象键，避免同名覆盖。
+	 * 生成对象键，避免同名覆盖
 	 * @param bizTypeCode 业务类型编码
 	 * @param isPrivate 是否私有
 	 * @param originalFilename 原始文件名
@@ -55,7 +55,7 @@ public class FileObjectKeyUtil {
 	}
 
 	/**
-	 * 按目标私有性切换对象键可见性前缀，保留 bizType/date/uuid 部分不变。
+	 * 按目标私有性切换对象键可见性前缀，保留 bizType/date/uuid 部分不变
 	 * @param objectKey 当前对象键
 	 * @param targetPrivate 目标是否私有
 	 * @return 切换前缀后的对象键

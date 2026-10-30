@@ -2,10 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.auth.service.auth.mapper.AuthorizationImpactMapper">
     <!--
-        反向影响面：业务键 → userId。
-        成员展开只读 v_user_grant_subjects。
-        失效执行时该主体的授权行可能已删除。
-        按角色码反查仍经 grant_table，再 JOIN 同一视图。
+        反向影响面：业务键 → userId
+        成员展开只读 v_user_grant_subjects
+        失效执行时该主体的授权行可能已删除
+        按角色码反查仍经 grant_table，再 JOIN 同一视图
     -->
 
     <!-- 按角色码反查受影响用户 ID -->
@@ -30,12 +30,12 @@
     <!-- 按授权主体反查成员用户 ID -->
     <select id="selectUserIdsByGrantSubjects" resultType="java.lang.Long">
         SELECT DISTINCT
-            m.user_id
+        m.user_id
         FROM
-            v_user_grant_subjects m
+        v_user_grant_subjects m
         WHERE
-            m.sub_type = #{subjectType}
-            AND m.sub_id IN
+        m.sub_type = #{subjectType}
+        AND m.sub_id IN
         <foreach collection="subjectIds" item="subjectId" open="(" separator="," close=")">
             #{subjectId}
         </foreach>
@@ -44,13 +44,13 @@
     <!-- 权限码桥接：查询关联角色码 -->
     <select id="selectRoleCodesByPermissionCodes" resultType="java.lang.String">
         SELECT DISTINCT
-            r.role_code
+        r.role_code
         FROM
-            sys_role_permission rp
-            INNER JOIN sys_permission p ON p.id = rp.permission_id
-            INNER JOIN sys_role r ON r.id = rp.role_id
+        sys_role_permission rp
+        INNER JOIN sys_permission p ON p.id = rp.permission_id
+        INNER JOIN sys_role r ON r.id = rp.role_id
         WHERE
-            p.permission_code IN
+        p.permission_code IN
         <foreach collection="permissionCodes" item="permissionCode" open="(" separator="," close=")">
             #{permissionCode}
         </foreach>

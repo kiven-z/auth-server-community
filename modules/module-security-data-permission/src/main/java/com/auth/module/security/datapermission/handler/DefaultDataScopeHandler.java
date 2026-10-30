@@ -64,7 +64,7 @@ public class DefaultDataScopeHandler implements DataScopeHandler {
 	}
 
 	/**
-	 * 裁决最终生效范围：注解指定一项时优先，否则用画像；画像缺失时为 SELF。
+	 * 裁决最终生效范围：注解指定一项时优先，否则用画像；画像缺失时为 SELF
 	 */
 	private DataScopeStorageType resolveEffectiveScopeType(DataScopeStorageType[] annotatedScope, ScopeGrant grant) {
 		if (annotatedScope != null && annotatedScope.length == 1) {

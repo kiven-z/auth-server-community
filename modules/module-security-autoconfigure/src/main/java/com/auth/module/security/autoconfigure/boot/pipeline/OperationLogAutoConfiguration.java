@@ -27,7 +27,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 public class OperationLogAutoConfiguration {
 
 	/**
-	 * 无本地 log_operation 访问能力时，通过 Feign 投递操作日志。
+	 * 无本地 log_operation 访问能力时，通过 Feign 投递操作日志
 	 */
 	@ConditionalOnBean(SystemSecurityIngestFeignClient.class)
 	@ConditionalOnMissingBean(OperationLogHandler.class)

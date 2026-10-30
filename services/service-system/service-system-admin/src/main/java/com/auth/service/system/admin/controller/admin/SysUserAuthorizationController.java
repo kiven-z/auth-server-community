@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.auth.service.system.common.exception.code.SystemCommonResultCode.OPERATION_SUCCESS;
 
 /**
@@ -32,12 +34,12 @@ public class SysUserAuthorizationController {
 
 	private final SysUserScopeService sysUserScopeService;
 
-	@Operation(summary = "查询用户数据范围", description = "未配置时 data=null，表示继承角色")
+	@Operation(summary = "查询用户数据范围")
 	@PreAuthorize("@auth.decide('sys:user:query')")
 	@GetMapping("/{userId}/scope")
-	public Result<SysUserScopeVO> getScope(@PathVariable("userId") Long userId) {
-		SysUserScopeVO userScopeVO = sysUserScopeService.getByUserId(userId);
-		return Result.success(userScopeVO);
+	public Result<List<SysUserScopeVO>> getScope(@PathVariable("userId") Long userId) {
+		List<SysUserScopeVO> scopes = sysUserScopeService.getByUserId(userId);
+		return Result.success(scopes);
 	}
 
 	@OperationLog(targetType = "USER_SCOPE", serviceDomain = AuditServiceDomain.SYSTEM,

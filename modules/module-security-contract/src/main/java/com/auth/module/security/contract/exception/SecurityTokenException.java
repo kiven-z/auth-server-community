@@ -3,7 +3,7 @@ package com.auth.module.security.contract.exception;
 import lombok.Getter;
 
 /**
- * Token 模块根异常；携带 {@link SecurityResultCodeEnum} 供集成层映射 HTTP / Result。
+ * Token 模块根异常；携带 {@link SecurityResultCodeEnum} 供集成层映射 HTTP / Result
  *
  * @author Bunny
  */
@@ -21,7 +21,7 @@ public class SecurityTokenException extends RuntimeException {
 	}
 
 	/**
-	 * 稳定错误子码（与 {@link SecurityResultCodeEnum#getError()} 一致），供仍按字符串集成的调用方使用。
+	 * 稳定错误子码（与 {@link SecurityResultCodeEnum#getError()} 一致），供仍按字符串集成的调用方使用
 	 * @return 稳定子码
 	 */
 	public String getCode() {

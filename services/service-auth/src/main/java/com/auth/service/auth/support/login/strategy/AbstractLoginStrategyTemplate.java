@@ -17,7 +17,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 /**
- * 登录策略模板：解析用户 → 锁定检查 → 子类校验凭证 → 构建画像与返回；失败路径经 {@link LoginAuditService} 发布审计。
+ * 登录策略模板：解析用户 → 锁定检查 → 子类校验凭证 → 构建画像与返回；失败路径经 {@link LoginAuditService} 发布审计
  *
  * @author Bunny
  */
@@ -31,7 +31,7 @@ public abstract class AbstractLoginStrategyTemplate<T extends BaseLoginCommand> 
 	private final LoginFailureRateLimiter loginFailureRateLimiter;
 
 	/**
-	 * 当前策略对应的审计事件类型（用于失败时尚未执行 {@link #doAuthenticate} 的场景）。
+	 * 当前策略对应的审计事件类型（用于失败时尚未执行 {@link #doAuthenticate} 的场景）
 	 * @return 登录日志类型
 	 */
 	protected abstract AuthLoginLogType loginLogType();
@@ -70,7 +70,7 @@ public abstract class AbstractLoginStrategyTemplate<T extends BaseLoginCommand> 
 	}
 
 	/**
-	 * 解析登录账户并记录审计日志。
+	 * 解析登录账户并记录审计日志
 	 * @param command 登录命令
 	 * @param request HTTP 请求
 	 * @return 登录账户
@@ -89,7 +89,7 @@ public abstract class AbstractLoginStrategyTemplate<T extends BaseLoginCommand> 
 	}
 
 	/**
-	 * 校验用户是否锁定并记录审计日志。
+	 * 校验用户是否锁定并记录审计日志
 	 * @param request HTTP 请求
 	 * @param account 登录账户
 	 */
@@ -116,14 +116,14 @@ public abstract class AbstractLoginStrategyTemplate<T extends BaseLoginCommand> 
 	}
 
 	/**
-	 * 解析认证命令对应的登录账户。
+	 * 解析认证命令对应的登录账户
 	 * @param command 登录命令
 	 * @return 登录账户
 	 */
 	protected abstract LoginAccount resolveAccount(T command);
 
 	/**
-	 * 校验凭证；密码不匹配时抛出 {@link AuthBadCredentialsException}。
+	 * 校验凭证；密码不匹配时抛出 {@link AuthBadCredentialsException}
 	 * @param command 登录命令
 	 * @param account 已解析账户
 	 * @return 登录类型（与审计类型一致）

@@ -62,12 +62,12 @@ public class SysRoleAuthorizationController {
 		return Result.success(null, OPERATION_SUCCESS.getMessage());
 	}
 
-	@Operation(summary = "查询角色数据范围", description = "未配置时 data=null")
+	@Operation(summary = "查询角色数据范围", description = "未配置时 data 为空列表")
 	@PreAuthorize("@auth.decide('sys:role:query')")
 	@GetMapping("/{roleId}/scope")
-	public Result<SysRoleScopeVO> getScope(@PathVariable("roleId") Long roleId) {
-		SysRoleScopeVO roleScopeVO = sysRoleScopeService.getByRoleId(roleId);
-		return Result.success(roleScopeVO);
+	public Result<List<SysRoleScopeVO>> getScope(@PathVariable("roleId") Long roleId) {
+		List<SysRoleScopeVO> scopes = sysRoleScopeService.getByRoleId(roleId);
+		return Result.success(scopes);
 	}
 
 	@OperationLog(targetType = "ROLE_GRANT_SUBJECTS", serviceDomain = AuditServiceDomain.SYSTEM,

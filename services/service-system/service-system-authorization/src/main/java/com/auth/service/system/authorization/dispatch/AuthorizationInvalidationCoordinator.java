@@ -24,7 +24,7 @@ public class AuthorizationInvalidationCoordinator {
 	private final AuthorizationInvalidationProperties properties;
 
 	/**
-	 * 提交失效事件：在调用方事务内写 Outbox，提交后按配置同步投递 auth。
+	 * 提交失效事件：在调用方事务内写 Outbox，提交后按配置同步投递 auth
 	 * @param request 失效请求
 	 * @param sourceModule 触发模块
 	 * @param sourceBizId 业务主键

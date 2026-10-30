@@ -14,8 +14,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * Excel 导入批量预检工具（行级校验已迁移至
- * {@link com.auth.module.file.importer.model.ImportRowValidator}）。
+ * Excel 导入批量预检工具（行级校验已迁移至 {@link com.auth.module.file.importer.model.ImportRowValidator}）
  *
  * @author Bunny
  */
@@ -28,7 +27,7 @@ public class ImportRowSupport {
 	private static final String FIELD_STATUS = "status";
 
 	/**
-	 * 从行集合中提取非空字段值（trim 后去重）。
+	 * 从行集合中提取非空字段值（trim 后去重）
 	 * @param rows 行数据
 	 * @param getter 字段提取函数
 	 * @param <R> 行类型
@@ -39,7 +38,7 @@ public class ImportRowSupport {
 	}
 
 	/**
-	 * 检测文件内重复字段值。
+	 * 检测文件内重复字段值
 	 * @param rows 行数据
 	 * @param getter 字段提取函数
 	 * @param <R> 行类型
@@ -62,7 +61,7 @@ public class ImportRowSupport {
 	}
 
 	/**
-	 * 批量预检编码在文件内及库中的唯一性。
+	 * 批量预检编码在文件内及库中的唯一性
 	 * @param rows 行数据
 	 * @param codeGetter 编码提取函数
 	 * @param existingLoader 按编码列表加载库中已存在编码
@@ -96,7 +95,7 @@ public class ImportRowSupport {
 	}
 
 	/**
-	 * 编码唯一性预检结果。
+	 * 编码唯一性预检结果
 	 */
 	@Value
 	@Builder

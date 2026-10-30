@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link FileRecordQueryServiceImpl} 单元测试。
+ * {@link FileRecordQueryServiceImpl} 单元测试
  *
  * @author Bunny
  */
@@ -63,7 +63,7 @@ class FileRecordQueryServiceImplTest {
 	@Test
 	@DisplayName("getPage：管理端有效文件分页按 isDeleted=false 查询")
 	void getPageUsesActiveDeletedFlagForAdminList() {
-		// 验证管理端文件列表仅查询未删除记录。
+		// 验证管理端文件列表仅查询未删除记录
 		FileRecordPageQuery query = buildBaseQuery();
 		mockPageResult(query, false);
 
@@ -77,7 +77,7 @@ class FileRecordQueryServiceImplTest {
 	@Test
 	@DisplayName("getPage：个人有效文件分页透传 ownerUserId")
 	void getPagePassesOwnerUserIdForPersonalList() {
-		// 验证个人文件列表会把归属用户透传给 Mapper。
+		// 验证个人文件列表会把归属用户透传给 Mapper
 		FileRecordPageQuery query = buildBaseQuery();
 		query.setOwnerUserId(9001L);
 		mockPageResult(query, false);
@@ -91,7 +91,7 @@ class FileRecordQueryServiceImplTest {
 	@Test
 	@DisplayName("getPage：个人回收站分页透传用户可见删除来源")
 	void getPageAppliesPersonalRecycleScope() {
-		// 验证个人回收站会限制删除来源与归属用户。
+		// 验证个人回收站会限制删除来源与归属用户
 		FileRecordPageQuery query = buildBaseQuery();
 		query.setOwnerUserId(9001L);
 		query.setDeleteSources(FileDeleteSource.userRecycleSourceCodes());
@@ -108,7 +108,7 @@ class FileRecordQueryServiceImplTest {
 	@Test
 	@DisplayName("getPage：时间范围参数按原样透传到 Mapper")
 	void getPagePassesTimeRangeParamsToMapper() {
-		// 验证时间范围筛选参数会传递到分页查询条件。
+		// 验证时间范围筛选参数会传递到分页查询条件
 		Instant startTime = LocalDateTime.of(2026, 7, 1, 0, 0, 0).toInstant(java.time.ZoneOffset.UTC);
 		Instant endTime = LocalDateTime.of(2026, 7, 3, 23, 59, 59).toInstant(java.time.ZoneOffset.UTC);
 		FileRecordPageQuery query = buildBaseQuery();
@@ -126,7 +126,7 @@ class FileRecordQueryServiceImplTest {
 	@Test
 	@DisplayName("getDetail：可预览类型返回详情并填充 accessUrl")
 	void getDetailReturnsDetailWithSignedAccessUrl() {
-		// 验证详情查询会映射实体、签名临时访问地址并补充审计用户名。
+		// 验证详情查询会映射实体、签名临时访问地址并补充审计用户名
 		FileRecordEntity entity = buildDetailEntity(1001L);
 		when(fileRecordMapper.selectDetailById(1001L, null, null, false, null)).thenReturn(entity);
 		when(fileUrlSigner.isPreviewContentTypeAllowed(entity.getContentType())).thenReturn(true);
@@ -145,7 +145,7 @@ class FileRecordQueryServiceImplTest {
 	@Test
 	@DisplayName("getDetail：不可预览类型仍返回详情并用 signDownload 填充 accessUrl")
 	void getDetailUsesSignDownloadWhenContentTypeNotPreviewable() {
-		// 验证不可预览类型也签发临时访问地址，便于分享；仅跳过预览 MIME 白名单。
+		// 验证不可预览类型也签发临时访问地址，便于分享；仅跳过预览 MIME 白名单
 		FileRecordEntity entity = buildDetailEntity(1002L);
 		entity.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
 		entity.setObjectKey("export/a.xlsx");
@@ -167,7 +167,7 @@ class FileRecordQueryServiceImplTest {
 	@Test
 	@DisplayName("getDetail：记录不存在时抛出 FILE_RECORD_NOT_FOUND")
 	void getDetailThrowsWhenRecordMissing() {
-		// 验证详情查询未命中记录时统一返回 404 语义。
+		// 验证详情查询未命中记录时统一返回 404 语义
 		when(fileRecordMapper.selectDetailById(2001L, 9001L, null, false, null)).thenReturn(null);
 
 		assertThatThrownBy(() -> fileRecordQueryService.getDetail(2001L, 9001L, null, false, null))
@@ -182,7 +182,7 @@ class FileRecordQueryServiceImplTest {
 	@Test
 	@DisplayName("getDetail：个人越权访问时按记录不存在处理")
 	void getDetailTreatsOwnerMismatchAsNotFound() {
-		// 验证个人详情通过 SQL 归属过滤，越权时不会暴露记录存在性。
+		// 验证个人详情通过 SQL 归属过滤，越权时不会暴露记录存在性
 		when(fileRecordMapper.selectDetailById(3001L, 9002L, null, false, null)).thenReturn(null);
 
 		assertThatThrownBy(() -> fileRecordQueryService.getDetail(3001L, 9002L, null, false, null))
@@ -194,7 +194,7 @@ class FileRecordQueryServiceImplTest {
 	@Test
 	@DisplayName("getDetail：个人回收站透传删除范围条件")
 	void getDetailPassesPersonalRecycleScopeToMapper() {
-		// 验证个人回收站详情会限制私有、已删除与用户可见删除来源。
+		// 验证个人回收站详情会限制私有、已删除与用户可见删除来源
 		FileRecordEntity entity = buildDetailEntity(4001L);
 		entity.setIsPrivate(true);
 		entity.setIsDeleted(true);

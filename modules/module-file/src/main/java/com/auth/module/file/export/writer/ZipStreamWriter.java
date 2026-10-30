@@ -14,7 +14,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * ZIP 输出工具：支持流式写入与同名条目重命名。
+ * ZIP 输出工具：支持流式写入与同名条目重命名
  *
  * @author Bunny
  */
@@ -22,7 +22,7 @@ import java.util.zip.ZipOutputStream;
 public class ZipStreamWriter {
 
 	/**
-	 * 将文件条目流式写入 ZIP 输出流。
+	 * 将文件条目流式写入 ZIP 输出流
 	 * @param outputStream 输出流
 	 * @param payloads ZIP 条目负载
 	 * @throws IOException 写入异常
@@ -43,7 +43,7 @@ public class ZipStreamWriter {
 	}
 
 	/**
-	 * 解析 ZIP 条目名，不存在文件名时使用兜底名称。
+	 * 解析 ZIP 条目名，不存在文件名时使用兜底名称
 	 * @param preferredName 优先文件名
 	 * @param extension 文件后缀（不含点）
 	 * @param fallbackBaseName 兜底基础名
@@ -60,7 +60,7 @@ public class ZipStreamWriter {
 	}
 
 	/**
-	 * 处理 ZIP 内同名条目，按序追加编号后缀。
+	 * 处理 ZIP 内同名条目，按序追加编号后缀
 	 * @param entryName 原始条目名
 	 * @param duplicateNameCounter 文件名计数器
 	 * @return 唯一条目名

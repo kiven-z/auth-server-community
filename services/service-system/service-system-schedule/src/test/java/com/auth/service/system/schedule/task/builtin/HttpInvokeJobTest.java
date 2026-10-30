@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link HttpInvokeJob} 单元测试。
+ * {@link HttpInvokeJob} 单元测试
  *
  * @author Bunny
  */

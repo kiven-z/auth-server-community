@@ -25,7 +25,7 @@ public interface FileStorageWriteOps {
 	void delete(String bucket, String objectKey);
 
 	/**
-	 * 将存储对象从源键迁移到目标键（同桶 copy + delete）。
+	 * 将存储对象从源键迁移到目标键（同桶 copy + delete）
 	 * @param bucket 存储桶
 	 * @param sourceObjectKey 源对象键
 	 * @param destinationObjectKey 目标对象键

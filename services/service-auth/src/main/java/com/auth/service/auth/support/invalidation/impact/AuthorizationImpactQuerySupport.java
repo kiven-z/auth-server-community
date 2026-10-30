@@ -25,7 +25,7 @@ public class AuthorizationImpactQuerySupport {
 	}
 
 	/**
-	 * 按角色码反查所有可能持有该角色的用户 ID。
+	 * 按角色码反查所有可能持有该角色的用户 ID
 	 * @param roleCodes 角色编码
 	 * @return 去重后的用户 ID 集合
 	 */
@@ -65,7 +65,7 @@ public class AuthorizationImpactQuerySupport {
 	}
 
 	/**
-	 * 按权限码反查受影响用户 ID。
+	 * 按权限码反查受影响用户 ID
 	 * @param permissionCodes 权限码
 	 * @return 去重后的用户 ID 集合
 	 */

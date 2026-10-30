@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link QuartzTaskRegistry} 单元测试。
+ * {@link QuartzTaskRegistry} 单元测试
  *
  * @author Bunny
  */

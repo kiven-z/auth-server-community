@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 角色导入器：Extract → Validate → Map 三阶段编排。
+ * 角色导入器：Extract → Validate → Map 三阶段编排
  *
  * @author Bunny
  */

@@ -12,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link SysJobDefinitionValidationManager} 单元测试。
+ * {@link SysJobDefinitionValidationManager} 单元测试
  *
  * @author Bunny
  */

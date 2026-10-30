@@ -5,7 +5,7 @@ import com.auth.module.file.importer.model.ImportRowError;
 import java.util.List;
 
 /**
- * 单行校验规则：无状态，返回 0..n 条错误。
+ * 单行校验规则：无状态，返回 0..n 条错误
  *
  * @param <P> 已解析行类型
  * @param <C> 导入上下文类型

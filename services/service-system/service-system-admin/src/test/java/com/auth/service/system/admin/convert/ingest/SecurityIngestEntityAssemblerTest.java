@@ -13,7 +13,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link SecurityIngestEntityAssembler} 单元测试。
+ * {@link SecurityIngestEntityAssembler} 单元测试
  *
  * @author Bunny
  */

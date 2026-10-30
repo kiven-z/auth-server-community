@@ -22,7 +22,7 @@ import java.util.Map;
  *
  * <p>
  * 会话状态：{@code OPEN → COMPLETED}（成功）或 {@code OPEN → CLOSED}（失败/放弃）。 仅在首次写入时才初始化
- * {@link ExcelWriter}；0 行时 {@link #complete()} 产出仅含表头的合法文件。
+ * {@link ExcelWriter}；0 行时 {@link #complete()} 产出仅含表头的合法文件
  *
  * @author Bunny
  */

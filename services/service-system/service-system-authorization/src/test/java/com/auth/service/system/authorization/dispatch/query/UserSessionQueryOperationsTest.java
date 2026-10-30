@@ -20,7 +20,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link UserSessionQueryOperations} 单元测试。
+ * {@link UserSessionQueryOperations} 单元测试
  */
 @DisplayName("UserSessionQueryOperations 用户会话查询")
 @ExtendWith(MockitoExtension.class)

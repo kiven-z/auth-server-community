@@ -33,7 +33,7 @@ public class BusinessKeyAssert {
 	}
 
 	/**
-	 * 同一请求批次内业务键不得重复；遇首个重复项 fail-fast 抛出调用方异常。
+	 * 同一请求批次内业务键不得重复；遇首个重复项 fail-fast 抛出调用方异常
 	 * @param values 待校验业务键列表
 	 * @param onDuplicate 重复键及对应异常工厂
 	 * @param <K> 业务键类型
@@ -53,7 +53,7 @@ public class BusinessKeyAssert {
 	}
 
 	/**
-	 * 按提取出的业务键校验同一请求批次内不得重复；遇首个重复项 fail-fast 抛出调用方异常。
+	 * 按提取出的业务键校验同一请求批次内不得重复；遇首个重复项 fail-fast 抛出调用方异常
 	 * @param values 待校验条目
 	 * @param keyExtractor 业务键提取函数
 	 * @param onDuplicate 重复条目及对应异常工厂

@@ -21,7 +21,7 @@ public class RestTemplateUtil {
 	 * 按 HTTP 方法发起调用，响应体按字符串解析
 	 *
 	 * <p>
-	 * 未显式指定 Accept 时默认 application/json，避免内容协商落到 XML。
+	 * 未显式指定 Accept 时默认 application/json，避免内容协商落到 XML
 	 * </p>
 	 * @param restTemplate HTTP 客户端
 	 * @param url 请求 URL

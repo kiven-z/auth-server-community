@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 /**
- * 构建操作日志所需全部上下文。
+ * 构建操作日志所需全部上下文
  *
  * @author Bunny
  */

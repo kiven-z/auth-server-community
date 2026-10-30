@@ -10,7 +10,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link FileDeleteSource} 单元测试。
+ * {@link FileDeleteSource} 单元测试
  *
  * @author Bunny
  */

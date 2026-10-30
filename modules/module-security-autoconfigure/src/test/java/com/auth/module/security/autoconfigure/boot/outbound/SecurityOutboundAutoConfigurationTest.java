@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link SecurityOutboundAutoConfiguration} 自动配置测试。
+ * {@link SecurityOutboundAutoConfiguration} 自动配置测试
  */
 @DisplayName("SecurityOutboundAutoConfiguration 出站内部 JWT")
 class SecurityOutboundAutoConfigurationTest {

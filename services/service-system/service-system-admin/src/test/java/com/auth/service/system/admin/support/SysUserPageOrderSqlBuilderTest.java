@@ -11,7 +11,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link SysUserPageOrderSqlBuilder} 单元测试。
+ * {@link SysUserPageOrderSqlBuilder} 单元测试
  *
  * @author Bunny
  */

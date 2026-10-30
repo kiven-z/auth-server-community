@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Set;
 
 /**
- * 影响面解析器装配：按 {@link AuthorizationChangeKind} 注册 {@link ImpactResolver} Bean。
+ * 影响面解析器装配：按 {@link AuthorizationChangeKind} 注册 {@link ImpactResolver} Bean
  *
  * @author Bunny
  */
@@ -19,7 +19,7 @@ import java.util.Set;
 public class InvalidationImpactResolverConfiguration {
 
 	/**
-	 * 按角色码反查受影响用户 ID。
+	 * 按角色码反查受影响用户 ID
 	 * @param impactQuery 授权影响面查询
 	 * @return 角色码影响面解析器
 	 */

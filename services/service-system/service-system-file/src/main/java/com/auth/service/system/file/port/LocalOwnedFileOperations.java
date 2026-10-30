@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 /**
- * 单体部署：进程内委托 {@link FileRecordService}。
+ * 单体部署：进程内委托 {@link FileRecordService}
  *
  * @author Bunny
  */

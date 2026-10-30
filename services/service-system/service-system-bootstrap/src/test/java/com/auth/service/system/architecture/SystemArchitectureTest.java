@@ -19,9 +19,9 @@ import org.springframework.web.client.RestTemplate;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.*;
 
 /**
- * service-system 模块化单体架构约束（ArchUnit）。
+ * service-system 模块化单体架构约束（ArchUnit）
  * <p>
- * 扫描 classpath 上全部 com.auth.service.system 域代码（含子模块 jar）。
+ * 扫描 classpath 上全部 com.auth.service.system 域代码（含子模块 jar）
  * </p>
  *
  * @author Bunny
@@ -45,7 +45,7 @@ class SystemArchitectureTest {
 		.beAssignableTo(ValidationExceptionHandler.class);
 
 	/**
-	 * 常规 JSON API 返回 {@link Result}；二进制文件下载（如 Excel 导出）允许 {@link ResponseEntity}。
+	 * 常规 JSON API 返回 {@link Result}；二进制文件下载（如 Excel 导出）允许 {@link ResponseEntity}
 	 */
 	@ArchTest
 	static final ArchRule controller_public_api_methods_return_result = methods().that()
@@ -65,7 +65,7 @@ class SystemArchitectureTest {
 		.haveRawReturnType(Result.class);
 
 	/**
-	 * com.auth.service.system.common 包仅允许出现在 common 模块，admin 模块不得残留同名包。
+	 * com.auth.service.system.common 包仅允许出现在 common 模块，admin 模块不得残留同名包
 	 */
 	@ArchTest
 	static final ArchRule common_package_must_not_reside_in_admin_module = classes().that()
@@ -85,7 +85,7 @@ class SystemArchitectureTest {
 	private static final String SYSTEM_ROOT = "..service.system..";
 
 	/**
-	 * 允许通过 Starter 注入 {@link RestTemplate}，禁止在模块内 new RestTemplate() 重复造轮子。
+	 * 允许通过 Starter 注入 {@link RestTemplate}，禁止在模块内 new RestTemplate() 重复造轮子
 	 */
 	@ArchTest
 	static final ArchRule must_not_instantiate_rest_template = noClasses().that()
@@ -105,7 +105,7 @@ class SystemArchitectureTest {
 	private static final String SCHEDULE = "com.auth.service.system.schedule..";
 
 	/**
-	 * schedule 调用 message 时只允许依赖 message.service 包（Maven 模块依赖已约束模块级边界）。
+	 * schedule 调用 message 时只允许依赖 message.service 包（Maven 模块依赖已约束模块级边界）
 	 */
 	@ArchTest
 	static final ArchRule schedule_must_not_depend_on_message_internals = noClasses().that()
@@ -152,7 +152,7 @@ class SystemArchitectureTest {
 	};
 
 	/**
-	 * message 不得依赖 admin / authorization；与 schedule 的集成由 Maven 模块依赖约束。
+	 * message 不得依赖 admin / authorization；与 schedule 的集成由 Maven 模块依赖约束
 	 */
 	@ArchTest
 	static final ArchRule message_must_not_depend_on_other_domains = noClasses().that()
@@ -177,7 +177,7 @@ class SystemArchitectureTest {
 	};
 
 	/**
-	 * admin 访问 authorization 仅允许依赖对外门面：dispatch.trigger（写）与 dispatch.query（读）。
+	 * admin 访问 authorization 仅允许依赖对外门面：dispatch.trigger（写）与 dispatch.query（读）
 	 */
 	@ArchTest
 	static final ArchRule admin_authorization_coupling_only_via_facade = noClasses().that()
@@ -207,7 +207,7 @@ class SystemArchitectureTest {
 	};
 
 	/**
-	 * service-system 进程内不得通过 Feign 回调自身（应使用 *-api Port 本地实现）。
+	 * service-system 进程内不得通过 Feign 回调自身（应使用 *-api Port 本地实现）
 	 */
 	@ArchTest
 	static final ArchRule system_modules_must_not_use_self_feign = noClasses().that()
@@ -236,7 +236,7 @@ class SystemArchitectureTest {
 	private static final String DATA_SCOPE_ANNOTATION = "com.auth.module.security.datapermission.annotation.DataScope";
 
 	/**
-	 * @DataScope 按 MappedStatement ID 解析，仅 Mapper 方法生效。
+	 * @DataScope 按 MappedStatement ID 解析，仅 Mapper 方法生效
 	 */
 	@ArchTest
 	static final ArchRule data_scope_only_on_mapper_methods = methods().that()

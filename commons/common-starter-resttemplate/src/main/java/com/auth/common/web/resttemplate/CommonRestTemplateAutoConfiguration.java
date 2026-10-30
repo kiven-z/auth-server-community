@@ -15,7 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.Duration;
 
 /**
- * RestTemplate 自动配置：出站 HTTP 固定连接/读取超时，避免无超时拖死调用方线程。
+ * RestTemplate 自动配置：出站 HTTP 固定连接/读取超时，避免无超时拖死调用方线程
  *
  * @author Bunny
  */

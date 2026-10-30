@@ -6,7 +6,7 @@ import lombok.Value;
 import java.time.Instant;
 
 /**
- * 操作日志负载（契约层），由切面组装后交给 {@link OperationLogHandler}。
+ * 操作日志负载（契约层），由切面组装后交给 {@link OperationLogHandler}
  *
  * @author Bunny
  */
@@ -15,12 +15,12 @@ import java.time.Instant;
 public class OperationLogPayloadEvent {
 
 	/**
-	 * 操作用户 ID，未登录可为 null，持久化层应规范为 0。
+	 * 操作用户 ID，未登录可为 null，持久化层应规范为 0
 	 */
 	Long userId;
 
 	/**
-	 * 操作用户名快照；未登录可为 null。
+	 * 操作用户名快照；未登录可为 null
 	 */
 	String username;
 
@@ -31,7 +31,7 @@ public class OperationLogPayloadEvent {
 
 	/**
 	 * 模块键：由 {@link AuditOperationModuleKeys} 将大模块与小模块组合， 形如 SYSTEM:SYS_DEPT，写入
-	 * log_operation.module。
+	 * log_operation.module
 	 */
 	String module;
 

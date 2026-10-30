@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link FileExtensionBlacklist} 单元测试。
+ * {@link FileExtensionBlacklist} 单元测试
  *
  * @author Bunny
  */

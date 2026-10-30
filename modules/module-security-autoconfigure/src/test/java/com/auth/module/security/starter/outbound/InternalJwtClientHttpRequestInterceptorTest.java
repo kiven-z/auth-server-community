@@ -19,7 +19,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link InternalJwtClientHttpRequestInterceptor} 单元测试。
+ * {@link InternalJwtClientHttpRequestInterceptor} 单元测试
  */
 @DisplayName("InternalJwtClientHttpRequestInterceptor RestTemplate 出站")
 class InternalJwtClientHttpRequestInterceptorTest {

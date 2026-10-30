@@ -1,14 +1,14 @@
 package com.auth.module.security.contract.audit.operationlog;
 
 /**
- * 操作日志处理器（SPI）。业务服务实现本接口并注册为 Spring Bean，将负载持久化至 log_operation 等存储。
+ * 操作日志处理器（SPI）。业务服务实现本接口并注册为 Spring Bean，将负载持久化至 log_operation 等存储
  *
  * <p>
- * autoconfigure 层提供 @ConditionalOnMissingBean 空实现，未接入时不产生 NPE。
+ * autoconfigure 层提供 @ConditionalOnMissingBean 空实现，未接入时不产生 NPE
  * </p>
  *
  * <p>
- * 建议实现类对 {@link #handle(OperationLogPayloadEvent)} 使用 @Async，避免阻塞 Web 线程。
+ * 建议实现类对 {@link #handle(OperationLogPayloadEvent)} 使用 @Async，避免阻塞 Web 线程
  * </p>
  *
  * <pre>
@@ -29,7 +29,7 @@ package com.auth.module.security.contract.audit.operationlog;
 public interface OperationLogHandler {
 
 	/**
-	 * 处理操作日志负载。
+	 * 处理操作日志负载
 	 * @param payload 负载
 	 */
 	void handle(OperationLogPayloadEvent payload);

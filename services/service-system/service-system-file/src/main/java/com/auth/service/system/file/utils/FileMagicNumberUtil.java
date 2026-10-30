@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.util.Locale;
 
 /**
- * 基于 Apache Tika 的文件魔数 / MIME 检测。
+ * 基于 Apache Tika 的文件魔数 / MIME 检测
  *
  * @author Bunny
  */

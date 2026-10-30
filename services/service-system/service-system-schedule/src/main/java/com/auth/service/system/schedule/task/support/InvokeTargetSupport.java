@@ -16,7 +16,7 @@ import static com.auth.service.system.schedule.exception.ScheduleResultCode.JOB_
 import static com.auth.service.system.schedule.model.constants.SysJobQuartzDataKeys.METHOD_NAME;
 
 /**
- * Bean 调用模式 invoke_target 的共享规则：可调用方法判定、签名与示例格式化。
+ * Bean 调用模式 invoke_target 的共享规则：可调用方法判定、签名与示例格式化
  *
  * @author Bunny
  */

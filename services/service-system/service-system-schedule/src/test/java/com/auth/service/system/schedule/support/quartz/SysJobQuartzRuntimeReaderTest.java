@@ -19,7 +19,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link SysJobQuartzRuntimeReader} 单元测试。
+ * {@link SysJobQuartzRuntimeReader} 单元测试
  *
  * @author Bunny
  */

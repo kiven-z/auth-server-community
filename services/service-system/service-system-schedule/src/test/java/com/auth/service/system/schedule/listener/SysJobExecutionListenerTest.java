@@ -16,7 +16,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link SysJobExecutionListener} 单元测试。
+ * {@link SysJobExecutionListener} 单元测试
  *
  * @author Bunny
  */

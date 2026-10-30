@@ -16,7 +16,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link OutboundInternalJwtIssuer} 单元测试。
+ * {@link OutboundInternalJwtIssuer} 单元测试
  */
 @DisplayName("OutboundInternalJwtIssuer 出站内部 JWT")
 class OutboundInternalJwtIssuerTest {

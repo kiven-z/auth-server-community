@@ -55,7 +55,7 @@ public class LoginFailureRateLimiter {
 	}
 
 	/**
-	 * 登录前置检查（只读）：密码失败达阈值时抛锁定异常。
+	 * 登录前置检查（只读）：密码失败达阈值时抛锁定异常
 	 * @param userId 用户 ID
 	 */
 	public void assertNotLocked(Long userId) {
@@ -78,7 +78,7 @@ public class LoginFailureRateLimiter {
 	}
 
 	/**
-	 * 认证失败时调用：自增失败计数；首次落地设 {@link #ATTEMPT_TTL}；达阈值时升级为 {@link #LOCK_DURATION}。
+	 * 认证失败时调用：自增失败计数；首次落地设 {@link #ATTEMPT_TTL}；达阈值时升级为 {@link #LOCK_DURATION}
 	 * @param userId 用户 ID
 	 * @return 剩余可尝试次数（已锁定返回 0）
 	 */

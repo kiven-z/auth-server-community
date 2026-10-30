@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 通用 Excel 导入读取器：将上传文件的第一个 Sheet 解析为行对象列表。
+ * 通用 Excel 导入读取器：将上传文件的第一个 Sheet 解析为行对象列表
  *
  * @param <T> 行类型（需包含 EasyExcel 注解）
  * @author Bunny

@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * {@link S3ClientManager} 单元测试。
+ * {@link S3ClientManager} 单元测试
  *
  * @author Bunny
  */
@@ -34,7 +34,7 @@ class S3ClientManagerTest {
 	@Test
 	@DisplayName("getClient：缺少必填字段时抛出配置缺失异常")
 	void getClient_throwsWhenProfileIncomplete() {
-		// 验证懒加载时会校验必填项，避免运行时才在 SDK 层暴露。
+		// 验证懒加载时会校验必填项，避免运行时才在 SDK 层暴露
 		FileUploadProperties properties = new FileUploadProperties();
 		S3ClientManager manager = new S3ClientManager(S3PlatformProfileResolverFixtures.defaultResolver(properties));
 
@@ -46,7 +46,7 @@ class S3ClientManagerTest {
 	@Test
 	@DisplayName("getClient：懒加载单例复用，同平台多次调用返回同一实例")
 	void getClient_lazyInitSingletonPerPlatform() {
-		// 验证客户端只在首次访问时构建，之后复用同一实例。
+		// 验证客户端只在首次访问时构建，之后复用同一实例
 		S3ClientManager manager = buildConfiguredManager();
 
 		S3Client first = manager.getClient(StoragePlatformEnum.MINIO);
@@ -59,7 +59,7 @@ class S3ClientManagerTest {
 	@Test
 	@DisplayName("getPresigner：懒加载单例复用")
 	void getPresigner_lazyInitSingletonPerPlatform() {
-		// 验证 Presigner 与 Client 独立缓存，且各自懒加载单例。
+		// 验证 Presigner 与 Client 独立缓存，且各自懒加载单例
 		S3ClientManager manager = buildConfiguredManager();
 
 		S3Presigner first = manager.getPresigner(StoragePlatformEnum.MINIO);
@@ -72,7 +72,7 @@ class S3ClientManagerTest {
 	@Test
 	@DisplayName("shutdown：清空缓存后再次获取会重新构建")
 	void shutdown_recreatesClientOnNextAccess() {
-		// 验证停机方法完成缓存清理，避免关闭后依然引用已释放实例。
+		// 验证停机方法完成缓存清理，避免关闭后依然引用已释放实例
 		S3ClientManager manager = buildConfiguredManager();
 		S3Client before = manager.getClient(StoragePlatformEnum.MINIO);
 

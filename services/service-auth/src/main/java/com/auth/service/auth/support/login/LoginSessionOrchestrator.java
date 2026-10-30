@@ -23,9 +23,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * 登录会话签发编排：凭证校验通过后，统一完成会话上限检查、画像缓存、令牌签发、Redis 会话建立与成功审计。
+ * 登录会话签发编排：凭证校验通过后，统一完成会话上限检查、画像缓存、令牌签发、Redis 会话建立与成功审计
  * <p>
- * 供密码/邮箱/短信登录及后续第三方登录、MFA 通过后复用，避免在 LoginApplicationService 中重复编排。
+ * 供密码/邮箱/短信登录及后续第三方登录、MFA 通过后复用，避免在 LoginApplicationService 中重复编排
  * </p>
  *
  * @author Bunny
@@ -52,7 +52,7 @@ public class LoginSessionOrchestrator {
 	private final LoginFailureRateLimiter loginFailureRateLimiter;
 
 	/**
-	 * 在凭证已校验通过后签发令牌并建立服务端会话。
+	 * 在凭证已校验通过后签发令牌并建立服务端会话
 	 * @param loginResult 策略认证结果（含画像与审计类型）
 	 * @param rememberMe 是否记住我
 	 * @param request HTTP 请求（会话索引与审计）

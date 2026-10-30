@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
 /**
- * 登录会话读模型 → HTTP 响应。
+ * 登录会话读模型 → HTTP 响应
  *
  * @author Bunny
  */
@@ -17,7 +17,7 @@ public interface LoginSessionConverter {
 	LoginSessionConverter INSTANCE = Mappers.getMapper(LoginSessionConverter.class);
 
 	/**
-	 * 登录会话读模型 → API 登录响应。
+	 * 登录会话读模型 → API 登录响应
 	 * @param session 已签发登录会话
 	 * @return HTTP 登录响应
 	 */

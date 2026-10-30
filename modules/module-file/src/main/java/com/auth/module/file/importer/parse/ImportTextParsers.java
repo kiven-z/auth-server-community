@@ -6,7 +6,7 @@ import com.auth.module.file.importer.model.RowOutcome;
 import lombok.experimental.UtilityClass;
 
 /**
- * 常用文本字段解析。
+ * 常用文本字段解析
  *
  * @author Bunny
  */

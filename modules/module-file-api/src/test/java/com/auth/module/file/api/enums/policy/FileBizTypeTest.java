@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * {@link FileBizType} 单元测试。
+ * {@link FileBizType} 单元测试
  *
  * @author Bunny
  */

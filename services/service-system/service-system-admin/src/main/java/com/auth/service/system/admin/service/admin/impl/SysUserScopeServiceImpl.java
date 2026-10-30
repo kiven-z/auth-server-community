@@ -39,11 +39,11 @@ public class SysUserScopeServiceImpl extends ServiceImpl<UserScopeMapper, UserSc
 	 * {@inheritDoc}
 	 */
 	@Override
-	public SysUserScopeVO getByUserId(Long userId) {
+	public List<SysUserScopeVO> getByUserId(Long userId) {
 		userReferenceChecker.getExistingActive(userId);
-		UserScopeEntity entity = super.getOne(
-				Wrappers.<UserScopeEntity>lambdaQuery().eq(UserScopeEntity::getUserId, userId));
-		return SysUserScopeConverter.toVo(entity);
+		return super.list(Wrappers.<UserScopeEntity>lambdaQuery().eq(UserScopeEntity::getUserId, userId)).stream()
+			.map(SysUserScopeConverter::toVo)
+			.toList();
 	}
 
 	/**
@@ -55,13 +55,15 @@ public class SysUserScopeServiceImpl extends ServiceImpl<UserScopeMapper, UserSc
 		userReferenceChecker.getExistingActive(userId);
 		DataScopeFormSupport.ResolvedDataScope resolved = dataScopeFormSupport.resolve(form);
 
-		UserScopeEntity existing = super.getOne(
-				Wrappers.<UserScopeEntity>lambdaQuery().eq(UserScopeEntity::getUserId, userId));
+		UserScopeEntity existing = super.getOne(Wrappers.<UserScopeEntity>lambdaQuery()
+			.eq(UserScopeEntity::getUserId, userId)
+			.eq(UserScopeEntity::getDimension, resolved.dimension().name()));
 		UserScopeEntity entity = existing != null ? existing : new UserScopeEntity();
 		if (existing == null) {
 			entity.setUserId(userId);
 		}
-		SysUserScopeConverter.applyForm(entity, form, resolved.scopeType().name(), resolved.scopeDeptIds());
+		SysUserScopeConverter.applyForm(entity, form, resolved.dimension().name(), resolved.scopeType().name(),
+				resolved.scopeIds());
 		super.saveOrUpdate(entity);
 
 		userInvalidationTrigger.submitByUserIds(List.of(userId), "upsert-user-scope");
@@ -74,13 +76,10 @@ public class SysUserScopeServiceImpl extends ServiceImpl<UserScopeMapper, UserSc
 	@Transactional(rollbackFor = Exception.class)
 	public void clearByUserId(Long userId) {
 		userReferenceChecker.getExistingActive(userId);
-		UserScopeEntity existing = super.getOne(
-				Wrappers.<UserScopeEntity>lambdaQuery().eq(UserScopeEntity::getUserId, userId));
-		if (existing == null) {
-			return;
+		boolean removed = super.remove(Wrappers.<UserScopeEntity>lambdaQuery().eq(UserScopeEntity::getUserId, userId));
+		if (removed) {
+			userInvalidationTrigger.submitByUserIds(List.of(userId), "clear-user-scope");
 		}
-		super.removeById(existing.getId());
-		userInvalidationTrigger.submitByUserIds(List.of(userId), "clear-user-scope");
 	}
 
 }

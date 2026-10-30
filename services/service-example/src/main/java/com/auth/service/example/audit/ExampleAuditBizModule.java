@@ -3,7 +3,7 @@ package com.auth.service.example.audit;
 import lombok.experimental.UtilityClass;
 
 /**
- * example 服务操作审计「小模块」编码常量。
+ * example 服务操作审计「小模块」编码常量
  *
  * @author Bunny
  */

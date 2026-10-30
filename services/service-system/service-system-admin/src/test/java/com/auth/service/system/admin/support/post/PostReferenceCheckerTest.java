@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link PostReferenceChecker} 单元测试。
+ * {@link PostReferenceChecker} 单元测试
  */
 @DisplayName("PostReferenceChecker 岗位存在性校验")
 @ExtendWith(MockitoExtension.class)

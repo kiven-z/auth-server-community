@@ -37,7 +37,7 @@ public class AuthProfile implements Serializable {
 	/**
 	 * 按数据维索引的范围
 	 * <p>
-	 * 同一维内用户行覆盖角色行；该维没有配置时为 SELF。values 在登录时已经展开。
+	 * 同一维内用户行覆盖角色行；该维没有配置时为 SELF。values 在登录时已经展开
 	 * </p>
 	 */
 	@Builder.Default

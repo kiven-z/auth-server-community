@@ -219,7 +219,7 @@ public class S3CompatibleFileStorageProvider implements FileStorageProvider {
 	}
 
 	/**
-	 * 执行存储操作，并将 SDK 异常翻译为业务异常。
+	 * 执行存储操作，并将 SDK 异常翻译为业务异常
 	 * @param action 存储操作
 	 * @param <T> 返回值类型
 	 * @return 操作结果
@@ -235,7 +235,7 @@ public class S3CompatibleFileStorageProvider implements FileStorageProvider {
 	}
 
 	/**
-	 * 执行无返回值的存储操作，并将 SDK 异常翻译为业务异常。
+	 * 执行无返回值的存储操作，并将 SDK 异常翻译为业务异常
 	 * @param action 存储操作
 	 */
 	private void execute(Runnable action) {

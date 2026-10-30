@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * {@link RowRule} 组合与常用规则工厂。
+ * {@link RowRule} 组合与常用规则工厂
  *
  * @author Bunny
  */

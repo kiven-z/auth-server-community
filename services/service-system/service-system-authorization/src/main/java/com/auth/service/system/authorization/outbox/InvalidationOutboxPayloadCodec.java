@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
 
 /**
- * Outbox payload 列与契约 Payload 的 JSON 编解码。
+ * Outbox payload 列与契约 Payload 的 JSON 编解码
  *
  * @author Bunny
  */
@@ -21,7 +21,7 @@ public class InvalidationOutboxPayloadCodec {
 	}
 
 	/**
-	 * 序列化失效业务键为 JSON。
+	 * 序列化失效业务键为 JSON
 	 * @param payload 业务键
 	 * @return JSON 字符串
 	 */
@@ -35,7 +35,7 @@ public class InvalidationOutboxPayloadCodec {
 	}
 
 	/**
-	 * 按变更维度反序列化 JSON 为类型化 Payload。
+	 * 按变更维度反序列化 JSON 为类型化 Payload
 	 * @param kind 变更维度
 	 * @param json payload 列 JSON
 	 * @return 业务键

@@ -11,7 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import static com.auth.common.web.resttemplate.FeignUtil.isSuccess;
 
 /**
- * 本地无 log_operation 访问能力时，通过 Feign 将操作日志投递至 service-system。
+ * 本地无 log_operation 访问能力时，通过 Feign 将操作日志投递至 service-system
  *
  * @author Bunny
  */

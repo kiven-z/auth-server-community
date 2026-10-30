@@ -6,7 +6,7 @@ import lombok.experimental.UtilityClass;
 import java.util.Map;
 
 /**
- * 布尔启用状态在 Excel 中的统一文案（角色、权限、岗位、部门等）。
+ * 布尔启用状态在 Excel 中的统一文案（角色、权限、岗位、部门等）
  *
  * @author Bunny
  */
@@ -29,7 +29,7 @@ public class EnableStatusLabels {
 	private static final Map<Boolean, String> EXPORT_BY_STATUS = Map.of(true, ENABLED, false, DISABLED);
 
 	/**
-	 * 导入文案 → 启用状态（严格匹配 {@link #ENABLED} / {@link #DISABLED}）。
+	 * 导入文案 → 启用状态（严格匹配 {@link #ENABLED} / {@link #DISABLED}）
 	 * @param label Excel 中填写的状态文案
 	 * @return 解析结果；未知或空白为 {@link EnableStatus#UNKNOWN}
 	 */
@@ -41,7 +41,7 @@ public class EnableStatusLabels {
 	}
 
 	/**
-	 * 布尔启用状态 → 导出文案。
+	 * 布尔启用状态 → 导出文案
 	 * @param status 布尔启用状态
 	 * @return 启用/禁用
 	 */

@@ -1,9 +1,9 @@
 package com.auth.service.system.schedule.service.impl;
 
+import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.service.system.schedule.exception.SysJobException;
 import com.auth.service.system.schedule.mapper.JobMapper;
 import com.auth.service.system.schedule.model.entity.JobEntity;
-import com.auth.common.core.model.form.IdsEnableStatusForm;
 import com.auth.service.system.schedule.support.quartz.SysJobScheduleReconciler;
 import com.auth.service.system.schedule.support.quartz.SysJobSchedulerManager;
 import com.baomidou.mybatisplus.core.MybatisConfiguration;
@@ -28,7 +28,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link SysJobScheduleSyncServiceImpl} 单元测试。
+ * {@link SysJobScheduleSyncServiceImpl} 单元测试
  *
  * @author Bunny
  */

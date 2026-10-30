@@ -40,7 +40,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link FileUploadServiceImpl} 单元测试。
+ * {@link FileUploadServiceImpl} 单元测试
  *
  * @author Bunny
  */
@@ -93,7 +93,7 @@ class FileUploadServiceImplTest {
 	@Test
 	@DisplayName("upload：avatar 固定公开前缀并落库 isPrivate=false")
 	void uploadUsesPublicPrefixAndPersistsResolvedVisibilityForAvatar() {
-		// 验证 avatar 业务类型固定公开，且对象键以 public/avatar 开头。
+		// 验证 avatar 业务类型固定公开，且对象键以 public/avatar 开头
 		FileUploadForm form = buildForm(new MockMultipartFile("file", "avatar.png", "image/png", minimalPngBytes()));
 		form.setIsPrivate(true);
 		StoredFile storedFile = buildStoredFile(StoragePlatformEnum.MINIO, "public/avatar/20260702/object.png");
@@ -125,7 +125,7 @@ class FileUploadServiceImplTest {
 	@Test
 	@DisplayName("upload：attachment 默认私有并写入 private 前缀")
 	void uploadPersistsPrivateFlagForAttachmentBizType() {
-		// 验证 attachment 策略默认私有，且对象键以 private/attachment 开头。
+		// 验证 attachment 策略默认私有，且对象键以 private/attachment 开头
 		FileUploadForm form = buildForm(
 				new MockMultipartFile("file", "private.txt", "text/plain", "demo".getBytes(StandardCharsets.UTF_8)));
 		form.setBizType("attachment");
@@ -148,7 +148,7 @@ class FileUploadServiceImplTest {
 	@Test
 	@DisplayName("upload：未知 bizType 时抛出 IllegalArgumentException")
 	void uploadThrowsWhenBizTypeInvalid() {
-		// 验证未知业务类型在严格模式下被拒绝。
+		// 验证未知业务类型在严格模式下被拒绝
 		FileUploadForm form = buildForm(new MockMultipartFile("file", "avatar.jpg", "image/jpeg", minimalJpegBytes()));
 		form.setBizType("foo");
 
@@ -159,7 +159,7 @@ class FileUploadServiceImplTest {
 	@Test
 	@DisplayName("upload：请求指定平台时优先使用请求平台")
 	void uploadUsesRequestPlatformWhenSpecified() {
-		// 验证请求参数 storagePlatform 优先于默认配置。
+		// 验证请求参数 storagePlatform 优先于默认配置
 		FileUploadForm form = buildForm(new MockMultipartFile("file", "doc.pdf", "application/pdf", minimalPdfBytes()));
 		form.setBizType("attachment");
 		form.setStoragePlatform("aliyun_oss");
@@ -177,7 +177,7 @@ class FileUploadServiceImplTest {
 	@Test
 	@DisplayName("upload：文件为空时抛出 PARAM_REQUIRED")
 	void uploadThrowsWhenFileMissing() {
-		// 验证空文件参数会在服务层被拦截。
+		// 验证空文件参数会在服务层被拦截
 		FileUploadForm form = new FileUploadForm();
 
 		assertThatThrownBy(() -> fileUploadService.upload(form)).isInstanceOf(SystemBusinessException.class)
@@ -188,7 +188,7 @@ class FileUploadServiceImplTest {
 	@Test
 	@DisplayName("upload：平台非法时抛出 IllegalArgumentException")
 	void uploadThrowsWhenPlatformInvalid() {
-		// 验证非法平台字符串会被枚举严格解析直接拒绝。
+		// 验证非法平台字符串会被枚举严格解析直接拒绝
 		FileUploadForm form = buildForm(new MockMultipartFile("file", "avatar.jpg", "image/jpeg", minimalJpegBytes()));
 		form.setStoragePlatform("s3");
 
@@ -213,7 +213,7 @@ class FileUploadServiceImplTest {
 	@Test
 	@DisplayName("uploadMultiple：多个文件均成功上传并批量落库")
 	void uploadMultipleSucceedsForMultipleFiles() {
-		// 验证多文件上传走统一路径并 saveBatch 批量持久化。
+		// 验证多文件上传走统一路径并 saveBatch 批量持久化
 		MultipleFileUploadForm form = buildMultipleForm(
 				new MockMultipartFile("files", "a.png", "image/png", minimalPngBytes()),
 				new MockMultipartFile("files", "b.png", "image/png", minimalPngBytes()));
@@ -238,7 +238,7 @@ class FileUploadServiceImplTest {
 	@Test
 	@DisplayName("uploadMultiple：列表含空文件时抛出 PARAM_REQUIRED")
 	void uploadMultipleThrowsWhenFileIsEmpty() {
-		// 验证批量上传不会静默跳过空文件。
+		// 验证批量上传不会静默跳过空文件
 		MultipleFileUploadForm form = buildMultipleForm(
 				new MockMultipartFile("files", "empty.png", "image/png", new byte[0]),
 				new MockMultipartFile("files", "a.png", "image/png", minimalPngBytes()));
@@ -251,7 +251,7 @@ class FileUploadServiceImplTest {
 	@Test
 	@DisplayName("uploadMultiple：列表含 null 文件时抛出 PARAM_REQUIRED")
 	void uploadMultipleThrowsWhenFileIsNull() {
-		// 验证批量上传对 null 文件与单文件上传一致地拒绝。
+		// 验证批量上传对 null 文件与单文件上传一致地拒绝
 		List<MultipartFile> files = new ArrayList<>();
 		files.add(null);
 		files.add(new MockMultipartFile("files", "a.png", "image/png", minimalPngBytes()));
@@ -265,7 +265,7 @@ class FileUploadServiceImplTest {
 	@Test
 	@DisplayName("uploadMultiple：请求指定平台时优先使用请求平台")
 	void uploadMultipleUsesRequestPlatformWhenSpecified() {
-		// 验证批量上传与单文件上传共享平台解析逻辑。
+		// 验证批量上传与单文件上传共享平台解析逻辑
 		MultipleFileUploadForm form = buildMultipleForm(
 				new MockMultipartFile("files", "doc.pdf", "application/pdf", minimalPdfBytes()));
 		form.setBizType("attachment");

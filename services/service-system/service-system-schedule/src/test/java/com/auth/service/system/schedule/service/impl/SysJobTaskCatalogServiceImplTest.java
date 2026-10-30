@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link SysJobTaskCatalogServiceImpl} 单元测试。
+ * {@link SysJobTaskCatalogServiceImpl} 单元测试
  *
  * @author Bunny
  */

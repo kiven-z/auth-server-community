@@ -13,7 +13,10 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 用户数据范围回显（配置行；无覆盖时接口返回 null）
+ * 用户数据范围回显
+ * <p>
+ * 无覆盖时接口返回空列表
+ * </p>
  *
  * @author Bunny
  */
@@ -34,12 +37,15 @@ public class SysUserScopeVO implements Serializable {
 	@Schema(title = "用户 ID")
 	private Long userId;
 
-	@Schema(title = "范围类型：ALL/SELF/DEPT/DEPT_AND_CHILD")
+	@Schema(title = "数据维度")
+	private String dimension;
+
+	@Schema(title = "范围类型", description = "ALL/SELF/IDS/IDS_AND_CHILD")
 	private String scopeType;
 
 	@JsonSerialize(contentUsing = ToStringSerializer.class)
-	@Schema(title = "部门 ID 列表；ALL/SELF 时为空列表")
-	private List<Long> scopeDeptIds;
+	@Schema(title = "节点 ID 列表", description = "ALL/SELF 时为空列表")
+	private List<Long> scopeIds;
 
 	@Schema(title = "备注")
 	private String remark;

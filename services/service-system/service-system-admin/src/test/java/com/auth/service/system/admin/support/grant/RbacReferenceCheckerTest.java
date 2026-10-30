@@ -20,7 +20,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link RbacReferenceChecker} 单元测试。
+ * {@link RbacReferenceChecker} 单元测试
  */
 @DisplayName("RbacReferenceChecker RBAC 关联校验")
 @ExtendWith(MockitoExtension.class)

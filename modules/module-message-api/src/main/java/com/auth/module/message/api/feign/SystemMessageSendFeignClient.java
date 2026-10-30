@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 /**
- * 调用 service-system 消息发送内部接口。
+ * 调用 service-system 消息发送内部接口
  *
  * @author Bunny
  */
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface SystemMessageSendFeignClient {
 
 	/**
-	 * 按模板发送消息（多渠道统一入口）。
+	 * 按模板发送消息（多渠道统一入口）
 	 * @param command 模板发送命令
 	 * @return 统一响应，data 可为消息 ID
 	 */

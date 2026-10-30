@@ -7,7 +7,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 /**
- * 业务事务提交后同步调用 auth 失效接口（过渡方案）。
+ * 业务事务提交后同步调用 auth 失效接口（过渡方案）
  *
  * @author Bunny
  */
@@ -19,7 +19,7 @@ public class AuthorizationInvalidationDispatchListener {
 	private final AuthorizationInvalidationOutboxProcessor outboxProcessor;
 
 	/**
-	 * 事务提交后投递 Outbox。
+	 * 事务提交后投递 Outbox
 	 * @param event 投递事件
 	 */
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)

@@ -38,7 +38,7 @@ public @interface DataScope {
 	DataScopeDimension dimension() default DataScopeDimension.DEPT;
 
 	/**
-	 * 数据范围类型 强制数据范围。未写时按登录画像裁决；至多一项。
+	 * 数据范围类型 强制数据范围。未写时按登录画像裁决；至多一项
 	 */
 	DataScopeStorageType[] scope() default {};
 

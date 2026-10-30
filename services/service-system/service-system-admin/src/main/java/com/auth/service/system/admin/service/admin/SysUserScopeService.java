@@ -5,6 +5,8 @@ import com.auth.service.system.admin.model.form.scope.SysDataScopeForm;
 import com.auth.service.system.admin.model.vo.user.SysUserScopeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * 用户数据范围服务
  *
@@ -13,11 +15,14 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface SysUserScopeService extends IService<UserScopeEntity> {
 
 	/**
-	 * 按用户查询数据范围配置；无配置行时返回 null（表示继承角色合并结果）
+	 * 按用户查询数据范围配置
+	 * <p>
+	 * 无配置行时返回空列表（表示继承角色合并结果）
+	 * </p>
 	 * @param userId 用户 ID
-	 * @return 范围配置；未配置为 null
+	 * @return 各维范围配置；未配置为空列表
 	 */
-	SysUserScopeVO getByUserId(Long userId);
+	List<SysUserScopeVO> getByUserId(Long userId);
 
 	/**
 	 * 保存用户数据范围（写后触发授权失效）

@@ -10,7 +10,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link BuiltinRemoteHttpParamsSupport} URL 组装单元测试（HttpInvoke 复用）。
+ * {@link BuiltinRemoteHttpParamsSupport} URL 组装单元测试（HttpInvoke 复用）
  */
 @DisplayName("HttpInvokeJob URL 查询参数拼接")
 class HttpInvokeJobUrlTest {

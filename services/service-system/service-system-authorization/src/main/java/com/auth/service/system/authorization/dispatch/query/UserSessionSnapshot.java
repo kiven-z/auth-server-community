@@ -4,7 +4,7 @@ import lombok.Builder;
 import lombok.Value;
 
 /**
- * 用户活跃会话快照（供 admin 个人中心等只读场景）。
+ * 用户活跃会话快照（供 admin 个人中心等只读场景）
  *
  * @author Bunny
  */

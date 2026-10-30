@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 /**
- * 从 HTTP 请求上下文组装 {@link UserSessionIndex}。
+ * 从 HTTP 请求上下文组装 {@link UserSessionIndex}
  *
  * @author Bunny
  */
@@ -28,7 +28,7 @@ public class UserSessionIndexFactory {
 	}
 
 	/**
-	 * 根据登录请求与会话标识构建会话索引。
+	 * 根据登录请求与会话标识构建会话索引
 	 * @param request HTTP 请求
 	 * @param userId 用户 ID
 	 * @param jti 会话唯一标识

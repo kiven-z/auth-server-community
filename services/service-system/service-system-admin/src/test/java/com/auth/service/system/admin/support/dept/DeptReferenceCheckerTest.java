@@ -17,7 +17,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link DeptReferenceChecker} 单元测试。
+ * {@link DeptReferenceChecker} 单元测试
  */
 @DisplayName("DeptReferenceChecker 部门引用校验")
 @ExtendWith(MockitoExtension.class)

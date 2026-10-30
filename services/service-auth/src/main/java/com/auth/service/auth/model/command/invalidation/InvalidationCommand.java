@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 public record InvalidationCommand(String eventId, AuthorizationInvalidatePayload payload) {
 
 	/**
-	 * 构建失效命令并校验必填字段。
+	 * 构建失效命令并校验必填字段
 	 * @param eventId 事件 ID
 	 * @param payload 失效业务键
 	 */

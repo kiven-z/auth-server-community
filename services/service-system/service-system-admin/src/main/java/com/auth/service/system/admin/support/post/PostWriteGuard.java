@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * 岗位写入复合键校验：部门存在性与 (deptId, postCode) 唯一性。
+ * 岗位写入复合键校验：部门存在性与 (deptId, postCode) 唯一性
  *
  * @author Bunny
  */

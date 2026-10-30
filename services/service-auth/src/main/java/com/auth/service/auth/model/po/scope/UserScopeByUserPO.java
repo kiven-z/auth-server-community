@@ -29,7 +29,10 @@ public class UserScopeByUserPO implements Serializable {
 	private String dimension;
 
 	/**
-	 * 范围类型：ALL/SELF/IDS/IDS_AND_CHILD
+	 * 范围类型
+	 * <p>
+	 * ALL/SELF/IDS/IDS_AND_CHILD
+	 * </p>
 	 */
 	private String scopeType;
 

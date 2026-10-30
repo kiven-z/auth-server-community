@@ -52,10 +52,11 @@ class SysUserScopeServiceImplTest {
 
 	private SysUserScopeServiceImpl sysUserScopeService;
 
-	private static SysDataScopeForm form(String scopeType, List<Long> deptIds, String remark) {
+	private static SysDataScopeForm form(String dimension, String scopeType, List<Long> scopeIds, String remark) {
 		SysDataScopeForm form = new SysDataScopeForm();
+		form.setDimension(dimension);
 		form.setScopeType(scopeType);
-		form.setScopeDeptIds(deptIds);
+		form.setScopeIds(scopeIds);
 		form.setRemark(remark);
 		return form;
 	}
@@ -88,53 +89,58 @@ class SysUserScopeServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("无 user_scope 行时返回 null（继承角色）")
-	void getByUserIdWhenNoScopeRowShouldReturnNull() {
+	@DisplayName("无 user_scope 行时返回空列表（继承角色）")
+	void getByUserIdWhenNoScopeRowShouldReturnEmpty() {
 		when(userReferenceChecker.getExistingActive(1L)).thenReturn(new UserEntity());
-		when(userScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(null);
+		when(userScopeMapper.selectList(any(Wrapper.class))).thenReturn(List.of());
 
-		assertThat(sysUserScopeService.getByUserId(1L)).isNull();
+		assertThat(sysUserScopeService.getByUserId(1L)).isEmpty();
 	}
 
 	@Test
-	@DisplayName("有配置行时回显类型与部门 ID 列表")
-	void getByUserIdShouldReturnScopeAndDeptIds() {
+	@DisplayName("有配置行时回显维度、类型与节点 ID 列表")
+	void getByUserIdShouldReturnScopeAndIds() {
 		when(userReferenceChecker.getExistingActive(3L)).thenReturn(new UserEntity());
 
 		UserScopeEntity entity = new UserScopeEntity();
 		entity.setId(100L);
 		entity.setUserId(3L);
-		entity.setScopeType("DEPT_AND_CHILD");
-		entity.setScopeDeptIds("[110,120]");
+		entity.setDimension("DEPT");
+		entity.setScopeType("IDS_AND_CHILD");
+		entity.setScopeIds("[110,120]");
 		entity.setRemark("华北区覆盖");
-		when(userScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(entity);
+		when(userScopeMapper.selectList(any(Wrapper.class))).thenReturn(List.of(entity));
 
-		SysUserScopeVO vo = sysUserScopeService.getByUserId(3L);
+		List<SysUserScopeVO> scopes = sysUserScopeService.getByUserId(3L);
 
-		assertThat(vo).isNotNull();
+		assertThat(scopes).hasSize(1);
+		SysUserScopeVO vo = scopes.get(0);
 		assertThat(vo.getId()).isEqualTo(100L);
 		assertThat(vo.getUserId()).isEqualTo(3L);
-		assertThat(vo.getScopeType()).isEqualTo("DEPT_AND_CHILD");
-		assertThat(vo.getScopeDeptIds()).containsExactly(110L, 120L);
+		assertThat(vo.getDimension()).isEqualTo("DEPT");
+		assertThat(vo.getScopeType()).isEqualTo("IDS_AND_CHILD");
+		assertThat(vo.getScopeIds()).containsExactly(110L, 120L);
 		assertThat(vo.getRemark()).isEqualTo("华北区覆盖");
 	}
 
 	@Test
-	@DisplayName("scope_dept_ids 为空时返回空部门列表")
-	void getByUserIdWhenDeptIdsBlankShouldReturnEmptyList() {
+	@DisplayName("scope_ids 为空时返回空节点列表")
+	void getByUserIdWhenIdsBlankShouldReturnEmptyList() {
 		when(userReferenceChecker.getExistingActive(2L)).thenReturn(new UserEntity());
 
 		UserScopeEntity entity = new UserScopeEntity();
 		entity.setId(200L);
 		entity.setUserId(2L);
+		entity.setDimension("DEPT");
 		entity.setScopeType("SELF");
-		entity.setScopeDeptIds(null);
-		when(userScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(entity);
+		entity.setScopeIds(null);
+		when(userScopeMapper.selectList(any(Wrapper.class))).thenReturn(List.of(entity));
 
-		SysUserScopeVO vo = sysUserScopeService.getByUserId(2L);
+		List<SysUserScopeVO> scopes = sysUserScopeService.getByUserId(2L);
 
-		assertThat(vo.getScopeType()).isEqualTo("SELF");
-		assertThat(vo.getScopeDeptIds()).isEmpty();
+		assertThat(scopes).hasSize(1);
+		assertThat(scopes.get(0).getScopeType()).isEqualTo("SELF");
+		assertThat(scopes.get(0).getScopeIds()).isEmpty();
 	}
 
 	@Test
@@ -144,15 +150,16 @@ class SysUserScopeServiceImplTest {
 		when(userScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(null);
 		doReturn(true).when(sysUserScopeService).saveOrUpdate(any(UserScopeEntity.class));
 
-		SysDataScopeForm form = form("ALL", null, "全量覆盖");
+		SysDataScopeForm form = form("DEPT", "ALL", null, "全量覆盖");
 		sysUserScopeService.upsert(1L, form);
 
 		ArgumentCaptor<UserScopeEntity> captor = ArgumentCaptor.forClass(UserScopeEntity.class);
 		verify(sysUserScopeService).saveOrUpdate(captor.capture());
 		assertThat(captor.getValue().getId()).isNull();
 		assertThat(captor.getValue().getUserId()).isEqualTo(1L);
+		assertThat(captor.getValue().getDimension()).isEqualTo("DEPT");
 		assertThat(captor.getValue().getScopeType()).isEqualTo("ALL");
-		assertThat(captor.getValue().getScopeDeptIds()).isNull();
+		assertThat(captor.getValue().getScopeIds()).isNull();
 		assertThat(captor.getValue().getRemark()).isEqualTo("全量覆盖");
 		verify(userInvalidationTrigger).submitByUserIds(List.of(1L), "upsert-user-scope");
 	}
@@ -165,11 +172,12 @@ class SysUserScopeServiceImplTest {
 		UserScopeEntity existing = new UserScopeEntity();
 		existing.setId(100L);
 		existing.setUserId(3L);
+		existing.setDimension("DEPT");
 		existing.setScopeType("SELF");
 		when(userScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(existing);
 		doReturn(true).when(sysUserScopeService).saveOrUpdate(any(UserScopeEntity.class));
 
-		SysDataScopeForm form = form("DEPT_AND_CHILD", List.of(110L, 110L, 120L), "华北");
+		SysDataScopeForm form = form("DEPT", "IDS_AND_CHILD", List.of(110L, 110L, 120L), "华北");
 		when(sysDeptMapper.selectByIds(List.of(110L, 120L))).thenReturn(List.of(dept(110L), dept(120L)));
 		sysUserScopeService.upsert(3L, form);
 
@@ -177,8 +185,9 @@ class SysUserScopeServiceImplTest {
 		ArgumentCaptor<UserScopeEntity> captor = ArgumentCaptor.forClass(UserScopeEntity.class);
 		verify(sysUserScopeService).saveOrUpdate(captor.capture());
 		assertThat(captor.getValue().getId()).isEqualTo(100L);
-		assertThat(captor.getValue().getScopeType()).isEqualTo("DEPT_AND_CHILD");
-		assertThat(captor.getValue().getScopeDeptIds()).isEqualTo("[110,120]");
+		assertThat(captor.getValue().getDimension()).isEqualTo("DEPT");
+		assertThat(captor.getValue().getScopeType()).isEqualTo("IDS_AND_CHILD");
+		assertThat(captor.getValue().getScopeIds()).isEqualTo("[110,120]");
 		verify(userInvalidationTrigger).submitByUserIds(List.of(3L), "upsert-user-scope");
 	}
 
@@ -187,7 +196,7 @@ class SysUserScopeServiceImplTest {
 	void upsertWhenScopeTypeInvalidShouldThrow() {
 		when(userReferenceChecker.getExistingActive(1L)).thenReturn(new UserEntity());
 
-		SysDataScopeForm form = form("UNKNOWN", null, null);
+		SysDataScopeForm form = form("DEPT", "UNKNOWN", null, null);
 		assertThatThrownBy(() -> sysUserScopeService.upsert(1L, form)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.DATA_INVALID);
@@ -195,11 +204,11 @@ class SysUserScopeServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("upsert：DEPT 未传部门 ID 抛出 PARAM_REQUIRED")
-	void upsertWhenDeptScopeMissingDeptIdsShouldThrow() {
+	@DisplayName("upsert：IDS 未传节点 ID 抛出 PARAM_REQUIRED")
+	void upsertWhenIdsScopeMissingIdsShouldThrow() {
 		when(userReferenceChecker.getExistingActive(1L)).thenReturn(new UserEntity());
 
-		SysDataScopeForm form = form("DEPT", List.of(), null);
+		SysDataScopeForm form = form("DEPT", "IDS", List.of(), null);
 		assertThatThrownBy(() -> sysUserScopeService.upsert(1L, form)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.PARAM_REQUIRED);
@@ -212,7 +221,7 @@ class SysUserScopeServiceImplTest {
 		when(userReferenceChecker.getExistingActive(1L)).thenReturn(new UserEntity());
 		when(sysDeptMapper.selectByIds(List.of(99L))).thenReturn(List.of());
 
-		SysDataScopeForm form = form("DEPT", List.of(99L), null);
+		SysDataScopeForm form = form("DEPT", "IDS", List.of(99L), null);
 		assertThatThrownBy(() -> sysUserScopeService.upsert(1L, form)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.GRANT_REFERENCE_INVALID);
@@ -220,19 +229,19 @@ class SysUserScopeServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("upsert：SELF 忽略表单中的部门 ID")
-	void upsertSelfShouldClearDeptIds() {
+	@DisplayName("upsert：SELF 忽略表单中的节点 ID")
+	void upsertSelfShouldClearIds() {
 		when(userReferenceChecker.getExistingActive(6L)).thenReturn(new UserEntity());
 		when(userScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(null);
 		doReturn(true).when(sysUserScopeService).saveOrUpdate(any(UserScopeEntity.class));
 
-		SysDataScopeForm form = form("SELF", List.of(110L), null);
+		SysDataScopeForm form = form("DEPT", "SELF", List.of(110L), null);
 		sysUserScopeService.upsert(6L, form);
 
 		ArgumentCaptor<UserScopeEntity> captor = ArgumentCaptor.forClass(UserScopeEntity.class);
 		verify(sysUserScopeService).saveOrUpdate(captor.capture());
 		assertThat(captor.getValue().getScopeType()).isEqualTo("SELF");
-		assertThat(captor.getValue().getScopeDeptIds()).isNull();
+		assertThat(captor.getValue().getScopeIds()).isNull();
 		verify(sysDeptMapper, never()).selectByIds(any());
 	}
 
@@ -240,16 +249,11 @@ class SysUserScopeServiceImplTest {
 	@DisplayName("clear：有配置行时删除并触发失效")
 	void clearByUserIdWhenExistsShouldRemoveAndInvalidate() {
 		when(userReferenceChecker.getExistingActive(3L)).thenReturn(new UserEntity());
-
-		UserScopeEntity existing = new UserScopeEntity();
-		existing.setId(100L);
-		existing.setUserId(3L);
-		when(userScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(existing);
-		doReturn(true).when(sysUserScopeService).removeById(100L);
+		when(userScopeMapper.delete(any(Wrapper.class))).thenReturn(1);
 
 		sysUserScopeService.clearByUserId(3L);
 
-		verify(sysUserScopeService).removeById(100L);
+		verify(userScopeMapper).delete(any(Wrapper.class));
 		verify(userInvalidationTrigger).submitByUserIds(List.of(3L), "clear-user-scope");
 	}
 
@@ -257,11 +261,11 @@ class SysUserScopeServiceImplTest {
 	@DisplayName("clear：无配置行时幂等且不触发失效")
 	void clearByUserIdWhenMissingShouldBeIdempotent() {
 		when(userReferenceChecker.getExistingActive(1L)).thenReturn(new UserEntity());
-		when(userScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(null);
+		when(userScopeMapper.delete(any(Wrapper.class))).thenReturn(0);
 
 		sysUserScopeService.clearByUserId(1L);
 
-		verify(sysUserScopeService, never()).removeById(any());
+		verify(userScopeMapper).delete(any(Wrapper.class));
 		verify(userInvalidationTrigger, never()).submitByUserIds(any(), any());
 	}
 

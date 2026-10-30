@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 用户失效状态读写：分桶前加载状态、分批递增 perm_version。
+ * 用户失效状态读写：分桶前加载状态、分批递增 perm_version
  *
  * @author Bunny
  */
@@ -27,7 +27,7 @@ public class UserInvalidationRepository {
 	}
 
 	/**
-	 * 批量加载用户失效分桶所需状态。
+	 * 批量加载用户失效分桶所需状态
 	 * @param userIds 用户 ID 集合
 	 * @return 状态快照列表
 	 */

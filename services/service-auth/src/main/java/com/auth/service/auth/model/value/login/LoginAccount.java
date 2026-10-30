@@ -41,7 +41,7 @@ public class LoginAccount {
 	Long permVersion;
 
 	/**
-	 * 从持久化用户实体构建登录账户快照。
+	 * 从持久化用户实体构建登录账户快照
 	 * @param user 用户实体
 	 * @return 登录账户
 	 */

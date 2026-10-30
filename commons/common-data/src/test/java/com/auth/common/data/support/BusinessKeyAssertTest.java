@@ -18,7 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link BusinessKeyAssert} 单元测试。
+ * {@link BusinessKeyAssert} 单元测试
  *
  * @author Bunny
  */

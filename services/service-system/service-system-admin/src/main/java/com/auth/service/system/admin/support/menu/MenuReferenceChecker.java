@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 /**
- * 菜单写操作前的存在性与移动目标校验。
+ * 菜单写操作前的存在性与移动目标校验
  *
  * @author Bunny
  */
@@ -25,7 +25,7 @@ public class MenuReferenceChecker {
 	}
 
 	/**
-	 * 读取已存在菜单，不存在时抛出业务异常。
+	 * 读取已存在菜单，不存在时抛出业务异常
 	 * @param menuId 菜单 ID
 	 * @return 菜单实体
 	 */
@@ -39,7 +39,7 @@ public class MenuReferenceChecker {
 	}
 
 	/**
-	 * 规范化父菜单 ID 并校验父菜单存在（顶级跳过校验）。
+	 * 规范化父菜单 ID 并校验父菜单存在（顶级跳过校验）
 	 * @param rawParentId 原始父菜单 ID
 	 * @return 规范化后的父菜单 ID
 	 */
@@ -53,7 +53,7 @@ public class MenuReferenceChecker {
 	}
 
 	/**
-	 * 移动目标不能是自身或自身后代。
+	 * 移动目标不能是自身或自身后代
 	 * @param menuId 被移动菜单
 	 * @param newParentId 新父菜单
 	 */

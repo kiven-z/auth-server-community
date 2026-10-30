@@ -17,7 +17,7 @@ import org.springframework.core.annotation.Order;
  *
  * <p>
  * 只注册 {@link InnerInterceptor}，由 {@code BaseMybatisPlusConfig} 收敛进唯一的
- * {@code MybatisPlusInterceptor}（须排在分页插件之前）。
+ * {@code MybatisPlusInterceptor}（须排在分页插件之前）
  * </p>
  *
  * @author Bunny

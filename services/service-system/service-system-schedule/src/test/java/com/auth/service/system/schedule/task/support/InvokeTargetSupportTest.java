@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link InvokeTargetSupport} 单元测试。
+ * {@link InvokeTargetSupport} 单元测试
  *
  * @author Bunny
  */

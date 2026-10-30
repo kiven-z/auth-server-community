@@ -22,7 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link AliyunOssBucketInitializer} 单元测试。
+ * {@link AliyunOssBucketInitializer} 单元测试
  *
  * @author Bunny
  */
@@ -51,7 +51,7 @@ class AliyunOssBucketInitializerTest {
 	@Test
 	@DisplayName("ensureBucketReady：桶存在时跳过创建")
 	void ensureBucketReady_skipsWhenBucketExists() {
-		// 验证 headBucket 成功即视为存在，不再触发 createBucket。
+		// 验证 headBucket 成功即视为存在，不再触发 createBucket
 		when(s3Client.headBucket(any(HeadBucketRequest.class))).thenReturn(HeadBucketResponse.builder().build());
 
 		assertThatCode(() -> initializer.ensureBucketReady()).doesNotThrowAnyException();
@@ -62,7 +62,7 @@ class AliyunOssBucketInitializerTest {
 	@Test
 	@DisplayName("ensureBucketReady：桶不存在时创建")
 	void ensureBucketReady_createsBucketWhenMissing() {
-		// 验证 NoSuchBucket 时触发一次 createBucket。
+		// 验证 NoSuchBucket 时触发一次 createBucket
 		when(s3Client.headBucket(any(HeadBucketRequest.class)))
 			.thenThrow(NoSuchBucketException.builder().statusCode(404).message("not found").build());
 
@@ -74,7 +74,7 @@ class AliyunOssBucketInitializerTest {
 	@Test
 	@DisplayName("ensureBucketReady：非 not-found 错误抛业务异常")
 	void ensureBucketReady_throwsOnOtherError() {
-		// 验证 AccessDenied 等错误不会被静默处理。
+		// 验证 AccessDenied 等错误不会被静默处理
 		S3Exception denied = (S3Exception) S3Exception.builder()
 			.statusCode(403)
 			.awsErrorDetails(AwsErrorDetails.builder().errorCode("AccessDenied").build())

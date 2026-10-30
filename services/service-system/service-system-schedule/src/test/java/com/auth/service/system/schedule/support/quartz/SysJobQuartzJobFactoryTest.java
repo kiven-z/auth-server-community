@@ -10,7 +10,7 @@ import org.quartz.JobDetail;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link SysJobQuartzJobFactory} 单元测试。
+ * {@link SysJobQuartzJobFactory} 单元测试
  *
  * @author Bunny
  */

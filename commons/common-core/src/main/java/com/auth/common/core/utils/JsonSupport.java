@@ -9,11 +9,11 @@ import java.time.ZoneOffset;
 import java.util.TimeZone;
 
 /**
- * 基于 {@link ObjectMapper} 的 JSON 辅助工具。
+ * 基于 {@link ObjectMapper} 的 JSON 辅助工具
  *
  * <p>
  * 类内维护默认 ObjectMapper 供无参重载使用，其配置与 Spring HTTP 层的 ObjectMapper 并不完全一致；Spring 服务应优先传入注入的
- * ObjectMapper。
+ * ObjectMapper
  *
  * @author Bunny
  */
@@ -21,7 +21,7 @@ import java.util.TimeZone;
 public class JsonSupport {
 
 	/**
-	 * 无参重载使用的默认 {@link ObjectMapper}，仅包含基础序列化配置。
+	 * 无参重载使用的默认 {@link ObjectMapper}，仅包含基础序列化配置
 	 */
 	private static final ObjectMapper DEFAULT_MAPPER = createDefaultMapper();
 
@@ -35,7 +35,7 @@ public class JsonSupport {
 	}
 
 	/**
-	 * 将对象序列化为 JSON 字符串（使用默认 {@link ObjectMapper}）。
+	 * 将对象序列化为 JSON 字符串（使用默认 {@link ObjectMapper}）
 	 * @param value 待序列化的值
 	 * @return JSON 字符串
 	 */
@@ -44,7 +44,7 @@ public class JsonSupport {
 	}
 
 	/**
-	 * 将 JSON 字符串反序列化为指定类型（使用默认 {@link ObjectMapper}）。
+	 * 将 JSON 字符串反序列化为指定类型（使用默认 {@link ObjectMapper}）
 	 * @param json JSON 字符串
 	 * @param type 目标类型
 	 * @param <T> 目标类型
@@ -55,7 +55,7 @@ public class JsonSupport {
 	}
 
 	/**
-	 * 将 JSON 字符串解析为 {@link JsonNode}（使用默认 {@link ObjectMapper}）。
+	 * 将 JSON 字符串解析为 {@link JsonNode}（使用默认 {@link ObjectMapper}）
 	 * @param json JSON 字符串
 	 * @return 解析后的节点
 	 */
@@ -64,7 +64,7 @@ public class JsonSupport {
 	}
 
 	/**
-	 * 将 JSON 字符串解析为对象型 {@link JsonNode}（使用默认 {@link ObjectMapper}）。
+	 * 将 JSON 字符串解析为对象型 {@link JsonNode}（使用默认 {@link ObjectMapper}）
 	 * @param json JSON 字符串
 	 * @return 对象节点
 	 */
@@ -73,7 +73,7 @@ public class JsonSupport {
 	}
 
 	/**
-	 * 将对象序列化为 JSON 字符串。
+	 * 将对象序列化为 JSON 字符串
 	 * @param mapper ObjectMapper
 	 * @param value 待序列化的值
 	 * @return JSON 字符串
@@ -88,7 +88,7 @@ public class JsonSupport {
 	}
 
 	/**
-	 * 将 JSON 字符串反序列化为指定类型。
+	 * 将 JSON 字符串反序列化为指定类型
 	 * @param mapper ObjectMapper
 	 * @param json JSON 字符串
 	 * @param type 目标类型
@@ -105,7 +105,7 @@ public class JsonSupport {
 	}
 
 	/**
-	 * 将 JSON 字符串反序列化为带单类型参数的泛型。
+	 * 将 JSON 字符串反序列化为带单类型参数的泛型
 	 * @param json JSON 字符串
 	 * @param rawType 原始类型
 	 * @param typeParameter 类型参数
@@ -124,7 +124,7 @@ public class JsonSupport {
 	}
 
 	/**
-	 * 将 JSON 字符串解析为 {@link JsonNode}。
+	 * 将 JSON 字符串解析为 {@link JsonNode}
 	 * @param mapper ObjectMapper
 	 * @param json JSON 字符串
 	 * @return 解析后的节点
@@ -139,7 +139,7 @@ public class JsonSupport {
 	}
 
 	/**
-	 * 将 JSON 字符串解析为对象型 {@link JsonNode}。
+	 * 将 JSON 字符串解析为对象型 {@link JsonNode}
 	 * @param mapper ObjectMapper
 	 * @param json JSON 字符串
 	 * @return 对象节点

@@ -4,7 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 授权失效统一响应（HTTP / Feign 共用）。
+ * 授权失效统一响应（HTTP / Feign 共用）
  *
  * @param impactedUserCount 影响面反查得到的去重用户数
  * @param versionBumpedCount 实际递增 perm_version 的用户数
@@ -19,7 +19,7 @@ public record AuthorizationInvalidateResponse(int impactedUserCount, int version
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 无受影响用户时的结果。
+	 * 无受影响用户时的结果
 	 * @return 零影响结果
 	 */
 	public static AuthorizationInvalidateResponse empty() {

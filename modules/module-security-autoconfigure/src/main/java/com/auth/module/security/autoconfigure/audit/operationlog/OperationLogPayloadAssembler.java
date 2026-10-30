@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 将 Web 请求上下文、控制器方法实参与 {@link OperationLog} 元数据组装为 {@link OperationLogPayloadEvent} 并委托
- * {@link OperationLogHandler}。
+ * {@link OperationLogHandler}
  *
  * @author Bunny
  */
@@ -76,7 +76,7 @@ public class OperationLogPayloadAssembler {
 	}
 
 	/**
-	 * 组装并发布操作日志负载。
+	 * 组装并发布操作日志负载
 	 * @param joinPoint 连接点
 	 * @param meta 注解元数据
 	 * @param result 方法返回值

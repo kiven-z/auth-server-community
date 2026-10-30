@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.eq;
 
 /**
- * {@link SysPermissionServiceImpl} 单元测试。
+ * {@link SysPermissionServiceImpl} 单元测试
  *
  * @author Bunny
  */

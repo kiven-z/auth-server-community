@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link FileRecordServiceImpl} 内部接口能力单元测试。
+ * {@link FileRecordServiceImpl} 内部接口能力单元测试
  */
 @DisplayName("FileRecordServiceImpl 内部接口能力")
 @ExtendWith(MockitoExtension.class)

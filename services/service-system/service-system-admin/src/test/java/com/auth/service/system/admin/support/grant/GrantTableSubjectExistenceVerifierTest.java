@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link GrantTableSubjectExistenceVerifier} 单元测试。
+ * {@link GrantTableSubjectExistenceVerifier} 单元测试
  */
 @DisplayName("GrantTableSubjectExistenceVerifier 主体存在性校验")
 @ExtendWith(MockitoExtension.class)

@@ -26,12 +26,12 @@ public class ZebraStripeStyleHandler implements CellWriteHandler {
 	private final ZebraStripeStyle styleConfig;
 
 	/**
-	 * 单次写出会话内的样式缓存；POI {@link CellStyle} 绑定所属 {@link Workbook}，禁止跨工作簿复用。
+	 * 单次写出会话内的样式缓存；POI {@link CellStyle} 绑定所属 {@link Workbook}，禁止跨工作簿复用
 	 */
 	private final Map<String, CellStyle> styleCache = new HashMap<>();
 
 	/**
-	 * 当前缓存绑定的工作簿；导出服务会复用同一处理器，新工作簿写出前清空缓存。
+	 * 当前缓存绑定的工作簿；导出服务会复用同一处理器，新工作簿写出前清空缓存
 	 */
 	private Workbook boundWorkbook;
 

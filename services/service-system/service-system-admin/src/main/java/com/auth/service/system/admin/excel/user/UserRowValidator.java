@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 /**
- * 用户导入 Validate 阶段：唯一性、长度等规则。
+ * 用户导入 Validate 阶段：唯一性、长度等规则
  *
  * @author Bunny
  */

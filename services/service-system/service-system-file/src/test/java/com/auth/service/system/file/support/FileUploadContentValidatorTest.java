@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * {@link FileUploadContentValidator} 单元测试。
+ * {@link FileUploadContentValidator} 单元测试
  *
  * @author Bunny
  */

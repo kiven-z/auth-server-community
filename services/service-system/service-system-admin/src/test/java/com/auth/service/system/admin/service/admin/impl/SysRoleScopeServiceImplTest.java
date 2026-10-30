@@ -59,10 +59,11 @@ class SysRoleScopeServiceImplTest {
 		return role;
 	}
 
-	private static SysDataScopeForm form(String scopeType, List<Long> deptIds, String remark) {
+	private static SysDataScopeForm form(String dimension, String scopeType, List<Long> scopeIds, String remark) {
 		SysDataScopeForm form = new SysDataScopeForm();
+		form.setDimension(dimension);
 		form.setScopeType(scopeType);
-		form.setScopeDeptIds(deptIds);
+		form.setScopeIds(scopeIds);
 		form.setRemark(remark);
 		return form;
 	}
@@ -95,19 +96,19 @@ class SysRoleScopeServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("无 role_scope 行时返回 null")
-	void getByRoleIdWhenNoScopeRowShouldReturnNull() {
+	@DisplayName("无 role_scope 行时返回空列表")
+	void getByRoleIdWhenNoScopeRowShouldReturnEmpty() {
 		SysRoleEntity role = new SysRoleEntity();
 		role.setId(1L);
 		when(rbacReferenceChecker.getExisting(1L)).thenReturn(role);
-		when(roleScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(null);
+		when(roleScopeMapper.selectList(any(Wrapper.class))).thenReturn(List.of());
 
-		assertThat(sysRoleScopeService.getByRoleId(1L)).isNull();
+		assertThat(sysRoleScopeService.getByRoleId(1L)).isEmpty();
 	}
 
 	@Test
-	@DisplayName("有配置行时回显类型与部门 ID 列表")
-	void getByRoleIdShouldReturnScopeAndDeptIds() {
+	@DisplayName("有配置行时回显维度、类型与节点 ID 列表")
+	void getByRoleIdShouldReturnScopeAndIds() {
 		SysRoleEntity role = new SysRoleEntity();
 		role.setId(3L);
 		when(rbacReferenceChecker.getExisting(3L)).thenReturn(role);
@@ -115,24 +116,27 @@ class SysRoleScopeServiceImplTest {
 		RoleScopeEntity entity = new RoleScopeEntity();
 		entity.setId(100L);
 		entity.setRoleId(3L);
-		entity.setScopeType("DEPT_AND_CHILD");
-		entity.setScopeDeptIds("[110,120]");
+		entity.setDimension("DEPT");
+		entity.setScopeType("IDS_AND_CHILD");
+		entity.setScopeIds("[110,120]");
 		entity.setRemark("华北区");
-		when(roleScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(entity);
+		when(roleScopeMapper.selectList(any(Wrapper.class))).thenReturn(List.of(entity));
 
-		SysRoleScopeVO vo = sysRoleScopeService.getByRoleId(3L);
+		List<SysRoleScopeVO> scopes = sysRoleScopeService.getByRoleId(3L);
 
-		assertThat(vo).isNotNull();
+		assertThat(scopes).hasSize(1);
+		SysRoleScopeVO vo = scopes.get(0);
 		assertThat(vo.getId()).isEqualTo(100L);
 		assertThat(vo.getRoleId()).isEqualTo(3L);
-		assertThat(vo.getScopeType()).isEqualTo("DEPT_AND_CHILD");
-		assertThat(vo.getScopeDeptIds()).containsExactly(110L, 120L);
+		assertThat(vo.getDimension()).isEqualTo("DEPT");
+		assertThat(vo.getScopeType()).isEqualTo("IDS_AND_CHILD");
+		assertThat(vo.getScopeIds()).containsExactly(110L, 120L);
 		assertThat(vo.getRemark()).isEqualTo("华北区");
 	}
 
 	@Test
-	@DisplayName("scope_dept_ids 为空时返回空部门列表")
-	void getByRoleIdWhenDeptIdsBlankShouldReturnEmptyList() {
+	@DisplayName("scope_ids 为空时返回空节点列表")
+	void getByRoleIdWhenIdsBlankShouldReturnEmptyList() {
 		SysRoleEntity role = new SysRoleEntity();
 		role.setId(2L);
 		when(rbacReferenceChecker.getExisting(2L)).thenReturn(role);
@@ -140,14 +144,16 @@ class SysRoleScopeServiceImplTest {
 		RoleScopeEntity entity = new RoleScopeEntity();
 		entity.setId(200L);
 		entity.setRoleId(2L);
+		entity.setDimension("DEPT");
 		entity.setScopeType("ALL");
-		entity.setScopeDeptIds(null);
-		when(roleScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(entity);
+		entity.setScopeIds(null);
+		when(roleScopeMapper.selectList(any(Wrapper.class))).thenReturn(List.of(entity));
 
-		SysRoleScopeVO vo = sysRoleScopeService.getByRoleId(2L);
+		List<SysRoleScopeVO> scopes = sysRoleScopeService.getByRoleId(2L);
 
-		assertThat(vo.getScopeType()).isEqualTo("ALL");
-		assertThat(vo.getScopeDeptIds()).isEmpty();
+		assertThat(scopes).hasSize(1);
+		assertThat(scopes.get(0).getScopeType()).isEqualTo("ALL");
+		assertThat(scopes.get(0).getScopeIds()).isEmpty();
 	}
 
 	@Test
@@ -158,15 +164,16 @@ class SysRoleScopeServiceImplTest {
 		when(roleScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(null);
 		doReturn(true).when(sysRoleScopeService).saveOrUpdate(any(RoleScopeEntity.class));
 
-		SysDataScopeForm form = form("ALL", null, "全量");
+		SysDataScopeForm form = form("DEPT", "ALL", null, "全量");
 		sysRoleScopeService.upsert(1L, form);
 
 		ArgumentCaptor<RoleScopeEntity> captor = ArgumentCaptor.forClass(RoleScopeEntity.class);
 		verify(sysRoleScopeService).saveOrUpdate(captor.capture());
 		assertThat(captor.getValue().getId()).isNull();
 		assertThat(captor.getValue().getRoleId()).isEqualTo(1L);
+		assertThat(captor.getValue().getDimension()).isEqualTo("DEPT");
 		assertThat(captor.getValue().getScopeType()).isEqualTo("ALL");
-		assertThat(captor.getValue().getScopeDeptIds()).isNull();
+		assertThat(captor.getValue().getScopeIds()).isNull();
 		assertThat(captor.getValue().getRemark()).isEqualTo("全量");
 		verify(roleInvalidationTrigger).submitByRoleCodes(List.of("ADMIN"), "upsert-role-scope");
 	}
@@ -180,11 +187,12 @@ class SysRoleScopeServiceImplTest {
 		RoleScopeEntity existing = new RoleScopeEntity();
 		existing.setId(100L);
 		existing.setRoleId(3L);
+		existing.setDimension("DEPT");
 		existing.setScopeType("SELF");
 		when(roleScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(existing);
 		doReturn(true).when(sysRoleScopeService).saveOrUpdate(any(RoleScopeEntity.class));
 
-		SysDataScopeForm form = form("DEPT_AND_CHILD", List.of(110L, 110L, 120L), "华北");
+		SysDataScopeForm form = form("DEPT", "IDS_AND_CHILD", List.of(110L, 110L, 120L), "华北");
 		when(sysDeptMapper.selectByIds(List.of(110L, 120L))).thenReturn(List.of(dept(110L), dept(120L)));
 		sysRoleScopeService.upsert(3L, form);
 
@@ -192,8 +200,9 @@ class SysRoleScopeServiceImplTest {
 		ArgumentCaptor<RoleScopeEntity> captor = ArgumentCaptor.forClass(RoleScopeEntity.class);
 		verify(sysRoleScopeService).saveOrUpdate(captor.capture());
 		assertThat(captor.getValue().getId()).isEqualTo(100L);
-		assertThat(captor.getValue().getScopeType()).isEqualTo("DEPT_AND_CHILD");
-		assertThat(captor.getValue().getScopeDeptIds()).isEqualTo("[110,120]");
+		assertThat(captor.getValue().getDimension()).isEqualTo("DEPT");
+		assertThat(captor.getValue().getScopeType()).isEqualTo("IDS_AND_CHILD");
+		assertThat(captor.getValue().getScopeIds()).isEqualTo("[110,120]");
 		verify(roleInvalidationTrigger).submitByRoleCodes(List.of("REGION_MGR_NORTH"), "upsert-role-scope");
 	}
 
@@ -202,7 +211,7 @@ class SysRoleScopeServiceImplTest {
 	void upsertWhenScopeTypeInvalidShouldThrow() {
 		when(rbacReferenceChecker.getExisting(1L)).thenReturn(role(1L, "ADMIN"));
 
-		SysDataScopeForm form = form("UNKNOWN", null, null);
+		SysDataScopeForm form = form("DEPT", "UNKNOWN", null, null);
 		assertThatThrownBy(() -> sysRoleScopeService.upsert(1L, form)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.DATA_INVALID);
@@ -210,11 +219,11 @@ class SysRoleScopeServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("upsert：DEPT 未传部门 ID 抛出 PARAM_REQUIRED")
-	void upsertWhenDeptScopeMissingDeptIdsShouldThrow() {
+	@DisplayName("upsert：IDS 未传节点 ID 抛出 PARAM_REQUIRED")
+	void upsertWhenIdsScopeMissingIdsShouldThrow() {
 		when(rbacReferenceChecker.getExisting(1L)).thenReturn(role(1L, "ADMIN"));
 
-		SysDataScopeForm form = form("DEPT", List.of(), null);
+		SysDataScopeForm form = form("DEPT", "IDS", List.of(), null);
 		assertThatThrownBy(() -> sysRoleScopeService.upsert(1L, form)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.PARAM_REQUIRED);
@@ -227,7 +236,7 @@ class SysRoleScopeServiceImplTest {
 		when(rbacReferenceChecker.getExisting(1L)).thenReturn(role(1L, "ADMIN"));
 		when(sysDeptMapper.selectByIds(List.of(99L))).thenReturn(List.of());
 
-		SysDataScopeForm form = form("DEPT", List.of(99L), null);
+		SysDataScopeForm form = form("DEPT", "IDS", List.of(99L), null);
 		assertThatThrownBy(() -> sysRoleScopeService.upsert(1L, form)).isInstanceOf(SystemBusinessException.class)
 			.extracting(ex -> ((SystemBusinessException) ex).getResultCode())
 			.isEqualTo(SystemCommonResultCode.GRANT_REFERENCE_INVALID);
@@ -235,20 +244,20 @@ class SysRoleScopeServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("upsert：SELF 忽略表单中的部门 ID")
-	void upsertSelfShouldClearDeptIds() {
+	@DisplayName("upsert：SELF 忽略表单中的节点 ID")
+	void upsertSelfShouldClearIds() {
 		SysRoleEntity role = role(6L, "DEPT_MGR");
 		when(rbacReferenceChecker.getExisting(6L)).thenReturn(role);
 		when(roleScopeMapper.selectOne(any(Wrapper.class), anyBoolean())).thenReturn(null);
 		doReturn(true).when(sysRoleScopeService).saveOrUpdate(any(RoleScopeEntity.class));
 
-		SysDataScopeForm form = form("SELF", List.of(110L), null);
+		SysDataScopeForm form = form("DEPT", "SELF", List.of(110L), null);
 		sysRoleScopeService.upsert(6L, form);
 
 		ArgumentCaptor<RoleScopeEntity> captor = ArgumentCaptor.forClass(RoleScopeEntity.class);
 		verify(sysRoleScopeService).saveOrUpdate(captor.capture());
 		assertThat(captor.getValue().getScopeType()).isEqualTo("SELF");
-		assertThat(captor.getValue().getScopeDeptIds()).isNull();
+		assertThat(captor.getValue().getScopeIds()).isNull();
 		verify(sysDeptMapper, never()).selectByIds(any());
 	}
 

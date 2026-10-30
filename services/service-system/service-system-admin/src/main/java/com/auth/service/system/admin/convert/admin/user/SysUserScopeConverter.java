@@ -28,15 +28,16 @@ public class SysUserScopeConverter {
 			return null;
 		}
 
-		String scopeDeptIdsRaw = entity.getScopeDeptIds();
-		List<Long> scopeDeptIds = CharSequenceUtil.isBlank(scopeDeptIdsRaw) ? List.of()
-				: JSONUtil.toList(scopeDeptIdsRaw, Long.class);
+		String scopeIdsRaw = entity.getScopeIds();
+		List<Long> scopeIds = CharSequenceUtil.isBlank(scopeIdsRaw) ? List.of()
+				: JSONUtil.toList(scopeIdsRaw, Long.class);
 
 		SysUserScopeVO vo = new SysUserScopeVO();
 		vo.setId(entity.getId());
 		vo.setUserId(entity.getUserId());
+		vo.setDimension(entity.getDimension());
 		vo.setScopeType(entity.getScopeType());
-		vo.setScopeDeptIds(scopeDeptIds);
+		vo.setScopeIds(scopeIds);
 		vo.setRemark(entity.getRemark());
 		return vo;
 	}
@@ -45,15 +46,17 @@ public class SysUserScopeConverter {
 	 * 将表单字段写入实体（不改 userId）
 	 * @param entity 目标实体
 	 * @param form 表单
+	 * @param dimension 已规范化的数据维度
 	 * @param scopeType 已规范化的范围类型
-	 * @param scopeDeptIds 已规范化的部门 ID（ALL/SELF 为空）
+	 * @param scopeIds 已规范化的节点 ID（ALL/SELF 为空）
 	 */
-	public static void applyForm(UserScopeEntity entity, SysDataScopeForm form, String scopeType,
-			List<Long> scopeDeptIds) {
-		String deptIds = CollUtil.isEmpty(scopeDeptIds) ? null : JSONUtil.toJsonStr(scopeDeptIds);
+	public static void applyForm(UserScopeEntity entity, SysDataScopeForm form, String dimension, String scopeType,
+			List<Long> scopeIds) {
+		String ids = CollUtil.isEmpty(scopeIds) ? null : JSONUtil.toJsonStr(scopeIds);
 
+		entity.setDimension(dimension);
 		entity.setScopeType(scopeType);
-		entity.setScopeDeptIds(deptIds);
+		entity.setScopeIds(ids);
 		entity.setRemark(form.getRemark());
 	}
 

@@ -16,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 /**
- * 平台门面与拆分后能力组件的绑定关系测试。
+ * 平台门面与拆分后能力组件的绑定关系测试
  *
  * @author Bunny
  */
@@ -26,7 +26,7 @@ class StoragePlatformFacadeSupportBindingTest {
 	@Test
 	@DisplayName("MinIO facade：所有能力字段均绑定到独立组件")
 	void minioFacadeBindsDistinctComponents() {
-		// 验证 MinIO 门面 provider/validator/initializer/exceptionClassifier 均由 Spring 独立注入。
+		// 验证 MinIO 门面 provider/validator/initializer/exceptionClassifier 均由 Spring 独立注入
 		S3CompatibleFileStorageProvider provider = mock(S3CompatibleFileStorageProvider.class);
 		MinioConfigValidator configValidator = mock(MinioConfigValidator.class);
 		MinioBucketInitializer bucketInitializer = mock(MinioBucketInitializer.class);
@@ -44,7 +44,7 @@ class StoragePlatformFacadeSupportBindingTest {
 	@DisplayName("Aliyun facade：所有能力字段均绑定到独立组件")
 	void aliyunFacadeBindsDistinctComponents() {
 		// 验证阿里云门面 provider/validator/initializer/exceptionClassifier/capability 均由 Spring
-		// 独立注入。
+		// 独立注入
 		S3CompatibleFileStorageProvider provider = mock(S3CompatibleFileStorageProvider.class);
 		AliyunOssConfigValidator configValidator = mock(AliyunOssConfigValidator.class);
 		AliyunOssBucketInitializer bucketInitializer = mock(AliyunOssBucketInitializer.class);

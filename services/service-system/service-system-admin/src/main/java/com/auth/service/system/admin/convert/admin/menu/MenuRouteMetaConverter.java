@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 路由 meta VO 构建（菜单实体 + 角色上下文）。
+ * 路由 meta VO 构建（菜单实体 + 角色上下文）
  *
  * @author Bunny
  */
@@ -19,7 +19,7 @@ import java.util.Map;
 public class MenuRouteMetaConverter {
 
 	/**
-	 * 由菜单实体与关联上下文生成路由 meta。
+	 * 由菜单实体与关联上下文生成路由 meta
 	 * @param menu 菜单实体
 	 * @param context 角色聚合上下文
 	 * @return 路由 meta；menu 为 null 时返回 null
@@ -56,7 +56,7 @@ public class MenuRouteMetaConverter {
 	}
 
 	/**
-	 * 由菜单实体生成 meta.transition（animate.css 使用 animate__ 前缀）。
+	 * 由菜单实体生成 meta.transition（animate.css 使用 animate__ 前缀）
 	 * @param entity 菜单
 	 * @return 过渡 VO，字段均可为空
 	 */

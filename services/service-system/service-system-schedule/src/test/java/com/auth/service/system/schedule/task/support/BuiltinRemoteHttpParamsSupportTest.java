@@ -9,7 +9,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * {@link BuiltinRemoteHttpParamsSupport} 单元测试。
+ * {@link BuiltinRemoteHttpParamsSupport} 单元测试
  */
 @DisplayName("BuiltinRemoteHttpParamsSupport 远程 HTTP 参数工具")
 class BuiltinRemoteHttpParamsSupportTest {

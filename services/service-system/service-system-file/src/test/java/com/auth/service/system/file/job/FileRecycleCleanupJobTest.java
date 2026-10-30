@@ -55,7 +55,7 @@ class FileRecycleCleanupJobTest {
 	@Test
 	@DisplayName("未启用时不执行清理")
 	void purgeExpiredShouldSkipWhenDisabled() {
-		// 验证开关关闭时不查询过期记录。
+		// 验证开关关闭时不查询过期记录
 		when(properties.getEnabled()).thenReturn(false);
 
 		cleanupJob.purgeExpired();
@@ -67,7 +67,7 @@ class FileRecycleCleanupJobTest {
 	@Test
 	@DisplayName("启用时按批次循环清理直到不足一批")
 	void purgeExpiredShouldPurgeInBatchesWhenEnabled() {
-		// 验证启用后按 maxRounds 与 batchSize 分批清理，满批继续、不足一批结束。
+		// 验证启用后按 maxRounds 与 batchSize 分批清理，满批继续、不足一批结束
 		when(properties.getEnabled()).thenReturn(true);
 		when(properties.getRetentionDays()).thenReturn(90);
 		when(properties.getMaxRounds()).thenReturn(20);
@@ -90,7 +90,7 @@ class FileRecycleCleanupJobTest {
 	@Test
 	@DisplayName("启用时达到 maxRounds 后停止")
 	void purgeExpiredShouldStopAtMaxRounds() {
-		// 验证积压场景下不会超过配置的最大批次数。
+		// 验证积压场景下不会超过配置的最大批次数
 		when(properties.getEnabled()).thenReturn(true);
 		when(properties.getRetentionDays()).thenReturn(90);
 		when(properties.getMaxRounds()).thenReturn(2);
@@ -110,7 +110,7 @@ class FileRecycleCleanupJobTest {
 	@Test
 	@DisplayName("无过期记录时不访问存储")
 	void purgeExpiredShouldSkipStorageWhenEmpty() {
-		// 验证没有可清理记录时不访问对象存储。
+		// 验证没有可清理记录时不访问对象存储
 		when(properties.getEnabled()).thenReturn(true);
 		when(properties.getRetentionDays()).thenReturn(90);
 		when(properties.getMaxRounds()).thenReturn(20);

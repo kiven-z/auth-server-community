@@ -7,7 +7,7 @@ import lombok.experimental.Accessors;
 import java.time.LocalDate;
 
 /**
- * 用户导入行解析结果（Extract 阶段产物）。
+ * 用户导入行解析结果（Extract 阶段产物）
  *
  * @author Bunny
  */

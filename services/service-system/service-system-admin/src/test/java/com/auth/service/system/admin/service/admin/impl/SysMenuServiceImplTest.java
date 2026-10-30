@@ -31,7 +31,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link SysMenuServiceImpl} 单元测试。
+ * {@link SysMenuServiceImpl} 单元测试
  *
  * @author Bunny
  */

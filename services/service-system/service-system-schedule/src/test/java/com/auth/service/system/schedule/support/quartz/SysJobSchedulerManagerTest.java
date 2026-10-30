@@ -17,7 +17,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link SysJobSchedulerManager} 单元测试。
+ * {@link SysJobSchedulerManager} 单元测试
  *
  * @author Bunny
  */

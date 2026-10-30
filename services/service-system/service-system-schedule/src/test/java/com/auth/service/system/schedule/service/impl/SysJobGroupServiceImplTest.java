@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 /**
- * {@link SysJobGroupServiceImpl} 单元测试。
+ * {@link SysJobGroupServiceImpl} 单元测试
  *
  * @author Bunny
  */

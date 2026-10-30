@@ -24,7 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * 用户写操作前的存在性、业务键唯一性与受保护账号校验。
+ * 用户写操作前的存在性、业务键唯一性与受保护账号校验
  *
  * @author Bunny
  */
@@ -100,7 +100,7 @@ public class UserReferenceChecker {
 	}
 
 	/**
-	 * 批量写入前校验用户名、邮箱、手机号、工号在请求内及库内均唯一；更新时可排除当前用户。
+	 * 批量写入前校验用户名、邮箱、手机号、工号在请求内及库内均唯一；更新时可排除当前用户
 	 * @param usernames 待写入用户名
 	 * @param emails 待写入邮箱
 	 * @param phones 待写入手机号

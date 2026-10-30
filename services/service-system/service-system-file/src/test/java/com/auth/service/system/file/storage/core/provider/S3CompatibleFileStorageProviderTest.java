@@ -41,7 +41,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link S3CompatibleFileStorageProvider} 单元测试。
+ * {@link S3CompatibleFileStorageProvider} 单元测试
  *
  * @author Bunny
  */
@@ -92,7 +92,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("upload：调用 S3Client putObject 并返回带 etag 的 StoredFile")
 	void upload_delegatesToS3Client() {
-		// 验证上传路径把 MultipartFile 转成 S3 PutObjectRequest，并回传 ETag。
+		// 验证上传路径把 MultipartFile 转成 S3 PutObjectRequest，并回传 ETag
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		byte[] bytes = "hello".getBytes();
 		MockMultipartFile file = new MockMultipartFile("photo", "photo.png", "image/png", bytes);
@@ -119,7 +119,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("download：返回 S3 ResponseInputStream")
 	void download_returnsS3ResponseStream() {
-		// 验证下载会透传 S3 SDK 返回的输入流。
+		// 验证下载会透传 S3 SDK 返回的输入流
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		InputStream expected = new ResponseInputStream<>(GetObjectResponse.builder().build(),
 				AbortableInputStream.create(new ByteArrayInputStream("payload".getBytes())));
@@ -133,7 +133,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("presignGetUrl：通过 S3Presigner 生成签名地址")
 	void presignGetUrl_delegatesToPresigner() throws Exception {
-		// 验证预签名走 Presigner 而不是 S3Client，保证签名 API 与 SDK 官方推荐一致。
+		// 验证预签名走 Presigner 而不是 S3Client，保证签名 API 与 SDK 官方推荐一致
 		when(clientManager.getPresigner(PLATFORM)).thenReturn(s3Presigner);
 		URL signed = new URL("http://127.0.0.1:9000/test-bucket/images/2024/01/photo.png?X-Amz-Signature=abc");
 		PresignedGetObjectRequest presigned = mock(PresignedGetObjectRequest.class);
@@ -148,7 +148,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("delete：对象不存在时按幂等成功处理")
 	void delete_succeedsWhenObjectNotFound() {
-		// 验证 not-found 语义交由注入的分类器判定，不再硬编码 SDK 异常类型。
+		// 验证 not-found 语义交由注入的分类器判定，不再硬编码 SDK 异常类型
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		S3Exception notFound = (S3Exception) S3Exception.builder()
 			.statusCode(404)
@@ -164,7 +164,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("delete：其他错误仍抛业务异常")
 	void delete_throwsWhenOtherErrorOccurs() {
-		// 验证非 not-found 异常仍会阻断 DB 侧 purge。
+		// 验证非 not-found 异常仍会阻断 DB 侧 purge
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		S3Exception denied = (S3Exception) S3Exception.builder()
 			.statusCode(403)
@@ -180,7 +180,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("objectExists：对象存在时返回 true")
 	void objectExistsReturnsTrueWhenObjectPresent() {
-		// 验证 headObject 成功时判定对象已存在。
+		// 验证 headObject 成功时判定对象已存在
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		stubHeadObject(OBJECT_KEY, true);
 
@@ -191,7 +191,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("objectExists：NoSuchKey 时返回 false")
 	void objectExistsReturnsFalseWhenNoSuchKey() {
-		// 验证 not-found 语义返回 false 而非抛异常。
+		// 验证 not-found 语义返回 false 而非抛异常
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		stubHeadObject(OBJECT_KEY, false);
 
@@ -201,7 +201,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("objectExists：其他 S3 错误抛业务异常")
 	void objectExistsThrowsWhenOtherErrorOccurs() {
-		// 验证非 not-found 异常仍会翻译为业务异常。
+		// 验证非 not-found 异常仍会翻译为业务异常
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		S3Exception denied = (S3Exception) S3Exception.builder()
 			.statusCode(403)
@@ -216,7 +216,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("move：copy 前校验源存在且目标不存在后执行 copy + delete")
 	void move_copiesThenDeletesSource() {
-		// 验证 move 在 proactive headObject 校验通过后走 S3 copyObject + deleteObject 组合。
+		// 验证 move 在 proactive headObject 校验通过后走 S3 copyObject + deleteObject 组合
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		String sourceKey = "public/avatar/20260702/a.png";
 		String destKey = "private/avatar/20260702/a.png";
@@ -238,7 +238,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("move：源对象不存在但目标已存在时按幂等成功处理")
 	void move_succeedsWhenSourceAbsentAndDestinationExists() {
-		// 验证重复 move 时源键缺失但目标键已存在，在 copy 前即视为已完成迁移。
+		// 验证重复 move 时源键缺失但目标键已存在，在 copy 前即视为已完成迁移
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		String sourceKey = "public/avatar/20260702/a.png";
 		String destKey = "private/avatar/20260702/a.png";
@@ -253,7 +253,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("move：源与目标均不存在时抛业务异常")
 	void move_failsWhenSourceAbsentAndDestinationAbsent() {
-		// 验证源、目标均缺失时不能静默成功，应抛出存储业务异常。
+		// 验证源、目标均缺失时不能静默成功，应抛出存储业务异常
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		String sourceKey = "public/avatar/20260702/a.png";
 		String destKey = "private/avatar/20260702/a.png";
@@ -268,7 +268,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("move：源与目标均存在时抛业务异常避免覆盖")
 	void move_failsWhenSourceAndDestinationBothExist() {
-		// 验证目标键已占用时拒绝 move，避免覆盖已有对象。
+		// 验证目标键已占用时拒绝 move，避免覆盖已有对象
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		String sourceKey = "public/avatar/20260702/a.png";
 		String destKey = "private/avatar/20260702/a.png";
@@ -283,7 +283,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("move：源与目标相同时短路跳过")
 	void move_skipsWhenSourceEqualsDestination() {
-		// 验证相同 objectKey 不会触发存储 SDK 调用。
+		// 验证相同 objectKey 不会触发存储 SDK 调用
 		assertThatCode(() -> provider.move(BUCKET, OBJECT_KEY, OBJECT_KEY)).doesNotThrowAnyException();
 		verifyNoInteractions(s3Client);
 	}
@@ -291,7 +291,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("resolvePublicUrl：优先使用 publicUrl，否则回退 endpoint + bucket")
 	void resolvePublicUrl_preferConfiguredDomain() {
-		// 验证有 publicUrl 时不再走 endpoint 拼接。
+		// 验证有 publicUrl 时不再走 endpoint 拼接
 		FileUploadProperties properties = new FileUploadProperties();
 		S3PlatformProfile profile = new S3PlatformProfile();
 		profile.setEndpoint("http://127.0.0.1:9000");
@@ -328,7 +328,7 @@ class S3CompatibleFileStorageProviderTest {
 	@Test
 	@DisplayName("resolvePublicUrl：使用请求侧 bucket 覆盖配置侧 bucket")
 	void resolvePublicUrl_prefersRequestBucket() {
-		// 验证同一 endpoint 下多桶场景仍能拼出正确 URL。
+		// 验证同一 endpoint 下多桶场景仍能拼出正确 URL
 		String customBucket = "another-bucket";
 		when(clientManager.getClient(PLATFORM)).thenReturn(s3Client);
 		byte[] bytes = "abc".getBytes();
@@ -356,7 +356,7 @@ class S3CompatibleFileStorageProviderTest {
 	}
 
 	/**
-	 * 按对象键模拟 headObject 存在性探测结果。
+	 * 按对象键模拟 headObject 存在性探测结果
 	 * @param objectKey 对象键
 	 * @param exists 是否存在
 	 */

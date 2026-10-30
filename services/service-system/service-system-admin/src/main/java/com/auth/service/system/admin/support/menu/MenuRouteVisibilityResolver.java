@@ -73,7 +73,7 @@ public class MenuRouteVisibilityResolver {
 	}
 
 	/**
-	 * 沿父链向上收录祖先；遇到已收录节点即停止（其祖先此前已走过）。
+	 * 沿父链向上收录祖先；遇到已收录节点即停止（其祖先此前已走过）
 	 */
 	private static void addAncestors(Long menuId, Map<Long, Long> parentById, Set<Long> existingIds, Set<Long> keep) {
 		Long cursor = parentById.get(menuId);

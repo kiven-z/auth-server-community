@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 岗位分页 ORDER BY 片段构建：仅允许白名单字段，防止 SQL 注入。
+ * 岗位分页 ORDER BY 片段构建：仅允许白名单字段，防止 SQL 注入
  *
  * @author Bunny
  */
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class SysPostPageOrderSqlBuilder extends AbstractOrderSqlBuilder {
 
 	/**
-	 * 默认排序：显示顺序升序，创建时间降序。
+	 * 默认排序：显示顺序升序，创建时间降序
 	 */
 	public static final String DEFAULT_ORDER_BY_SQL = "p.order_num ASC, p.created_at DESC";
 
@@ -29,7 +29,7 @@ public class SysPostPageOrderSqlBuilder extends AbstractOrderSqlBuilder {
 			Map.entry("deptName", "d.dept_name"));
 
 	/**
-	 * 根据前端传入的排序规则生成 ORDER BY 子句（不含 ORDER BY 关键字）。
+	 * 根据前端传入的排序规则生成 ORDER BY 子句（不含 ORDER BY 关键字）
 	 * @param sort 排序列表，可为 null
 	 * @return 安全列名片段
 	 */

@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 /**
- * 通过委托函数将类型化失效 Payload 解析为受影响用户 ID。
+ * 通过委托函数将类型化失效 Payload 解析为受影响用户 ID
  *
  * @param <T> 支持的 {@link AuthorizationInvalidatePayload} 子类型
  * @author Bunny

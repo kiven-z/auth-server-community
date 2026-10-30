@@ -20,13 +20,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link SysJobBootstrapSynchronizer} 单元测试。
+ * {@link SysJobBootstrapSynchronizer} 单元测试
  *
  * @author Bunny
  */
@@ -43,8 +41,8 @@ class SysJobBootstrapSynchronizerTest {
 	@Mock
 	private ScheduledExecutorService bootstrapExecutor;
 
-	@Mock
 	@SuppressWarnings("rawtypes")
+	@Mock
 	private ScheduledFuture bootstrapFuture;
 
 	private ScheduleJobProperties scheduleJobProperties;

@@ -10,7 +10,7 @@ import com.auth.service.system.file.storage.core.validator.StoragePlatformConfig
 import java.util.Optional;
 
 /**
- * 存储平台门面，聚合同平台的存储能力实现。
+ * 存储平台门面，聚合同平台的存储能力实现
  *
  * @author Bunny
  */
@@ -47,7 +47,7 @@ public interface StoragePlatformFacade {
 	StorageExceptionClassifier exceptionClassifier();
 
 	/**
-	 * 按类型解析厂商私有能力；未实现该能力的平台返回 {@link Optional#empty()}。
+	 * 按类型解析厂商私有能力；未实现该能力的平台返回 {@link Optional#empty()}
 	 * @param capabilityType 能力接口类型
 	 * @param <T> 能力类型
 	 * @return 能力实例（可能为空）

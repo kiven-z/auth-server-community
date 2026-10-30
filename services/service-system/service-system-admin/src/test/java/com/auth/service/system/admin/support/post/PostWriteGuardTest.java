@@ -24,7 +24,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.*;
 
 /**
- * {@link PostWriteGuard} 单元测试。
+ * {@link PostWriteGuard} 单元测试
  */
 @DisplayName("PostWriteGuard 岗位写入复合键校验")
 @ExtendWith(MockitoExtension.class)

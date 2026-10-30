@@ -58,7 +58,7 @@ public interface SysUserMapper extends BaseMapper<UserEntity> {
 	List<UserPostProfilePO> selectPostProfileByUserId(@Param("userId") Long userId);
 
 	/**
-	 * 关键词模糊搜索用户（未删除、状态正常），匹配用户名/昵称/邮箱/手机/工号。
+	 * 关键词模糊搜索用户（未删除、状态正常），匹配用户名/昵称/邮箱/手机/工号
 	 * @param keyword 关键字（非空，由调用方保证）
 	 * @param limit 最大返回条数
 	 * @return 用户列表，不含密码等敏感列

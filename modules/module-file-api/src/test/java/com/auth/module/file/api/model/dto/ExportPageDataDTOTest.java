@@ -22,7 +22,7 @@ class ExportPageDataDTOTest {
 	@Test
 	@DisplayName("反序列化保留 records 与 total（含 transient 字段）")
 	void jacksonRoundTripKeepsRecordsAndTotal() throws Exception {
-		// 远程分页回调依赖 getter/setter 反序列化；@Builder 缺无参构造会直接失败。
+		// 远程分页回调依赖 getter/setter 反序列化；@Builder 缺无参构造会直接失败
 		ExportPageDataDTO source = ExportPageDataDTO.builder()
 			.records(List.of(Map.of("id", 1, "name", "demo")))
 			.total(1L)

@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * {@link S3PlatformProfileResolver} 单元测试。
+ * {@link S3PlatformProfileResolver} 单元测试
  *
  * @author Bunny
  */
@@ -42,7 +42,7 @@ class S3PlatformProfileResolverTest {
 	@Test
 	@DisplayName("resolve：无协议 endpoint 补全为 https 绝对地址")
 	void resolveNormalizesSchemelessEndpoint() {
-		// 控制台复制的 OSS endpoint 常无协议，解析出口必须兑现绝对 URL 契约。
+		// 控制台复制的 OSS endpoint 常无协议，解析出口必须兑现绝对 URL 契约
 		FileUploadProperties properties = new FileUploadProperties();
 		S3PlatformProfileResolver resolver = S3PlatformProfileResolverFixtures.resolverWithAliyunOss(properties,
 				"oss-cn-shanghai.aliyuncs.com", "bunny-auth");
