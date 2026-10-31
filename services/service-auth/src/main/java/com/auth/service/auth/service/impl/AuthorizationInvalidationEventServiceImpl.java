@@ -181,16 +181,4 @@ public class AuthorizationInvalidationEventServiceImpl implements AuthorizationI
 		return invalidationEventMapper.deleteStaleProcessingClaims(cutoffTime, batchSize);
 	}
 
-	/**
-	 * 批量删除已完成的过期幂等事件
-	 * @param cutoffTime processed_at 早于此时间的已完成行可被删除
-	 * @param batchSize 本批删除上限
-	 * @return 实际删除行数
-	 */
-	@Override
-	@Transactional(rollbackFor = Exception.class)
-	public int purgeCompletedBefore(Instant cutoffTime, int batchSize) {
-		return invalidationEventMapper.deleteCompletedBefore(cutoffTime, batchSize);
-	}
-
 }

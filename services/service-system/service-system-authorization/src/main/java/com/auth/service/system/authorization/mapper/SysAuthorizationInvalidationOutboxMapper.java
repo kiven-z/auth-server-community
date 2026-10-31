@@ -86,12 +86,4 @@ public interface SysAuthorizationInvalidationOutboxMapper {
 	 */
 	int resetForManualRetry(@Param("id") Long id, @Param("expectedVersion") Long expectedVersion);
 
-	/**
-	 * 批量删除 SUCCESS 且已过保留期的 Outbox 记录
-	 * @param cutoffTime processed_at 早于此时间可被删除
-	 * @param batchSize 本批删除上限
-	 * @return 实际删除行数
-	 */
-	int deleteSuccessBefore(@Param("cutoffTime") Instant cutoffTime, @Param("batchSize") int batchSize);
-
 }

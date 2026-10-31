@@ -146,14 +146,4 @@
         LIMIT #{batchSize}
     </delete>
 
-    <!-- 批量删除已完成的过期幂等事件 -->
-    <delete id="deleteCompletedBefore">
-        DELETE
-        FROM auth_authorization_invalidation_event
-        WHERE impacted_user_count != -1
-          AND processed_at IS NOT NULL
-          AND processed_at &lt; #{cutoffTime}
-        LIMIT #{batchSize}
-    </delete>
-
 </mapper>

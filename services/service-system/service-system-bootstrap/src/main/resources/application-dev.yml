@@ -59,9 +59,6 @@ auth:
     poll-interval-ms: 30000
     retry-backoff-seconds: 30
     manual-processing-unlock-timeout-minutes: 5
-    success-retention-days: 90
-    success-cleanup-enabled: true
-    success-cleanup-cron: "0 30 3 * * ?"
 
   # ----- 文件存储：默认平台 + MinIO / OSS -----
   file:

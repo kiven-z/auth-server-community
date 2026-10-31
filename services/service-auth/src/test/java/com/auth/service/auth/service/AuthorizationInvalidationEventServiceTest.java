@@ -280,16 +280,4 @@ class AuthorizationInvalidationEventServiceTest {
 		verify(invalidationEventMapper).deleteStaleProcessingClaims(cutoff, 50);
 	}
 
-	@Test
-	@DisplayName("批量删除已完成过期幂等事件")
-	void purgeCompletedBefore_shouldDelegateToMapper() {
-		Instant cutoff = LocalDateTime.of(2025, 6, 1, 0, 0).toInstant(java.time.ZoneOffset.UTC);
-		when(invalidationEventMapper.deleteCompletedBefore(cutoff, 200)).thenReturn(10);
-
-		int deleted = eventService.purgeCompletedBefore(cutoff, 200);
-
-		assertEquals(10, deleted);
-		verify(invalidationEventMapper).deleteCompletedBefore(cutoff, 200);
-	}
-
 }

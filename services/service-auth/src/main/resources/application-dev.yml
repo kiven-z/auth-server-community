@@ -8,12 +8,7 @@ server:
     max-connections: 2000
 
 spring:
-  session:
-    jdbc:
-      initialize-schema: embedded
-      schema: classpath:org/springframework/session/jdbc/schema-mysql.sql
-
-  # ----- MySQL：登录会话 JDBC 表、失效幂等事件、用户授权读模型等 -----
+  # ----- MySQL：失效幂等事件、用户授权读模型等 -----
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -38,12 +33,9 @@ logging:
     root: info
     com.auth: debug
 
-# ----- 授权失效幂等事件清理（auth.invalidation.*）-----
+# ----- 授权失效 processing 占位清理（auth.invalidation.*）-----
 auth:
   invalidation:
     processing-claim-timeout-minutes: 30
     processing-claim-cleanup-enabled: true
     processing-claim-cleanup-interval-ms: 300000
-    success-retention-days: 90
-    success-cleanup-enabled: true
-    success-cleanup-cron: "0 0 4 * * ?"

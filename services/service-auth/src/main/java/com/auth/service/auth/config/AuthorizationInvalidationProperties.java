@@ -1,7 +1,6 @@
 package com.auth.service.auth.config;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,24 +39,5 @@ public class AuthorizationInvalidationProperties {
 	@Min(60_000)
 	@NotNull
 	private Long processingClaimCleanupIntervalMs = 300_000L;
-
-	/**
-	 * 已完成幂等事件保留天数，超出后由清理 Job 物理删除
-	 */
-	@Min(1)
-	@NotNull
-	private Integer successRetentionDays = 90;
-
-	/**
-	 * 是否启用已完成幂等事件历史清理 Job
-	 */
-	@NotNull
-	private Boolean successCleanupEnabled = false;
-
-	/**
-	 * 已完成幂等事件清理 Job Cron（默认每天 04:00）
-	 */
-	@NotBlank
-	private String successCleanupCron = "0 0 4 * * ?";
 
 }

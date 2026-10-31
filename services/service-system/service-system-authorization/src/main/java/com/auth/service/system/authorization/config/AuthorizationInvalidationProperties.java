@@ -1,7 +1,6 @@
 package com.auth.service.system.authorization.config;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,24 +46,5 @@ public class AuthorizationInvalidationProperties {
 	@Min(1)
 	@NotNull
 	private Integer manualProcessingUnlockTimeoutMinutes = 5;
-
-	/**
-	 * SUCCESS Outbox 保留天数，超出后由清理 Job 物理删除
-	 */
-	@Min(1)
-	@NotNull
-	private Integer successRetentionDays = 90;
-
-	/**
-	 * 是否启用 SUCCESS Outbox 历史清理 Job
-	 */
-	@NotNull
-	private Boolean successCleanupEnabled = false;
-
-	/**
-	 * SUCCESS Outbox 清理 Job Cron（默认每天 03:30）
-	 */
-	@NotBlank
-	private String successCleanupCron = "0 30 3 * * ?";
 
 }
