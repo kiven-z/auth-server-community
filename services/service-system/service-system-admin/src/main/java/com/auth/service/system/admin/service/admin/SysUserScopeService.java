@@ -25,16 +25,10 @@ public interface SysUserScopeService extends IService<UserScopeEntity> {
 	List<SysUserScopeVO> getByUserId(Long userId);
 
 	/**
-	 * 保存用户数据范围（写后触发授权失效）
+	 * 按提交列表覆盖该用户的全部数据范围。先删除后添加
 	 * @param userId 用户 ID
-	 * @param form 范围表单
+	 * @param forms 范围表单列表
 	 */
-	void upsert(Long userId, SysDataScopeForm form);
-
-	/**
-	 * 清除用户数据范围覆盖（无行时幂等成功）
-	 * @param userId 用户 ID
-	 */
-	void clearByUserId(Long userId);
+	void replace(Long userId, List<SysDataScopeForm> forms);
 
 }

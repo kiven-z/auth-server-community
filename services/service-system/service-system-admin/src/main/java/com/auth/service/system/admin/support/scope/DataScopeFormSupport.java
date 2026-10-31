@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -40,7 +42,32 @@ public class DataScopeFormSupport {
 			throw new SystemBusinessException(SystemCommonResultCode.DATA_INVALID);
 		}
 		List<Long> scopeIds = normalizeIds(dimension, scopeType, form.getScopeIds());
-		return new ResolvedDataScope(dimension, scopeType, scopeIds);
+		return new ResolvedDataScope(dimension, scopeType, scopeIds, form.getRemark());
+	}
+
+	/**
+	 * 按提交顺序解析整份范围列表。同一维出现多次时拒绝
+	 * @param forms 数据范围表单；空列表表示清空
+	 * @return 与表单顺序一致的解析结果
+	 */
+	public List<ResolvedDataScope> resolveAll(List<SysDataScopeForm> forms) {
+		if (forms == null) {
+			throw new SystemBusinessException(SystemCommonResultCode.DATA_INVALID);
+		}
+
+		List<ResolvedDataScope> resolved = new ArrayList<>(forms.size());
+		Set<DataScopeDimension> seen = new LinkedHashSet<>();
+		for (SysDataScopeForm form : forms) {
+			if (form == null) {
+				throw new SystemBusinessException(SystemCommonResultCode.DATA_INVALID);
+			}
+			ResolvedDataScope item = resolve(form);
+			if (!seen.add(item.dimension())) {
+				throw new SystemBusinessException(SystemCommonResultCode.PARAM_DUPLICATE);
+			}
+			resolved.add(item);
+		}
+		return List.copyOf(resolved);
 	}
 
 	/**
@@ -87,8 +114,10 @@ public class DataScopeFormSupport {
 	 * @param dimension 已解析的数据维度
 	 * @param scopeType 已解析的范围类型
 	 * @param scopeIds 已规范化的节点 ID（ALL/SELF 为空列表）
+	 * @param remark 备注
 	 */
-	public record ResolvedDataScope(DataScopeDimension dimension, DataScopeStorageType scopeType, List<Long> scopeIds) {
+	public record ResolvedDataScope(DataScopeDimension dimension, DataScopeStorageType scopeType, List<Long> scopeIds,
+			String remark) {
 	}
 
 }

@@ -25,10 +25,10 @@ public interface SysRoleScopeService extends IService<RoleScopeEntity> {
 	List<SysRoleScopeVO> getByRoleId(Long roleId);
 
 	/**
-	 * 保存角色数据范围（写后触发授权失效）
+	 * 按提交列表覆盖该角色的全部数据范围。先删除后添加
 	 * @param roleId 角色 ID
-	 * @param form 范围表单
+	 * @param forms 范围表单列表
 	 */
-	void upsert(Long roleId, SysDataScopeForm form);
+	void replace(Long roleId, List<SysDataScopeForm> forms);
 
 }

@@ -72,7 +72,7 @@ public class SysRoleAuthorizationController {
 
 	@OperationLog(targetType = "ROLE_GRANT_SUBJECTS", serviceDomain = AuditServiceDomain.SYSTEM,
 			bizModule = AuthorizationAuditBizModule.GRANT_TABLE, operation = OperationLogKind.UPDATE)
-	@Operation(summary = "覆盖分配角色授权对象", description = "仅替换 body.subjectType 指定类型（USER/DEPT/POST...）；空数组清空该类型；变更后触发授权失效")
+	@Operation(summary = "覆盖分配角色授权对象")
 	@PreAuthorize("@auth.decide('sys:role:update')")
 	@PutMapping("/{roleId}/grant-subjects")
 	public Result<Void> replaceGrantSubjects(@PathVariable("roleId") Long roleId,
@@ -83,11 +83,12 @@ public class SysRoleAuthorizationController {
 
 	@OperationLog(targetType = "ROLE_SCOPE", serviceDomain = AuditServiceDomain.SYSTEM,
 			bizModule = AuthorizationAuditBizModule.SYS_ROLE_SCOPE, operation = OperationLogKind.UPDATE)
-	@Operation(summary = "保存角色数据范围", description = "有则改无则插；变更后触发授权失效")
+	@Operation(summary = "覆盖保存角色数据范围")
 	@PreAuthorize("@auth.decide('sys:role:update')")
 	@PutMapping("/{roleId}/scope")
-	public Result<Void> upsertScope(@PathVariable("roleId") Long roleId, @Valid @RequestBody SysDataScopeForm form) {
-		sysRoleScopeService.upsert(roleId, form);
+	public Result<Void> replaceScope(@PathVariable("roleId") Long roleId,
+			@Valid @RequestBody List<@Valid SysDataScopeForm> forms) {
+		sysRoleScopeService.replace(roleId, forms);
 		return Result.success(null, OPERATION_SUCCESS.getMessage());
 	}
 

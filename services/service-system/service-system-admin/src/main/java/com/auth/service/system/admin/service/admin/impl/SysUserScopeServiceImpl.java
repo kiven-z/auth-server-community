@@ -1,6 +1,9 @@
 package com.auth.service.system.admin.service.admin.impl;
 
-import com.auth.service.system.admin.convert.admin.user.SysUserScopeConverter;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.json.JSONUtil;
+import com.auth.common.core.constants.BatchSizes;
 import com.auth.service.system.admin.mapper.admin.user.UserScopeMapper;
 import com.auth.service.system.admin.model.entity.UserScopeEntity;
 import com.auth.service.system.admin.model.form.scope.SysDataScopeForm;
@@ -42,7 +45,19 @@ public class SysUserScopeServiceImpl extends ServiceImpl<UserScopeMapper, UserSc
 	public List<SysUserScopeVO> getByUserId(Long userId) {
 		userReferenceChecker.getExistingActive(userId);
 		return super.list(Wrappers.<UserScopeEntity>lambdaQuery().eq(UserScopeEntity::getUserId, userId)).stream()
-			.map(SysUserScopeConverter::toVo)
+			.map(entity -> {
+				String scopeIdsRaw = entity.getScopeIds();
+				List<Long> scopeIds = CharSequenceUtil.isBlank(scopeIdsRaw) ? List.of()
+						: JSONUtil.toList(scopeIdsRaw, Long.class);
+				SysUserScopeVO vo = new SysUserScopeVO();
+				vo.setId(entity.getId());
+				vo.setUserId(entity.getUserId());
+				vo.setDimension(entity.getDimension());
+				vo.setScopeType(entity.getScopeType());
+				vo.setScopeIds(scopeIds);
+				vo.setRemark(entity.getRemark());
+				return vo;
+			})
 			.toList();
 	}
 
@@ -51,34 +66,25 @@ public class SysUserScopeServiceImpl extends ServiceImpl<UserScopeMapper, UserSc
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void upsert(Long userId, SysDataScopeForm form) {
+	public void replace(Long userId, List<SysDataScopeForm> forms) {
 		userReferenceChecker.getExistingActive(userId);
-		DataScopeFormSupport.ResolvedDataScope resolved = dataScopeFormSupport.resolve(form);
+		List<DataScopeFormSupport.ResolvedDataScope> resolved = dataScopeFormSupport.resolveAll(forms);
 
-		UserScopeEntity existing = super.getOne(Wrappers.<UserScopeEntity>lambdaQuery()
-			.eq(UserScopeEntity::getUserId, userId)
-			.eq(UserScopeEntity::getDimension, resolved.dimension().name()));
-		UserScopeEntity entity = existing != null ? existing : new UserScopeEntity();
-		if (existing == null) {
-			entity.setUserId(userId);
+		int removed = baseMapper.delete(Wrappers.<UserScopeEntity>lambdaQuery().eq(UserScopeEntity::getUserId, userId));
+		if (!resolved.isEmpty()) {
+			List<UserScopeEntity> entities = resolved.stream().map(item -> {
+				UserScopeEntity entity = new UserScopeEntity();
+				entity.setUserId(userId);
+				entity.setDimension(item.dimension().name());
+				entity.setScopeType(item.scopeType().name());
+				entity.setScopeIds(CollUtil.isEmpty(item.scopeIds()) ? null : JSONUtil.toJsonStr(item.scopeIds()));
+				entity.setRemark(item.remark());
+				return entity;
+			}).toList();
+			super.saveBatch(entities, BatchSizes.SIZE_500);
 		}
-		SysUserScopeConverter.applyForm(entity, form, resolved.dimension().name(), resolved.scopeType().name(),
-				resolved.scopeIds());
-		super.saveOrUpdate(entity);
-
-		userInvalidationTrigger.submitByUserIds(List.of(userId), "upsert-user-scope");
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	@Transactional(rollbackFor = Exception.class)
-	public void clearByUserId(Long userId) {
-		userReferenceChecker.getExistingActive(userId);
-		boolean removed = super.remove(Wrappers.<UserScopeEntity>lambdaQuery().eq(UserScopeEntity::getUserId, userId));
-		if (removed) {
-			userInvalidationTrigger.submitByUserIds(List.of(userId), "clear-user-scope");
+		if (removed > 0 || !resolved.isEmpty()) {
+			userInvalidationTrigger.submitByUserIds(List.of(userId), "replace-user-scope");
 		}
 	}
 

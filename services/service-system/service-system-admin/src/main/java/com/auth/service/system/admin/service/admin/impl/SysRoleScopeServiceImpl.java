@@ -1,6 +1,9 @@
 package com.auth.service.system.admin.service.admin.impl;
 
-import com.auth.service.system.admin.convert.admin.role.SysRoleScopeConverter;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.json.JSONUtil;
+import com.auth.common.core.constants.BatchSizes;
 import com.auth.service.system.admin.mapper.admin.role.RoleScopeMapper;
 import com.auth.service.system.admin.model.entity.RoleScopeEntity;
 import com.auth.service.system.admin.model.entity.SysRoleEntity;
@@ -43,7 +46,19 @@ public class SysRoleScopeServiceImpl extends ServiceImpl<RoleScopeMapper, RoleSc
 	public List<SysRoleScopeVO> getByRoleId(Long roleId) {
 		rbacReferenceChecker.getExisting(roleId);
 		return super.list(Wrappers.<RoleScopeEntity>lambdaQuery().eq(RoleScopeEntity::getRoleId, roleId)).stream()
-			.map(SysRoleScopeConverter::toVo)
+			.map(entity -> {
+				String scopeIdsRaw = entity.getScopeIds();
+				List<Long> scopeIds = CharSequenceUtil.isBlank(scopeIdsRaw) ? List.of()
+						: JSONUtil.toList(scopeIdsRaw, Long.class);
+				SysRoleScopeVO vo = new SysRoleScopeVO();
+				vo.setId(entity.getId());
+				vo.setRoleId(entity.getRoleId());
+				vo.setDimension(entity.getDimension());
+				vo.setScopeType(entity.getScopeType());
+				vo.setScopeIds(scopeIds);
+				vo.setRemark(entity.getRemark());
+				return vo;
+			})
 			.toList();
 	}
 
@@ -52,22 +67,26 @@ public class SysRoleScopeServiceImpl extends ServiceImpl<RoleScopeMapper, RoleSc
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public void upsert(Long roleId, SysDataScopeForm form) {
+	public void replace(Long roleId, List<SysDataScopeForm> forms) {
 		SysRoleEntity role = rbacReferenceChecker.getExisting(roleId);
-		DataScopeFormSupport.ResolvedDataScope resolved = dataScopeFormSupport.resolve(form);
+		List<DataScopeFormSupport.ResolvedDataScope> resolved = dataScopeFormSupport.resolveAll(forms);
 
-		RoleScopeEntity existing = super.getOne(Wrappers.<RoleScopeEntity>lambdaQuery()
-			.eq(RoleScopeEntity::getRoleId, roleId)
-			.eq(RoleScopeEntity::getDimension, resolved.dimension().name()));
-		RoleScopeEntity entity = existing != null ? existing : new RoleScopeEntity();
-		if (existing == null) {
-			entity.setRoleId(roleId);
+		int removed = baseMapper.delete(Wrappers.<RoleScopeEntity>lambdaQuery().eq(RoleScopeEntity::getRoleId, roleId));
+		if (!resolved.isEmpty()) {
+			List<RoleScopeEntity> entities = resolved.stream().map(item -> {
+				RoleScopeEntity entity = new RoleScopeEntity();
+				entity.setRoleId(roleId);
+				entity.setDimension(item.dimension().name());
+				entity.setScopeType(item.scopeType().name());
+				entity.setScopeIds(CollUtil.isEmpty(item.scopeIds()) ? null : JSONUtil.toJsonStr(item.scopeIds()));
+				entity.setRemark(item.remark());
+				return entity;
+			}).toList();
+			super.saveBatch(entities, BatchSizes.SIZE_500);
 		}
-		SysRoleScopeConverter.applyForm(entity, form, resolved.dimension().name(), resolved.scopeType().name(),
-				resolved.scopeIds());
-		super.saveOrUpdate(entity);
-
-		roleInvalidationTrigger.submitByRoleCodes(List.of(role.getRoleCode()), "upsert-role-scope");
+		if (removed > 0 || !resolved.isEmpty()) {
+			roleInvalidationTrigger.submitByRoleCodes(List.of(role.getRoleCode()), "replace-role-scope");
+		}
 	}
 
 }

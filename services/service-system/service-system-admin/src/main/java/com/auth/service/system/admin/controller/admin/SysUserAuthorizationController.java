@@ -25,7 +25,7 @@ import static com.auth.service.system.common.exception.code.SystemCommonResultCo
  *
  * @author Bunny
  */
-@Tag(name = "用户授权", description = "用户数据范围覆盖与清除")
+@Tag(name = "用户授权", description = "用户数据范围覆盖")
 @RequiredArgsConstructor
 @Slf4j
 @RequestMapping("/api/system/user")
@@ -44,21 +44,12 @@ public class SysUserAuthorizationController {
 
 	@OperationLog(targetType = "USER_SCOPE", serviceDomain = AuditServiceDomain.SYSTEM,
 			bizModule = AuthorizationAuditBizModule.SYS_USER_SCOPE, operation = OperationLogKind.UPDATE)
-	@Operation(summary = "保存用户数据范围", description = "有则改无则插；覆盖角色范围并触发授权失效")
+	@Operation(summary = "覆盖保存用户数据范围", description = "按列表覆盖全部数据维；空数组清空并恢复角色继承；变更后触发一次授权失效")
 	@PreAuthorize("@auth.decide('sys:user:update')")
 	@PutMapping("/{userId}/scope")
-	public Result<Void> upsertScope(@PathVariable("userId") Long userId, @Valid @RequestBody SysDataScopeForm form) {
-		sysUserScopeService.upsert(userId, form);
-		return Result.success(null, OPERATION_SUCCESS.getMessage());
-	}
-
-	@OperationLog(targetType = "USER_SCOPE", serviceDomain = AuditServiceDomain.SYSTEM,
-			bizModule = AuthorizationAuditBizModule.SYS_USER_SCOPE, operation = OperationLogKind.DELETE)
-	@Operation(summary = "清除用户数据范围覆盖", description = "删除配置行并恢复角色继承；无行时幂等")
-	@PreAuthorize("@auth.decide('sys:user:update')")
-	@DeleteMapping("/{userId}/scope")
-	public Result<Void> clearScope(@PathVariable("userId") Long userId) {
-		sysUserScopeService.clearByUserId(userId);
+	public Result<Void> replaceScope(@PathVariable("userId") Long userId,
+			@Valid @RequestBody List<@Valid SysDataScopeForm> forms) {
+		sysUserScopeService.replace(userId, forms);
 		return Result.success(null, OPERATION_SUCCESS.getMessage());
 	}
 
